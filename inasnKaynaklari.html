@@ -1449,7 +1449,7 @@
 
         // Back button
         document.getElementById('backBtn')?.addEventListener('click', () => {
-            window.location.href = '#';
+            window.location.href = 'dashboard.html';
         });
 
         // Generate sample data for charts
@@ -1817,24 +1817,24 @@
             alert('📈 Tahmin Modeli: Helpdesk talepleri önümüzdeki 2 saat içinde 180\'e yükselecek. Özellikle IT desteği taleplerinde artış bekleniyor.');
         });
 
-        // Menu item clicks (for demo)
+        // Menu item clicks
         document.querySelectorAll('.menu-item').forEach(item => {
             item.addEventListener('click', function () {
                 document.querySelectorAll('.menu-item').forEach(mi => mi.classList.remove('active'));
                 this.classList.add('active');
-
+                const navMap = {
+                    dashboard: 'dashboard.html',
+                    it: 'it.html',
+                    iot: 'ıot.html',
+                    finance: 'finans.html',
+                    hr: 'inasnKaynaklari.html',
+                    access: 'erişim.html',
+                    ai: 'yapayZeka.html',
+                    settings: 'ayarlar.html',
+                    profile: 'profil.html'
+                };
                 const dept = this.dataset.department;
-                if (dept === 'dashboard') {
-                    window.location.href = '#'; // Dashboard'a yönlendir
-                } else if (dept === 'it') {
-                    window.location.href = '#'; // IT sayfası
-                } else if (dept === 'iot') {
-                    window.location.href = '#'; // IoT sayfası
-                } else if (dept === 'finance') {
-                    window.location.href = '#'; // Finans sayfası
-                } else if (dept === 'hr') {
-                    window.location.href = '#'; // HR sayfası (zaten burası)
-                }
+                if (navMap[dept]) window.location.href = navMap[dept];
             });
         });
 

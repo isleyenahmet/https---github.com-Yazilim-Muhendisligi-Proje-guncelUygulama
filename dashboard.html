@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEXUS INTELLIGENCE · Enterprise Dashboard</title>
-    
+
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Tailwind with custom config -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Three.js for advanced 3D -->
     <script type="importmap">
         {
@@ -20,7 +23,7 @@
             }
         }
     </script>
-    
+
     <style>
         * {
             margin: 0;
@@ -59,9 +62,9 @@
             -webkit-backdrop-filter: blur(16px) saturate(180%);
             border: 1px solid rgba(31, 199, 98, 0.15);
             border-radius: 24px;
-            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 
-                        0 0 0 1px rgba(31, 199, 98, 0.1) inset,
-                        0 0 30px -10px rgba(31, 199, 98, 0.3);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8),
+                0 0 0 1px rgba(31, 199, 98, 0.1) inset,
+                0 0 30px -10px rgba(31, 199, 98, 0.3);
         }
 
         .glass-premium-light {
@@ -418,14 +421,23 @@
             top: -20%;
             left: -20%;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(31,199,98,0.2) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(31, 199, 98, 0.2) 0%, transparent 70%);
             z-index: -1;
             animation: pulseGlow 3s ease-in-out infinite;
         }
 
         @keyframes pulseGlow {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.1); }
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
         }
 
         .node-satellite {
@@ -445,9 +457,20 @@
         }
 
         @keyframes pulseRing {
-            0% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 0; }
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
         }
 
         /* Orbital ring - graf içinde büyütüldü */
@@ -476,13 +499,23 @@
         }
 
         @keyframes rotate {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
         }
 
         @keyframes rotateReverse {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(-360deg); }
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(-360deg);
+            }
         }
 
         /* Data streams */
@@ -498,10 +531,24 @@
         }
 
         @keyframes flow {
-            0% { opacity: 0; transform: translate(0, 0) scale(1); }
-            10% { opacity: 1; transform: translate(10px, 10px) scale(1.5); }
-            90% { opacity: 1; }
-            100% { opacity: 0; transform: translate(80px, 80px) scale(0.5); }
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) scale(1);
+            }
+
+            10% {
+                opacity: 1;
+                transform: translate(10px, 10px) scale(1.5);
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(80px, 80px) scale(0.5);
+            }
         }
 
         /* Floating indicators */
@@ -574,9 +621,17 @@
         }
 
         @keyframes criticalPulse {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
         }
 
         /* Top navigation adjustment */
@@ -628,6 +683,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Particle Canvas (Three.js background) -->
@@ -728,7 +784,8 @@
         <!-- Sidebar Footer -->
         <div class="absolute bottom-0 left-0 right-0 p-5 border-t border-white/5">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                <div
+                    class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
                     <span class="text-xs font-bold">AD</span>
                 </div>
                 <div class="flex-1 min-w-0 sidebar-text">
@@ -742,17 +799,20 @@
 
     <!-- Main Content Wrapper -->
     <div class="main-wrapper" id="mainWrapper">
-        
+
         <!-- Top Navigation Bar (adjusted) -->
-        <div class="fixed top-6 left-[310px] right-6 z-50 flex justify-between items-start transition-all duration-300 top-nav" id="topNav">
+        <div class="fixed top-6 left-[310px] right-6 z-50 flex justify-between items-start transition-all duration-300 top-nav"
+            id="topNav">
             <div class="glass-premium px-6 py-3">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand to-green-600 flex items-center justify-center">
+                    <div
+                        class="w-8 h-8 rounded-full bg-gradient-to-br from-brand to-green-600 flex items-center justify-center">
                         <i class="fas fa-brain text-white text-sm"></i>
                     </div>
                     <div>
                         <h1 class="text-lg font-bold tracking-tight text-white" id="pageTitle">Dashboard</h1>
-                        <p class="text-[10px] text-brand uppercase tracking-[0.2em] font-medium" id="pageSubtitle">Genel Bakış</p>
+                        <p class="text-[10px] text-brand uppercase tracking-[0.2em] font-medium" id="pageSubtitle">Genel
+                            Bakış</p>
                     </div>
                 </div>
             </div>
@@ -771,7 +831,8 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="text-right">
-                        <span class="text-2xl font-bold text-white">92<span class="text-sm text-brand ml-1">%</span></span>
+                        <span class="text-2xl font-bold text-white">92<span
+                                class="text-sm text-brand ml-1">%</span></span>
                         <p class="text-[10px] text-slate-400">System Health</p>
                     </div>
                     <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
@@ -788,17 +849,22 @@
 
         <!-- Right Sidebar (Quick Actions) -->
         <div class="fixed right-6 top-1/2 transform -translate-y-1/2 z-50 flex flex-col gap-3">
-            <div class="glass-premium-light w-12 h-12 rounded-full flex items-center justify-center hover:bg-brand/20 transition cursor-pointer group">
+            <div
+                class="glass-premium-light w-12 h-12 rounded-full flex items-center justify-center hover:bg-brand/20 transition cursor-pointer group">
                 <i class="fas fa-search text-slate-400 group-hover:text-brand"></i>
             </div>
-            <div class="glass-premium-light w-12 h-12 rounded-full flex items-center justify-center hover:bg-brand/20 transition cursor-pointer group">
+            <div
+                class="glass-premium-light w-12 h-12 rounded-full flex items-center justify-center hover:bg-brand/20 transition cursor-pointer group">
                 <i class="fas fa-bell text-slate-400 group-hover:text-brand"></i>
-                <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[8px] flex items-center justify-center font-bold">3</span>
+                <span
+                    class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[8px] flex items-center justify-center font-bold">3</span>
             </div>
-            <div class="glass-premium-light w-12 h-12 rounded-full flex items-center justify-center hover:bg-brand/20 transition cursor-pointer group">
+            <div
+                class="glass-premium-light w-12 h-12 rounded-full flex items-center justify-center hover:bg-brand/20 transition cursor-pointer group">
                 <i class="fas fa-cog text-slate-400 group-hover:text-brand"></i>
             </div>
-            <div class="glass-premium-light w-12 h-12 rounded-full flex items-center justify-center hover:bg-brand/20 transition cursor-pointer group">
+            <div
+                class="glass-premium-light w-12 h-12 rounded-full flex items-center justify-center hover:bg-brand/20 transition cursor-pointer group">
                 <i class="fas fa-chart-line text-slate-400 group-hover:text-brand"></i>
             </div>
         </div>
@@ -822,7 +888,7 @@
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-        
+
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
 
@@ -836,14 +902,14 @@
             const radius = 15 + Math.random() * 5;
             const theta = Math.random() * Math.PI * 2;
             const phi = Math.acos((Math.random() * 2) - 1);
-            
+
             posArray[i] = radius * Math.sin(phi) * Math.cos(theta);
-            posArray[i+1] = radius * Math.sin(phi) * Math.sin(theta);
-            posArray[i+2] = radius * Math.cos(phi);
+            posArray[i + 1] = radius * Math.sin(phi) * Math.sin(theta);
+            posArray[i + 2] = radius * Math.cos(phi);
 
             colorArray[i] = 0.2 + Math.random() * 0.3;
-            colorArray[i+1] = 0.6 + Math.random() * 0.4;
-            colorArray[i+2] = 0.2 + Math.random() * 0.3;
+            colorArray[i + 1] = 0.6 + Math.random() * 0.4;
+            colorArray[i + 2] = 0.2 + Math.random() * 0.3;
         }
 
         particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
@@ -899,7 +965,7 @@
             sidebar.classList.toggle('collapsed');
             mainWrapper.classList.toggle('sidebar-collapsed');
             topNav.classList.toggle('sidebar-collapsed');
-            
+
             if (sidebar.classList.contains('collapsed')) {
                 collapseIcon.classList.remove('fa-chevron-left');
                 collapseIcon.classList.add('fa-chevron-right');
@@ -1624,14 +1690,34 @@
         // Load initial content
         departmentContent.innerHTML = departments.dashboard.content;
 
+        // Sayfa navigasyon haritası
+        const navMap = {
+            dashboard: null,          // Inline content (aşağıda tanımlı)
+            it: 'it.html',
+            iot: 'ıot.html',
+            finance: 'finans.html',
+            hr: 'inasnKaynaklari.html',
+            access: 'erişim.html',
+            ai: 'yapayZeka.html',
+            settings: 'ayarlar.html',
+            profile: 'profil.html'
+        };
+
         // Menu click handlers
         menuItems.forEach(item => {
             item.addEventListener('click', () => {
+                const department = item.dataset.department;
+
+                // Harici sayfalar için direkt yönlendir
+                if (navMap[department]) {
+                    window.location.href = navMap[department];
+                    return;
+                }
+
+                // Dashboard inline content
                 menuItems.forEach(mi => mi.classList.remove('active'));
                 item.classList.add('active');
 
-                const department = item.dataset.department;
-                
                 if (departments[department]) {
                     pageTitle.textContent = departments[department].title;
                     pageSubtitle.textContent = departments[department].subtitle;
@@ -1650,11 +1736,11 @@
                 newContainer.style.zIndex = '25';
                 document.body.appendChild(newContainer);
             }
-            
+
             setInterval(() => {
                 const container = document.getElementById('particle-container');
                 if (!container) return;
-                
+
                 for (let i = 0; i < 5; i++) {
                     setTimeout(() => {
                         const stream = document.createElement('div');
@@ -1667,7 +1753,7 @@
                 }
             }, 2000);
         }
-        
+
         setTimeout(createDataStream, 1000);
 
         // Forecast panel click
@@ -1676,4 +1762,5 @@
         });
     </script>
 </body>
+
 </html>
