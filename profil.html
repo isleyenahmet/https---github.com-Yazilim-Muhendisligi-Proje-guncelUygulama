@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS · Profil & Erişim Yetkileri</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Three.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+            }
+        }
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #03050A;
+            color: #fff;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Premium noise texture */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Grid overlay */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(31, 199, 98, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(31, 199, 98, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Custom glass morphism */
+        .glass-premium {
+            background: rgba(10, 15, 25, 0.4);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(31, 199, 98, 0.15);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 
+                        0 0 0 1px rgba(31, 199, 98, 0.1) inset,
+                        0 0 30px -10px rgba(31, 199, 98, 0.3);
+        }
+
+        .glass-premium-light {
+            background: rgba(20, 30, 45, 0.3);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 280px;
+            background: rgba(5, 10, 18, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(31, 199, 98, 0.15);
+            z-index: 100;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow: hidden;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            background: radial-gradient(circle at 30% 30%, #4ade80, #0a8a40);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(31, 199, 98, 0.3);
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+            white-space: nowrap;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .logo-text {
+            opacity: 0;
+        }
+
+        .collapse-btn {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .collapse-btn:hover {
+            background: rgba(31, 199, 98, 0.1);
+            border-color: rgba(31, 199, 98, 0.3);
+            color: #1fc762;
+        }
+
+        .sidebar-menu {
+            padding: 20px 12px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, rgba(31, 199, 98, 0.15), transparent);
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+
+        .menu-item:hover {
+            background: rgba(31, 199, 98, 0.05);
+            color: white;
+        }
+
+        .menu-item:hover::before {
+            width: 100%;
+        }
+
+        .menu-item.active {
+            background: rgba(31, 199, 98, 0.1);
+            color: #1fc762;
+            box-shadow: 0 0 20px rgba(31, 199, 98, 0.1);
+        }
+
+        .menu-item.active::before {
+            width: 4px;
+            background: #1fc762;
+        }
+
+        .menu-icon {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .menu-text {
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .menu-text {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .menu-badge {
+            margin-left: auto;
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .sidebar.collapsed .menu-badge {
+            opacity: 0;
+        }
+
+        .menu-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 20px 16px;
+        }
+
+        /* Main content area */
+        .main-wrapper {
+            margin-left: 280px;
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100vh;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            position: relative;
+        }
+
+        .main-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .main-wrapper.sidebar-collapsed {
+            margin-left: 80px;
+        }
+
+        /* Top navigation adjustment */
+        .top-nav {
+            position: fixed;
+            top: 24px;
+            left: 310px;
+            right: 24px;
+            z-index: 90;
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-nav.sidebar-collapsed {
+            left: 110px;
+        }
+
+        /* Back button */
+        .back-button {
+            position: fixed;
+            top: 24px;
+            left: 310px;
+            z-index: 1000;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(10, 20, 35, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(31, 199, 98, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(31, 199, 98, 0.2);
+        }
+
+        .back-button:hover {
+            transform: scale(1.15);
+            border-color: rgba(31, 199, 98, 1);
+            box-shadow: 0 0 40px rgba(31, 199, 98, 0.5);
+        }
+
+        .back-button.sidebar-collapsed {
+            left: 110px;
+        }
+
+        /* Profile container */
+        .profile-container {
+            padding: 100px 30px 30px 30px;
+            min-height: 100vh;
+        }
+
+        .profile-header {
+            margin-bottom: 30px;
+        }
+
+        .profile-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .profile-subtitle {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+
+        /* Profile Hero Card */
+        .profile-hero {
+            background: rgba(10, 20, 35, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(31, 199, 98, 0.15);
+            border-radius: 32px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .profile-hero:hover {
+            border-color: rgba(31, 199, 98, 0.4);
+            box-shadow: 0 30px 50px -20px rgba(31, 199, 98, 0.2);
+        }
+
+        .profile-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 32px;
+            background: linear-gradient(135deg, #4ade80, #0a8a40);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 20px 40px -15px rgba(31, 199, 98, 0.4);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 28px;
+            object-fit: cover;
+        }
+
+        .avatar-placeholder {
+            font-size: 48px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .online-indicator {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 16px;
+            height: 16px;
+            background: #22c55e;
+            border-radius: 50%;
+            border: 3px solid rgba(10, 20, 35, 0.8);
+            animation: pulse 2s infinite;
+        }
+
+        .profile-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .profile-name-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .profile-name {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .profile-role-badge {
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .role-ceo {
+            background: rgba(255, 215, 0, 0.15);
+            color: #FFD700;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .role-finance {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .role-iot {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .role-it {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .role-hr {
+            background: rgba(168, 85, 247, 0.15);
+            color: #a855f7;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .profile-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .profile-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .detail-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(31, 199, 98, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1fc762;
+        }
+
+        .detail-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* Role Switcher (Demo için) */
+        .role-switcher {
+            background: rgba(10, 20, 35, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(31, 199, 98, 0.15);
+            border-radius: 60px;
+            padding: 6px;
+            display: flex;
+            gap: 6px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .role-switcher::-webkit-scrollbar {
+            display: none;
+        }
+
+        .role-option {
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .role-option:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .role-option.active {
+            background: rgba(31, 199, 98, 0.15);
+            color: #1fc762;
+            border: 1px solid rgba(31, 199, 98, 0.3);
+        }
+
+        /* Permissions Section */
+        .permissions-section {
+            margin-top: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #1fc762;
+        }
+
+        .section-badge {
+            background: rgba(31, 199, 98, 0.1);
+            border: 1px solid rgba(31, 199, 98, 0.2);
+            border-radius: 40px;
+            padding: 6px 14px;
+            font-size: 12px;
+            color: #1fc762;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Permissions Grid */
+        .permissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .permission-card {
+            background: rgba(10, 20, 35, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(31, 199, 98, 0.15);
+            border-radius: 24px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .permission-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(31, 199, 98, 0.4);
+            box-shadow: 0 30px 50px -20px rgba(31, 199, 98, 0.2);
+        }
+
+        .permission-card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .permission-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .icon-finance {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+
+        .icon-iot {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .icon-it {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+        }
+
+        .icon-hr {
+            background: rgba(168, 85, 247, 0.15);
+            color: #a855f7;
+        }
+
+        .icon-settings {
+            background: rgba(148, 163, 184, 0.15);
+            color: #94a3b8;
+        }
+
+        .icon-ai {
+            background: rgba(31, 199, 98, 0.15);
+            color: #1fc762;
+        }
+
+        .permission-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .permission-desc {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 2px;
+        }
+
+        .permission-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-allowed {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status-restricted {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status-full {
+            background: rgba(255, 215, 0, 0.15);
+            color: #FFD700;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .access-level {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .permission-details {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 15px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .detail-label-small {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .detail-value-small {
+            color: white;
+            font-weight: 500;
+        }
+
+        .permission-tag {
+            background: rgba(31, 199, 98, 0.1);
+            border-radius: 12px;
+            padding: 4px 10px;
+            font-size: 11px;
+            color: #1fc762;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background: rgba(10, 20, 35, 0.95);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(31, 199, 98, 0.3);
+            border-radius: 12px;
+            padding: 8px 12px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 10px 20px -10px rgba(0,0,0,0.5);
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+        }
+
+        /* Quick actions */
+        .quick-actions {
+            position: fixed;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 90;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quick-action-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(20, 30, 45, 0.3);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .quick-action-btn:hover {
+            background: rgba(31, 199, 98, 0.1);
+            border-color: rgba(31, 199, 98, 0.3);
+            color: #1fc762;
+            transform: scale(1.1);
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Canvas for particles */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Particle Canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Grid Overlay -->
+    <div class="grid-overlay"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-brain text-white text-xl"></i>
+                </div>
+                <span class="logo-text">NEXUS·AI</span>
+            </div>
+            <div class="collapse-btn" id="collapseBtn">
+                <i class="fas fa-chevron-left" id="collapseIcon"></i>
+            </div>
+        </div>
+
+        <div class="sidebar-menu">
+            <!-- Ana Menü -->
+            <div class="menu-item" data-department="dashboard">
+                <div class="menu-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <span class="menu-text">Dashboard</span>
+            </div>
+
+            <div class="menu-divider"></div>
+
+            <!-- Departmanlar -->
+            <div class="menu-item" data-department="it">
+                <div class="menu-icon">
+                    <i class="fas fa-microchip"></i>
+                </div>
+                <span class="menu-text">IT Department</span>
+                <span class="menu-badge">3</span>
+            </div>
+
+            <div class="menu-item" data-department="iot">
+                <div class="menu-icon">
+                    <i class="fas fa-wifi"></i>
+                </div>
+                <span class="menu-text">IoT Department</span>
+                <span class="menu-badge">!</span>
+            </div>
+
+            <div class="menu-item" data-department="finance">
+                <div class="menu-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <span class="menu-text">Finans</span>
+            </div>
+
+            <div class="menu-item" data-department="hr">
+                <div class="menu-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <span class="menu-text">İnsan Kaynakları</span>
+                <span class="menu-badge">2</span>
+            </div>
+
+            <div class="menu-divider"></div>
+
+            <!-- Sistem Menüleri -->
+            <div class="menu-item" data-department="access">
+                <div class="menu-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <span class="menu-text">Erişim Belirleme</span>
+            </div>
+
+            <div class="menu-item" data-department="ai">
+                <div class="menu-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <span class="menu-text">Yapay Zeka Karar Sistemi</span>
+            </div>
+
+            <div class="menu-divider"></div>
+
+            <!-- Alt Menü -->
+            <div class="menu-item" data-department="settings">
+                <div class="menu-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <span class="menu-text">Ayarlar</span>
+            </div>
+
+            <div class="menu-item active" data-department="profile">
+                <div class="menu-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span class="menu-text">Profil</span>
+            </div>
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="absolute bottom-0 left-0 right-0 p-5 border-t border-white/5">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                    <span class="text-xs font-bold">AD</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-white truncate">Admin User</p>
+                    <p class="text-xs text-slate-400 truncate">admin@nexus.ai</p>
+                </div>
+                <i class="fas fa-ellipsis-v text-slate-400 text-xs"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper" id="mainWrapper">
+        
+        <!-- Top Navigation -->
+        <div class="top-nav" id="topNav">
+            <div class="glass-premium px-6 py-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand to-green-600 flex items-center justify-center">
+                        <i class="fas fa-user text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold tracking-tight text-white" id="pageTitle">Profil Sayfası</h1>
+                        <p class="text-[10px] text-brand uppercase tracking-[0.2em] font-medium" id="pageSubtitle">Kullanıcı Bilgileri ve Erişim Yetkileri</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-premium px-6 py-3 flex items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                        <span class="text-xs font-medium text-slate-300">Live</span>
+                    </div>
+                    <div class="h-4 w-px bg-white/10"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-shield-alt text-brand text-xs"></i>
+                        <span class="text-xs font-medium text-slate-300">Quantum Secure</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="text-right">
+                        <span class="text-2xl font-bold text-white">92<span class="text-sm text-brand ml-1">%</span></span>
+                        <p class="text-[10px] text-slate-400">System Health</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <div class="w-6 h-6 rounded-full bg-green-400 animate-pulse"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="back-button" onclick="window.location.href='#'" id="backBtn">
+            <i class="fas fa-arrow-left text-brand text-2xl"></i>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="profile-container">
+            
+            <!-- Profile Hero Card -->
+            <div class="profile-hero">
+                <div class="profile-avatar">
+                    <div class="avatar-placeholder">AY</div>
+                    <div class="online-indicator"></div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-name-section">
+                        <span class="profile-name">Ahmet Yılmaz</span>
+                        <span class="profile-role-badge role-ceo" id="roleBadge">
+                            <i class="fas fa-crown"></i> CEO
+                        </span>
+                    </div>
+                    
+                    <div class="profile-details-grid">
+                        <div class="profile-detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">E-POSTA</span>
+                                <span class="detail-value">ahmet.yilmaz@nexus.ai</span>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">DEPARTMAN</span>
+                                <span class="detail-value" id="userDepartment">Yönetim Kurulu</span>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-briefcase"></i>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">POZİSYON</span>
+                                <span class="detail-value" id="userPosition">Chief Executive Officer</span>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">ÜYELİK</span>
+                                <span class="detail-value">15 Mart 2022</span>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">SON GİRİŞ</span>
+                                <span class="detail-value">2 dakika önce</span>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">LOKASYON</span>
+                                <span class="detail-value">İstanbul, Türkiye</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role Switcher (Demo için - farklı rolleri test edebilmek adına) -->
+            <div class="role-switcher" id="roleSwitcher">
+                <div class="role-option active" data-role="ceo">
+                    <i class="fas fa-crown"></i> CEO
+                </div>
+                <div class="role-option" data-role="finance">
+                    <i class="fas fa-chart-line"></i> Finans Müdürü
+                </div>
+                <div class="role-option" data-role="iot">
+                    <i class="fas fa-wifi"></i> IoT Müdürü
+                </div>
+                <div class="role-option" data-role="it">
+                    <i class="fas fa-microchip"></i> IT Müdürü
+                </div>
+                <div class="role-option" data-role="hr">
+                    <i class="fas fa-users"></i> İK Müdürü
+                </div>
+            </div>
+
+            <!-- Permissions Section -->
+            <div class="permissions-section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Erişim Yetkileri · Access Permissions
+                    </div>
+                    <div class="section-badge">
+                        <i class="fas fa-info-circle"></i>
+                        Rol tabanlı erişim kontrolü
+                    </div>
+                </div>
+
+                <!-- Permissions Grid -->
+                <div class="permissions-grid" id="permissionsGrid">
+                    <!-- Finans -->
+                    <div class="permission-card" data-module="finance">
+                        <div class="permission-card-header">
+                            <div class="permission-icon icon-finance">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div>
+                                <div class="permission-title">Finans Departmanı</div>
+                                <div class="permission-desc">Finance Department</div>
+                            </div>
+                        </div>
+                        
+                        <div class="permission-status">
+                            <span class="status-badge status-allowed" id="finance-status">
+                                <i class="fas fa-check-circle"></i> Tam Erişim
+                            </span>
+                            <span class="access-level" id="finance-level">✅</span>
+                        </div>
+                        
+                        <div class="permission-details" id="finance-details">
+                            <div class="detail-row">
+                                <span class="detail-label-small">İşlem hacmi raporları</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-check"></i> OKUMA</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">Ödeme işlemleri</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-check"></i> YAZMA</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">Finansal tahminler</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-check"></i> OKUMA</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">Yetkilendirme ayarları</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- IoT -->
+                    <div class="permission-card" data-module="iot">
+                        <div class="permission-card-header">
+                            <div class="permission-icon icon-iot">
+                                <i class="fas fa-wifi"></i>
+                            </div>
+                            <div>
+                                <div class="permission-title">IoT Departmanı</div>
+                                <div class="permission-desc">IoT Department</div>
+                            </div>
+                        </div>
+                        
+                        <div class="permission-status">
+                            <span class="status-badge status-restricted" id="iot-status">
+                                <i class="fas fa-ban"></i> Kısıtlı
+                            </span>
+                            <span class="access-level" id="iot-level">❌</span>
+                        </div>
+                        
+                        <div class="permission-details" id="iot-details">
+                            <div class="detail-row">
+                                <span class="detail-label-small">Sensör verileri</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">Cihaz yönetimi</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">Anomali tespiti</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">Konfigürasyon</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- IT -->
+                    <div class="permission-card" data-module="it">
+                        <div class="permission-card-header">
+                            <div class="permission-icon icon-it">
+                                <i class="fas fa-microchip"></i>
+                            </div>
+                            <div>
+                                <div class="permission-title">IT Departmanı</div>
+                                <div class="permission-desc">IT Department</div>
+                            </div>
+                        </div>
+                        
+                        <div class="permission-status">
+                            <span class="status-badge status-restricted" id="it-status">
+                                <i class="fas fa-ban"></i> Kısıtlı
+                            </span>
+                            <span class="access-level" id="it-level">❌</span>
+                        </div>
+                        
+                        <div class="permission-details" id="it-details">
+                            <div class="detail-row">
+                                <span class="detail-label-small">Sunucu yönetimi</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">Ağ trafiği</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">Güvenlik duvarı</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">Log analizi</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- İK -->
+                    <div class="permission-card" data-module="hr">
+                        <div class="permission-card-header">
+                            <div class="permission-icon icon-hr">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div>
+                                <div class="permission-title">İK Departmanı</div>
+                                <div class="permission-desc">HR Department</div>
+                            </div>
+                        </div>
+                        
+                        <div class="permission-status">
+                            <span class="status-badge status-restricted" id="hr-status">
+                                <i class="fas fa-ban"></i> Kısıtlı
+                            </span>
+                            <span class="access-level" id="hr-level">❌</span>
+                        </div>
+                        
+                        <div class="permission-details" id="hr-details">
+                            <div class="detail-row">
+                                <span class="detail-label-small">Personel verileri</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">İzin talepleri</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">Performans değerlendirme</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">İşe alım</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sistem Ayarları -->
+                    <div class="permission-card" data-module="settings">
+                        <div class="permission-card-header">
+                            <div class="permission-icon icon-settings">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <div>
+                                <div class="permission-title">Sistem Ayarları</div>
+                                <div class="permission-desc">System Settings</div>
+                            </div>
+                        </div>
+                        
+                        <div class="permission-status">
+                            <span class="status-badge status-restricted" id="settings-status">
+                                <i class="fas fa-ban"></i> Kısıtlı
+                            </span>
+                            <span class="access-level" id="settings-level">❌</span>
+                        </div>
+                        
+                        <div class="permission-details" id="settings-details">
+                            <div class="detail-row">
+                                <span class="detail-label-small">Genel ayarlar</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">Kullanıcı yönetimi</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">Rol tanımlama</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">Denetim kayıtları</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yapay Zeka -->
+                    <div class="permission-card" data-module="ai">
+                        <div class="permission-card-header">
+                            <div class="permission-icon icon-ai">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div>
+                                <div class="permission-title">Yapay Zeka Karar Sistemi</div>
+                                <div class="permission-desc">AI Decision System</div>
+                            </div>
+                        </div>
+                        
+                        <div class="permission-status">
+                            <span class="status-badge status-restricted" id="ai-status">
+                                <i class="fas fa-ban"></i> Kısıtlı
+                            </span>
+                            <span class="access-level" id="ai-level">❌</span>
+                        </div>
+                        
+                        <div class="permission-details" id="ai-details">
+                            <div class="detail-row">
+                                <span class="detail-label-small">Model eğitimi</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">Tahmin modelleri</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">SHAP/LIME analizi</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label-small">GNN parametreleri</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-times"></i> YOK</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Access Summary -->
+                <div class="glass-premium p-5 mt-4">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i class="fas fa-info-circle text-brand"></i>
+                        <span class="text-sm font-medium text-white">Erişim Özeti</span>
+                    </div>
+                    <p class="text-xs text-slate-400" id="accessSummary">
+                        👑 CEO olarak tüm modüllere tam erişiminiz bulunmaktadır.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions (Right Sidebar) -->
+    <div class="quick-actions">
+        <div class="quick-action-btn">
+            <i class="fas fa-search"></i>
+        </div>
+        <div class="quick-action-btn">
+            <i class="fas fa-bell"></i>
+            <span class="badge">3</span>
+        </div>
+        <div class="quick-action-btn">
+            <i class="fas fa-cog"></i>
+        </div>
+        <div class="quick-action-btn">
+            <i class="fas fa-chart-line"></i>
+        </div>
+    </div>
+
+    <script type="module">
+        // Three.js Particle System
+        import * as THREE from 'three';
+
+        const canvas = document.getElementById('particle-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 2000;
+        const posArray = new Float32Array(particlesCount * 3);
+        const colorArray = new Float32Array(particlesCount * 3);
+
+        for (let i = 0; i < particlesCount * 3; i += 3) {
+            const radius = 20 + Math.random() * 10;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos((Math.random() * 2) - 1);
+            
+            posArray[i] = radius * Math.sin(phi) * Math.cos(theta);
+            posArray[i+1] = radius * Math.sin(phi) * Math.sin(theta) * 0.4;
+            posArray[i+2] = radius * Math.cos(phi);
+
+            colorArray[i] = 0.2 + Math.random() * 0.3;
+            colorArray[i+1] = 0.6 + Math.random() * 0.4;
+            colorArray[i+2] = 0.2 + Math.random() * 0.3;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.08,
+            vertexColors: true,
+            transparent: true,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 25;
+        camera.position.y = 3;
+        camera.lookAt(0, 0, 0);
+
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth - 0.5) * 2;
+            mouseY = (event.clientY / window.innerHeight - 0.5) * 2;
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            particlesMesh.rotation.y += 0.0003;
+            particlesMesh.rotation.x += 0.0001;
+            particlesMesh.rotation.y += mouseX * 0.0003;
+            particlesMesh.rotation.x += mouseY * 0.0002;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Sidebar functionality
+        const sidebar = document.getElementById('sidebar');
+        const mainWrapper = document.getElementById('mainWrapper');
+        const collapseBtn = document.getElementById('collapseBtn');
+        const collapseIcon = document.getElementById('collapseIcon');
+        const topNav = document.getElementById('topNav');
+        const backBtn = document.getElementById('backBtn');
+
+        collapseBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainWrapper.classList.toggle('sidebar-collapsed');
+            topNav.classList.toggle('sidebar-collapsed');
+            backBtn.classList.toggle('sidebar-collapsed');
+            
+            if (sidebar.classList.contains('collapsed')) {
+                collapseIcon.classList.remove('fa-chevron-left');
+                collapseIcon.classList.add('fa-chevron-right');
+            } else {
+                collapseIcon.classList.remove('fa-chevron-right');
+                collapseIcon.classList.add('fa-chevron-left');
+            }
+        });
+
+        // Role switching functionality
+        const roleOptions = document.querySelectorAll('.role-option');
+        const roleBadge = document.getElementById('roleBadge');
+        const userDepartment = document.getElementById('userDepartment');
+        const userPosition = document.getElementById('userPosition');
+        
+        // Modül elementleri
+        const modules = {
+            finance: {
+                status: document.getElementById('finance-status'),
+                level: document.getElementById('finance-level'),
+                details: document.getElementById('finance-details'),
+                card: document.querySelector('[data-module="finance"]')
+            },
+            iot: {
+                status: document.getElementById('iot-status'),
+                level: document.getElementById('iot-level'),
+                details: document.getElementById('iot-details'),
+                card: document.querySelector('[data-module="iot"]')
+            },
+            it: {
+                status: document.getElementById('it-status'),
+                level: document.getElementById('it-level'),
+                details: document.getElementById('it-details'),
+                card: document.querySelector('[data-module="it"]')
+            },
+            hr: {
+                status: document.getElementById('hr-status'),
+                level: document.getElementById('hr-level'),
+                details: document.getElementById('hr-details'),
+                card: document.querySelector('[data-module="hr"]')
+            },
+            settings: {
+                status: document.getElementById('settings-status'),
+                level: document.getElementById('settings-level'),
+                details: document.getElementById('settings-details'),
+                card: document.querySelector('[data-module="settings"]')
+            },
+            ai: {
+                status: document.getElementById('ai-status'),
+                level: document.getElementById('ai-level'),
+                details: document.getElementById('ai-details'),
+                card: document.querySelector('[data-module="ai"]')
+            }
+        };
+
+        const accessSummary = document.getElementById('accessSummary');
+
+        function setRole(role) {
+            // Update active class
+            roleOptions.forEach(opt => opt.classList.remove('active'));
+            document.querySelector(`[data-role="${role}"]`).classList.add('active');
+
+            // Update badge
+            roleBadge.className = `profile-role-badge role-${role}`;
+            
+            // Update user info
+            switch(role) {
+                case 'ceo':
+                    roleBadge.innerHTML = '<i class="fas fa-crown"></i> CEO';
+                    userDepartment.textContent = 'Yönetim Kurulu';
+                    userPosition.textContent = 'Chief Executive Officer';
+                    accessSummary.innerHTML = '👑 CEO olarak tüm modüllere tam erişiminiz bulunmaktadır.';
+                    
+                    // Tüm modüllere tam erişim
+                    Object.keys(modules).forEach(key => {
+                        const mod = modules[key];
+                        mod.status.className = 'status-badge status-allowed';
+                        mod.status.innerHTML = '<i class="fas fa-check-circle"></i> Tam Erişim';
+                        mod.level.innerHTML = '✅';
+                        
+                        // Detayları güncelle
+                        const detailRows = mod.details.querySelectorAll('.detail-row');
+                        detailRows.forEach(row => {
+                            const tag = row.querySelector('.permission-tag');
+                            tag.innerHTML = '<i class="fas fa-check"></i> OKUMA';
+                            tag.className = 'permission-tag';
+                        });
+                    });
+                    break;
+                    
+                case 'finance':
+                    roleBadge.innerHTML = '<i class="fas fa-chart-line"></i> Finans Müdürü';
+                    userDepartment.textContent = 'Finans';
+                    userPosition.textContent = 'Finans Departman Müdürü';
+                    accessSummary.innerHTML = '💰 Finans Müdürü olarak sadece Finans modülüne erişiminiz bulunmaktadır.';
+                    
+                    // Sadece finance tam, diğerleri kısıtlı
+                    Object.keys(modules).forEach(key => {
+                        const mod = modules[key];
+                        if (key === 'finance') {
+                            mod.status.className = 'status-badge status-allowed';
+                            mod.status.innerHTML = '<i class="fas fa-check-circle"></i> Tam Erişim';
+                            mod.level.innerHTML = '✅';
+                            
+                            const detailRows = mod.details.querySelectorAll('.detail-row');
+                            detailRows.forEach(row => {
+                                const tag = row.querySelector('.permission-tag');
+                                tag.innerHTML = '<i class="fas fa-check"></i> OKUMA';
+                                tag.className = 'permission-tag';
+                            });
+                        } else {
+                            mod.status.className = 'status-badge status-restricted';
+                            mod.status.innerHTML = '<i class="fas fa-ban"></i> Kısıtlı';
+                            mod.level.innerHTML = '❌';
+                            
+                            const detailRows = mod.details.querySelectorAll('.detail-row');
+                            detailRows.forEach(row => {
+                                const tag = row.querySelector('.permission-tag');
+                                tag.innerHTML = '<i class="fas fa-times"></i> YOK';
+                                tag.className = 'permission-tag';
+                            });
+                        }
+                    });
+                    break;
+                    
+                case 'iot':
+                    roleBadge.innerHTML = '<i class="fas fa-wifi"></i> IoT Müdürü';
+                    userDepartment.textContent = 'IoT';
+                    userPosition.textContent = 'IoT Departman Müdürü';
+                    accessSummary.innerHTML = '📡 IoT Müdürü olarak sadece IoT modülüne erişiminiz bulunmaktadır.';
+                    
+                    Object.keys(modules).forEach(key => {
+                        const mod = modules[key];
+                        if (key === 'iot') {
+                            mod.status.className = 'status-badge status-allowed';
+                            mod.status.innerHTML = '<i class="fas fa-check-circle"></i> Tam Erişim';
+                            mod.level.innerHTML = '✅';
+                            
+                            const detailRows = mod.details.querySelectorAll('.detail-row');
+                            detailRows.forEach(row => {
+                                const tag = row.querySelector('.permission-tag');
+                                tag.innerHTML = '<i class="fas fa-check"></i> OKUMA';
+                                tag.className = 'permission-tag';
+                            });
+                        } else {
+                            mod.status.className = 'status-badge status-restricted';
+                            mod.status.innerHTML = '<i class="fas fa-ban"></i> Kısıtlı';
+                            mod.level.innerHTML = '❌';
+                            
+                            const detailRows = mod.details.querySelectorAll('.detail-row');
+                            detailRows.forEach(row => {
+                                const tag = row.querySelector('.permission-tag');
+                                tag.innerHTML = '<i class="fas fa-times"></i> YOK';
+                                tag.className = 'permission-tag';
+                            });
+                        }
+                    });
+                    break;
+                    
+                case 'it':
+                    roleBadge.innerHTML = '<i class="fas fa-microchip"></i> IT Müdürü';
+                    userDepartment.textContent = 'IT';
+                    userPosition.textContent = 'IT Departman Müdürü';
+                    accessSummary.innerHTML = '💻 IT Müdürü olarak sadece IT modülüne erişiminiz bulunmaktadır.';
+                    
+                    Object.keys(modules).forEach(key => {
+                        const mod = modules[key];
+                        if (key === 'it') {
+                            mod.status.className = 'status-badge status-allowed';
+                            mod.status.innerHTML = '<i class="fas fa-check-circle"></i> Tam Erişim';
+                            mod.level.innerHTML = '✅';
+                            
+                            const detailRows = mod.details.querySelectorAll('.detail-row');
+                            detailRows.forEach(row => {
+                                const tag = row.querySelector('.permission-tag');
+                                tag.innerHTML = '<i class="fas fa-check"></i> OKUMA';
+                                tag.className = 'permission-tag';
+                            });
+                        } else {
+                            mod.status.className = 'status-badge status-restricted';
+                            mod.status.innerHTML = '<i class="fas fa-ban"></i> Kısıtlı';
+                            mod.level.innerHTML = '❌';
+                            
+                            const detailRows = mod.details.querySelectorAll('.detail-row');
+                            detailRows.forEach(row => {
+                                const tag = row.querySelector('.permission-tag');
+                                tag.innerHTML = '<i class="fas fa-times"></i> YOK';
+                                tag.className = 'permission-tag';
+                            });
+                        }
+                    });
+                    break;
+                    
+                case 'hr':
+                    roleBadge.innerHTML = '<i class="fas fa-users"></i> İK Müdürü';
+                    userDepartment.textContent = 'İnsan Kaynakları';
+                    userPosition.textContent = 'İK Departman Müdürü';
+                    accessSummary.innerHTML = '👥 İK Müdürü olarak sadece İK modülüne erişiminiz bulunmaktadır.';
+                    
+                    Object.keys(modules).forEach(key => {
+                        const mod = modules[key];
+                        if (key === 'hr') {
+                            mod.status.className = 'status-badge status-allowed';
+                            mod.status.innerHTML = '<i class="fas fa-check-circle"></i> Tam Erişim';
+                            mod.level.innerHTML = '✅';
+                            
+                            const detailRows = mod.details.querySelectorAll('.detail-row');
+                            detailRows.forEach(row => {
+                                const tag = row.querySelector('.permission-tag');
+                                tag.innerHTML = '<i class="fas fa-check"></i> OKUMA';
+                                tag.className = 'permission-tag';
+                            });
+                        } else {
+                            mod.status.className = 'status-badge status-restricted';
+                            mod.status.innerHTML = '<i class="fas fa-ban"></i> Kısıtlı';
+                            mod.level.innerHTML = '❌';
+                            
+                            const detailRows = mod.details.querySelectorAll('.detail-row');
+                            detailRows.forEach(row => {
+                                const tag = row.querySelector('.permission-tag');
+                                tag.innerHTML = '<i class="fas fa-times"></i> YOK';
+                                tag.className = 'permission-tag';
+                            });
+                        }
+                    });
+                    break;
+            }
+        }
+
+        // Add click handlers to role options
+        roleOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const role = this.dataset.role;
+                setRole(role);
+            });
+        });
+
+        // Back button
+        document.getElementById('backBtn').addEventListener('click', () => {
+            window.location.href = '#';
+        });
+
+        // Menu item clicks (for demo)
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const dept = this.dataset.department;
+                if (dept === 'dashboard') {
+                    window.location.href = '#';
+                } else if (dept === 'it') {
+                    window.location.href = '#';
+                } else if (dept === 'iot') {
+                    window.location.href = '#';
+                } else if (dept === 'finance') {
+                    window.location.href = '#';
+                } else if (dept === 'hr') {
+                    window.location.href = '#';
+                } else if (dept === 'access') {
+                    window.location.href = '#';
+                } else if (dept === 'ai') {
+                    window.location.href = '#';
+                } else if (dept === 'settings') {
+                    window.location.href = '#';
+                } else if (dept === 'profile') {
+                    // Zaten profil sayfası
+                }
+            });
+        });
+    </script>
+</body>
+</html>
