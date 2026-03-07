@@ -819,6 +819,8 @@
             font-weight: bold;
         }
     </style>
+    <!-- Auth -->
+    <script src="auth.js"></script>
 </head>
 
 <body>
@@ -926,13 +928,17 @@
             <div class="flex items-center gap-3">
                 <div
                     class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                    <span class="text-xs font-bold">AD</span>
+                    <span class="text-xs font-bold" id="sidebarInitials">AD</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-white truncate">Admin User</p>
-                    <p class="text-xs text-slate-400 truncate">admin@nexus.ai</p>
+                    <p class="text-sm font-medium text-white truncate" id="sidebarName">Admin User</p>
+                    <p class="text-xs text-slate-400 truncate" id="sidebarEmail">admin@nexus.ai</p>
                 </div>
-                <i class="fas fa-ellipsis-v text-slate-400 text-xs"></i>
+                <button onclick="logout()" title="Çıkış Yap"
+                    style="background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;transition:color 0.3s;"
+                    onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -1925,6 +1931,18 @@
             }, 600);
         })();
         // ═══════════════════════════════════════════════════════════════════
+
+        // ── Auth ──────────────────────────────────────────────────────────
+        (async () => {
+            const user = await initAuth();
+            if (!user) return;
+            const ini = document.getElementById('sidebarInitials');
+            const nm = document.getElementById('sidebarName');
+            const em = document.getElementById('sidebarEmail');
+            if (ini) ini.textContent = user.initials || 'AD';
+            if (nm) nm.textContent = user.name || 'Admin User';
+            if (em) em.textContent = user.email || 'admin@nexus.ai';
+        })();
     </script>
 </body>
 

@@ -1,0 +1,54 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "password": "Admin@2025",
+      "role": "admin",
+      "name": "Sistem Yöneticisi",
+      "initials": "SY",
+      "email": "admin@nexus.ai",
+      "department": "Yönetim",
+      "pages": ["dashboard", "it", "iot", "finance", "hr", "access", "ai", "settings", "profile"]
+    },
+    {
+      "username": "finans_mudur",
+      "password": "Fin@2025",
+      "role": "finance",
+      "name": "Ayşe Kaya",
+      "initials": "AK",
+      "email": "ayse.kaya@nexus.ai",
+      "department": "Finans",
+      "pages": ["dashboard", "finance", "profile"]
+    },
+    {
+      "username": "it_mudur",
+      "password": "IT@2025",
+      "role": "it",
+      "name": "Mehmet Yılmaz",
+      "initials": "MY",
+      "email": "mehmet.yilmaz@nexus.ai",
+      "department": "Bilgi Teknolojileri",
+      "pages": ["dashboard", "it", "profile"]
+    },
+    {
+      "username": "iot_mudur",
+      "password": "IoT@2025",
+      "role": "iot",
+      "name": "Fatma Demir",
+      "initials": "FD",
+      "email": "fatma.demir@nexus.ai",
+      "department": "IoT ve Üretim",
+      "pages": ["dashboard", "iot", "profile"]
+    },
+    {
+      "username": "ik_mudur",
+      "password": "IK@2025",
+      "role": "hr",
+      "name": "Ali Çelik",
+      "initials": "AÇ",
+      "email": "ali.celik@nexus.ai",
+      "department": "İnsan Kaynakları",
+      "pages": ["dashboard", "hr", "profile"]
+    }
+  ]
+}

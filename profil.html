@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEXUS · Profil & Erişim Yetkileri</title>
-    
+
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Three.js -->
     <script type="importmap">
         {
@@ -20,7 +23,7 @@
             }
         }
     </script>
-    
+
     <style>
         * {
             margin: 0;
@@ -59,7 +62,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(31, 199, 98, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(31, 199, 98, 0.03) 1px, transparent 1px);
             background-size: 40px 40px;
@@ -74,9 +77,9 @@
             -webkit-backdrop-filter: blur(16px) saturate(180%);
             border: 1px solid rgba(31, 199, 98, 0.15);
             border-radius: 24px;
-            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 
-                        0 0 0 1px rgba(31, 199, 98, 0.1) inset,
-                        0 0 30px -10px rgba(31, 199, 98, 0.3);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8),
+                0 0 0 1px rgba(31, 199, 98, 0.1) inset,
+                0 0 30px -10px rgba(31, 199, 98, 0.3);
         }
 
         .glass-premium-light {
@@ -770,7 +773,7 @@
             font-size: 11px;
             color: white;
             text-align: center;
-            box-shadow: 0 10px 20px -10px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.5);
         }
 
         .tooltip:hover .tooltip-text {
@@ -840,12 +843,23 @@
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+            }
         }
     </style>
+    <!-- Auth -->
+    <script src="auth.js"></script>
 </head>
+
 <body>
 
     <!-- Particle Canvas -->
@@ -949,31 +963,38 @@
         <!-- Sidebar Footer -->
         <div class="absolute bottom-0 left-0 right-0 p-5 border-t border-white/5">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                    <span class="text-xs font-bold">AD</span>
+                <div
+                    class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                    <span class="text-xs font-bold" id="sidebarInitials">AD</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-white truncate">Admin User</p>
-                    <p class="text-xs text-slate-400 truncate">admin@nexus.ai</p>
+                    <p class="text-sm font-medium text-white truncate" id="sidebarName">Admin User</p>
+                    <p class="text-xs text-slate-400 truncate" id="sidebarEmail">admin@nexus.ai</p>
                 </div>
-                <i class="fas fa-ellipsis-v text-slate-400 text-xs"></i>
+                <button onclick="logout()" title="Çıkış Yap"
+                    style="background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;transition:color 0.3s;"
+                    onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
             </div>
         </div>
     </div>
 
     <!-- Main Content Wrapper -->
     <div class="main-wrapper" id="mainWrapper">
-        
+
         <!-- Top Navigation -->
         <div class="top-nav" id="topNav">
             <div class="glass-premium px-6 py-3">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand to-green-600 flex items-center justify-center">
+                    <div
+                        class="w-8 h-8 rounded-full bg-gradient-to-br from-brand to-green-600 flex items-center justify-center">
                         <i class="fas fa-user text-white text-sm"></i>
                     </div>
                     <div>
                         <h1 class="text-lg font-bold tracking-tight text-white" id="pageTitle">Profil Sayfası</h1>
-                        <p class="text-[10px] text-brand uppercase tracking-[0.2em] font-medium" id="pageSubtitle">Kullanıcı Bilgileri ve Erişim Yetkileri</p>
+                        <p class="text-[10px] text-brand uppercase tracking-[0.2em] font-medium" id="pageSubtitle">
+                            Kullanıcı Bilgileri ve Erişim Yetkileri</p>
                     </div>
                 </div>
             </div>
@@ -992,7 +1013,8 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="text-right">
-                        <span class="text-2xl font-bold text-white">92<span class="text-sm text-brand ml-1">%</span></span>
+                        <span class="text-2xl font-bold text-white">92<span
+                                class="text-sm text-brand ml-1">%</span></span>
                         <p class="text-[10px] text-slate-400">System Health</p>
                     </div>
                     <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
@@ -1009,21 +1031,21 @@
 
         <!-- Profile Content -->
         <div class="profile-container">
-            
+
             <!-- Profile Hero Card -->
             <div class="profile-hero">
                 <div class="profile-avatar">
-                    <div class="avatar-placeholder">AY</div>
+                    <div class="avatar-placeholder" id="profileInitials">AY</div>
                     <div class="online-indicator"></div>
                 </div>
                 <div class="profile-info">
                     <div class="profile-name-section">
-                        <span class="profile-name">Ahmet Yılmaz</span>
-                        <span class="profile-role-badge role-ceo" id="roleBadge">
-                            <i class="fas fa-crown"></i> CEO
+                        <span class="profile-name" id="profileName">Ahmet Yılmaz</span>
+                        <span class="profile-role-badge" id="roleBadge">
+                            <i class="fas fa-id-badge"></i> Kullanıcı
                         </span>
                     </div>
-                    
+
                     <div class="profile-details-grid">
                         <div class="profile-detail-item">
                             <div class="detail-icon">
@@ -1031,10 +1053,10 @@
                             </div>
                             <div class="detail-content">
                                 <span class="detail-label">E-POSTA</span>
-                                <span class="detail-value">ahmet.yilmaz@nexus.ai</span>
+                                <span class="detail-value" id="profileEmail">ahmet.yilmaz@nexus.ai</span>
                             </div>
                         </div>
-                        
+
                         <div class="profile-detail-item">
                             <div class="detail-icon">
                                 <i class="fas fa-building"></i>
@@ -1044,7 +1066,7 @@
                                 <span class="detail-value" id="userDepartment">Yönetim Kurulu</span>
                             </div>
                         </div>
-                        
+
                         <div class="profile-detail-item">
                             <div class="detail-icon">
                                 <i class="fas fa-briefcase"></i>
@@ -1054,7 +1076,7 @@
                                 <span class="detail-value" id="userPosition">Chief Executive Officer</span>
                             </div>
                         </div>
-                        
+
                         <div class="profile-detail-item">
                             <div class="detail-icon">
                                 <i class="fas fa-calendar"></i>
@@ -1064,7 +1086,7 @@
                                 <span class="detail-value">15 Mart 2022</span>
                             </div>
                         </div>
-                        
+
                         <div class="profile-detail-item">
                             <div class="detail-icon">
                                 <i class="fas fa-clock"></i>
@@ -1074,7 +1096,7 @@
                                 <span class="detail-value">2 dakika önce</span>
                             </div>
                         </div>
-                        
+
                         <div class="profile-detail-item">
                             <div class="detail-icon">
                                 <i class="fas fa-map-marker-alt"></i>
@@ -1088,24 +1110,8 @@
                 </div>
             </div>
 
-            <!-- Role Switcher (Demo için - farklı rolleri test edebilmek adına) -->
-            <div class="role-switcher" id="roleSwitcher">
-                <div class="role-option active" data-role="ceo">
-                    <i class="fas fa-crown"></i> CEO
-                </div>
-                <div class="role-option" data-role="finance">
-                    <i class="fas fa-chart-line"></i> Finans Müdürü
-                </div>
-                <div class="role-option" data-role="iot">
-                    <i class="fas fa-wifi"></i> IoT Müdürü
-                </div>
-                <div class="role-option" data-role="it">
-                    <i class="fas fa-microchip"></i> IT Müdürü
-                </div>
-                <div class="role-option" data-role="hr">
-                    <i class="fas fa-users"></i> İK Müdürü
-                </div>
-            </div>
+            <!-- Role Switcher (Removed based on Auth RBAC system) -->
+            <div class="role-switcher" id="roleSwitcher" style="display:none;"></div>
 
             <!-- Permissions Section -->
             <div class="permissions-section">
@@ -1133,26 +1139,29 @@
                                 <div class="permission-desc">Finance Department</div>
                             </div>
                         </div>
-                        
+
                         <div class="permission-status">
                             <span class="status-badge status-allowed" id="finance-status">
                                 <i class="fas fa-check-circle"></i> Tam Erişim
                             </span>
                             <span class="access-level" id="finance-level">✅</span>
                         </div>
-                        
+
                         <div class="permission-details" id="finance-details">
                             <div class="detail-row">
                                 <span class="detail-label-small">İşlem hacmi raporları</span>
-                                <span class="detail-value-small permission-tag"><i class="fas fa-check"></i> OKUMA</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-check"></i>
+                                    OKUMA</span>
                             </div>
                             <div class="detail-row">
                                 <span class="detail-label-small">Ödeme işlemleri</span>
-                                <span class="detail-value-small permission-tag"><i class="fas fa-check"></i> YAZMA</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-check"></i>
+                                    YAZMA</span>
                             </div>
                             <div class="detail-row">
                                 <span class="detail-label-small">Finansal tahminler</span>
-                                <span class="detail-value-small permission-tag"><i class="fas fa-check"></i> OKUMA</span>
+                                <span class="detail-value-small permission-tag"><i class="fas fa-check"></i>
+                                    OKUMA</span>
                             </div>
                             <div class="detail-row">
                                 <span class="detail-label-small">Yetkilendirme ayarları</span>
@@ -1172,14 +1181,14 @@
                                 <div class="permission-desc">IoT Department</div>
                             </div>
                         </div>
-                        
+
                         <div class="permission-status">
                             <span class="status-badge status-restricted" id="iot-status">
                                 <i class="fas fa-ban"></i> Kısıtlı
                             </span>
                             <span class="access-level" id="iot-level">❌</span>
                         </div>
-                        
+
                         <div class="permission-details" id="iot-details">
                             <div class="detail-row">
                                 <span class="detail-label-small">Sensör verileri</span>
@@ -1211,14 +1220,14 @@
                                 <div class="permission-desc">IT Department</div>
                             </div>
                         </div>
-                        
+
                         <div class="permission-status">
                             <span class="status-badge status-restricted" id="it-status">
                                 <i class="fas fa-ban"></i> Kısıtlı
                             </span>
                             <span class="access-level" id="it-level">❌</span>
                         </div>
-                        
+
                         <div class="permission-details" id="it-details">
                             <div class="detail-row">
                                 <span class="detail-label-small">Sunucu yönetimi</span>
@@ -1250,14 +1259,14 @@
                                 <div class="permission-desc">HR Department</div>
                             </div>
                         </div>
-                        
+
                         <div class="permission-status">
                             <span class="status-badge status-restricted" id="hr-status">
                                 <i class="fas fa-ban"></i> Kısıtlı
                             </span>
                             <span class="access-level" id="hr-level">❌</span>
                         </div>
-                        
+
                         <div class="permission-details" id="hr-details">
                             <div class="detail-row">
                                 <span class="detail-label-small">Personel verileri</span>
@@ -1289,14 +1298,14 @@
                                 <div class="permission-desc">System Settings</div>
                             </div>
                         </div>
-                        
+
                         <div class="permission-status">
                             <span class="status-badge status-restricted" id="settings-status">
                                 <i class="fas fa-ban"></i> Kısıtlı
                             </span>
                             <span class="access-level" id="settings-level">❌</span>
                         </div>
-                        
+
                         <div class="permission-details" id="settings-details">
                             <div class="detail-row">
                                 <span class="detail-label-small">Genel ayarlar</span>
@@ -1328,14 +1337,14 @@
                                 <div class="permission-desc">AI Decision System</div>
                             </div>
                         </div>
-                        
+
                         <div class="permission-status">
                             <span class="status-badge status-restricted" id="ai-status">
                                 <i class="fas fa-ban"></i> Kısıtlı
                             </span>
                             <span class="access-level" id="ai-level">❌</span>
                         </div>
-                        
+
                         <div class="permission-details" id="ai-details">
                             <div class="detail-row">
                                 <span class="detail-label-small">Model eğitimi</span>
@@ -1396,7 +1405,7 @@
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-        
+
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
@@ -1409,14 +1418,14 @@
             const radius = 20 + Math.random() * 10;
             const theta = Math.random() * Math.PI * 2;
             const phi = Math.acos((Math.random() * 2) - 1);
-            
+
             posArray[i] = radius * Math.sin(phi) * Math.cos(theta);
-            posArray[i+1] = radius * Math.sin(phi) * Math.sin(theta) * 0.4;
-            posArray[i+2] = radius * Math.cos(phi);
+            posArray[i + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.4;
+            posArray[i + 2] = radius * Math.cos(phi);
 
             colorArray[i] = 0.2 + Math.random() * 0.3;
-            colorArray[i+1] = 0.6 + Math.random() * 0.4;
-            colorArray[i+2] = 0.2 + Math.random() * 0.3;
+            colorArray[i + 1] = 0.6 + Math.random() * 0.4;
+            colorArray[i + 2] = 0.2 + Math.random() * 0.3;
         }
 
         particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
@@ -1471,7 +1480,7 @@
             mainWrapper.classList.toggle('sidebar-collapsed');
             topNav.classList.toggle('sidebar-collapsed');
             backBtn.classList.toggle('sidebar-collapsed');
-            
+
             if (sidebar.classList.contains('collapsed')) {
                 collapseIcon.classList.remove('fa-chevron-left');
                 collapseIcon.classList.add('fa-chevron-right');
@@ -1486,7 +1495,7 @@
         const roleBadge = document.getElementById('roleBadge');
         const userDepartment = document.getElementById('userDepartment');
         const userPosition = document.getElementById('userPosition');
-        
+
         // Modül elementleri
         const modules = {
             finance: {
@@ -1529,216 +1538,91 @@
 
         const accessSummary = document.getElementById('accessSummary');
 
-        function setRole(role) {
-            // Update active class
-            roleOptions.forEach(opt => opt.classList.remove('active'));
-            document.querySelector(`[data-role="${role}"]`).classList.add('active');
+        // ── Auth & Dynamic Profile Info ────────────────────────────────────
+        (async () => {
+            const user = await initAuth();
+            if (!user) return;
 
-            // Update badge
-            roleBadge.className = `profile-role-badge role-${role}`;
-            
-            // Update user info
-            switch(role) {
-                case 'ceo':
-                    roleBadge.innerHTML = '<i class="fas fa-crown"></i> CEO';
-                    userDepartment.textContent = 'Yönetim Kurulu';
-                    userPosition.textContent = 'Chief Executive Officer';
-                    accessSummary.innerHTML = '👑 CEO olarak tüm modüllere tam erişiminiz bulunmaktadır.';
-                    
-                    // Tüm modüllere tam erişim
-                    Object.keys(modules).forEach(key => {
-                        const mod = modules[key];
-                        mod.status.className = 'status-badge status-allowed';
-                        mod.status.innerHTML = '<i class="fas fa-check-circle"></i> Tam Erişim';
-                        mod.level.innerHTML = '✅';
-                        
-                        // Detayları güncelle
-                        const detailRows = mod.details.querySelectorAll('.detail-row');
-                        detailRows.forEach(row => {
-                            const tag = row.querySelector('.permission-tag');
-                            tag.innerHTML = '<i class="fas fa-check"></i> OKUMA';
-                            tag.className = 'permission-tag';
-                        });
+            // Sidebar Footer Güncelle
+            const ini = document.getElementById('sidebarInitials');
+            const nm = document.getElementById('sidebarName');
+            const em = document.getElementById('sidebarEmail');
+            if (ini) ini.textContent = user.initials || 'AD';
+            if (nm) nm.textContent = user.name || 'Admin User';
+            if (em) em.textContent = user.email || 'admin@nexus.ai';
+
+            // Profil Hero Card Güncelle
+            document.getElementById('profileInitials').textContent = user.initials;
+            document.getElementById('profileName').textContent = user.name;
+            document.getElementById('profileEmail').textContent = user.email;
+            document.getElementById('userDepartment').textContent = user.department;
+            document.getElementById('userPosition').textContent = user.role.toUpperCase();
+
+            const roleBadge = document.getElementById('roleBadge');
+            roleBadge.innerHTML = `<i class="fas fa-id-badge"></i> ${user.role.replace('_', ' ').toUpperCase()}`;
+            roleBadge.className = 'profile-role-badge role-ceo'; // Reuse yellow visual style
+
+            // Dinamik Erişim Kartları rendering
+            Object.keys(modules).forEach(key => {
+                const mod = modules[key];
+                const hasAccess = user.pages.includes(key);
+
+                if (hasAccess) {
+                    mod.status.className = 'status-badge status-allowed';
+                    mod.status.innerHTML = '<i class="fas fa-check-circle"></i> Tam Erişim';
+                    mod.level.innerHTML = '✅';
+
+                    const detailRows = mod.details.querySelectorAll('.detail-row');
+                    detailRows.forEach(row => {
+                        const tag = row.querySelector('.permission-tag');
+                        tag.innerHTML = '<i class="fas fa-check"></i> AKTİF';
+                        tag.className = 'permission-tag';
                     });
-                    break;
-                    
-                case 'finance':
-                    roleBadge.innerHTML = '<i class="fas fa-chart-line"></i> Finans Müdürü';
-                    userDepartment.textContent = 'Finans';
-                    userPosition.textContent = 'Finans Departman Müdürü';
-                    accessSummary.innerHTML = '💰 Finans Müdürü olarak sadece Finans modülüne erişiminiz bulunmaktadır.';
-                    
-                    // Sadece finance tam, diğerleri kısıtlı
-                    Object.keys(modules).forEach(key => {
-                        const mod = modules[key];
-                        if (key === 'finance') {
-                            mod.status.className = 'status-badge status-allowed';
-                            mod.status.innerHTML = '<i class="fas fa-check-circle"></i> Tam Erişim';
-                            mod.level.innerHTML = '✅';
-                            
-                            const detailRows = mod.details.querySelectorAll('.detail-row');
-                            detailRows.forEach(row => {
-                                const tag = row.querySelector('.permission-tag');
-                                tag.innerHTML = '<i class="fas fa-check"></i> OKUMA';
-                                tag.className = 'permission-tag';
-                            });
-                        } else {
-                            mod.status.className = 'status-badge status-restricted';
-                            mod.status.innerHTML = '<i class="fas fa-ban"></i> Kısıtlı';
-                            mod.level.innerHTML = '❌';
-                            
-                            const detailRows = mod.details.querySelectorAll('.detail-row');
-                            detailRows.forEach(row => {
-                                const tag = row.querySelector('.permission-tag');
-                                tag.innerHTML = '<i class="fas fa-times"></i> YOK';
-                                tag.className = 'permission-tag';
-                            });
-                        }
+                } else {
+                    mod.status.className = 'status-badge status-restricted';
+                    mod.status.innerHTML = '<i class="fas fa-ban"></i> Kısıtlı';
+                    mod.level.innerHTML = '❌';
+
+                    const detailRows = mod.details.querySelectorAll('.detail-row');
+                    detailRows.forEach(row => {
+                        const tag = row.querySelector('.permission-tag');
+                        tag.innerHTML = '<i class="fas fa-times"></i> YOK';
+                        tag.className = 'permission-tag';
                     });
-                    break;
-                    
-                case 'iot':
-                    roleBadge.innerHTML = '<i class="fas fa-wifi"></i> IoT Müdürü';
-                    userDepartment.textContent = 'IoT';
-                    userPosition.textContent = 'IoT Departman Müdürü';
-                    accessSummary.innerHTML = '📡 IoT Müdürü olarak sadece IoT modülüne erişiminiz bulunmaktadır.';
-                    
-                    Object.keys(modules).forEach(key => {
-                        const mod = modules[key];
-                        if (key === 'iot') {
-                            mod.status.className = 'status-badge status-allowed';
-                            mod.status.innerHTML = '<i class="fas fa-check-circle"></i> Tam Erişim';
-                            mod.level.innerHTML = '✅';
-                            
-                            const detailRows = mod.details.querySelectorAll('.detail-row');
-                            detailRows.forEach(row => {
-                                const tag = row.querySelector('.permission-tag');
-                                tag.innerHTML = '<i class="fas fa-check"></i> OKUMA';
-                                tag.className = 'permission-tag';
-                            });
-                        } else {
-                            mod.status.className = 'status-badge status-restricted';
-                            mod.status.innerHTML = '<i class="fas fa-ban"></i> Kısıtlı';
-                            mod.level.innerHTML = '❌';
-                            
-                            const detailRows = mod.details.querySelectorAll('.detail-row');
-                            detailRows.forEach(row => {
-                                const tag = row.querySelector('.permission-tag');
-                                tag.innerHTML = '<i class="fas fa-times"></i> YOK';
-                                tag.className = 'permission-tag';
-                            });
-                        }
-                    });
-                    break;
-                    
-                case 'it':
-                    roleBadge.innerHTML = '<i class="fas fa-microchip"></i> IT Müdürü';
-                    userDepartment.textContent = 'IT';
-                    userPosition.textContent = 'IT Departman Müdürü';
-                    accessSummary.innerHTML = '💻 IT Müdürü olarak sadece IT modülüne erişiminiz bulunmaktadır.';
-                    
-                    Object.keys(modules).forEach(key => {
-                        const mod = modules[key];
-                        if (key === 'it') {
-                            mod.status.className = 'status-badge status-allowed';
-                            mod.status.innerHTML = '<i class="fas fa-check-circle"></i> Tam Erişim';
-                            mod.level.innerHTML = '✅';
-                            
-                            const detailRows = mod.details.querySelectorAll('.detail-row');
-                            detailRows.forEach(row => {
-                                const tag = row.querySelector('.permission-tag');
-                                tag.innerHTML = '<i class="fas fa-check"></i> OKUMA';
-                                tag.className = 'permission-tag';
-                            });
-                        } else {
-                            mod.status.className = 'status-badge status-restricted';
-                            mod.status.innerHTML = '<i class="fas fa-ban"></i> Kısıtlı';
-                            mod.level.innerHTML = '❌';
-                            
-                            const detailRows = mod.details.querySelectorAll('.detail-row');
-                            detailRows.forEach(row => {
-                                const tag = row.querySelector('.permission-tag');
-                                tag.innerHTML = '<i class="fas fa-times"></i> YOK';
-                                tag.className = 'permission-tag';
-                            });
-                        }
-                    });
-                    break;
-                    
-                case 'hr':
-                    roleBadge.innerHTML = '<i class="fas fa-users"></i> İK Müdürü';
-                    userDepartment.textContent = 'İnsan Kaynakları';
-                    userPosition.textContent = 'İK Departman Müdürü';
-                    accessSummary.innerHTML = '👥 İK Müdürü olarak sadece İK modülüne erişiminiz bulunmaktadır.';
-                    
-                    Object.keys(modules).forEach(key => {
-                        const mod = modules[key];
-                        if (key === 'hr') {
-                            mod.status.className = 'status-badge status-allowed';
-                            mod.status.innerHTML = '<i class="fas fa-check-circle"></i> Tam Erişim';
-                            mod.level.innerHTML = '✅';
-                            
-                            const detailRows = mod.details.querySelectorAll('.detail-row');
-                            detailRows.forEach(row => {
-                                const tag = row.querySelector('.permission-tag');
-                                tag.innerHTML = '<i class="fas fa-check"></i> OKUMA';
-                                tag.className = 'permission-tag';
-                            });
-                        } else {
-                            mod.status.className = 'status-badge status-restricted';
-                            mod.status.innerHTML = '<i class="fas fa-ban"></i> Kısıtlı';
-                            mod.level.innerHTML = '❌';
-                            
-                            const detailRows = mod.details.querySelectorAll('.detail-row');
-                            detailRows.forEach(row => {
-                                const tag = row.querySelector('.permission-tag');
-                                tag.innerHTML = '<i class="fas fa-times"></i> YOK';
-                                tag.className = 'permission-tag';
-                            });
-                        }
-                    });
-                    break;
-            }
+                }
+            });
+        })();
+
+        // Back button URL routing
+        const navMap = {
+            dashboard: 'dashboard.html',
+            it: 'it.html',
+            iot: 'ıot.html',
+            finance: 'finans.html',
+            hr: 'inasnKaynaklari.html',
+            access: 'erişim.html',
+            ai: 'yapayZeka.html',
+            settings: 'ayarlar.html',
+            profile: 'profil.html'
+        };
+
+        const backBtnEl = document.getElementById('backBtn');
+        if (backBtnEl) {
+            backBtnEl.addEventListener('click', () => {
+                window.location.href = 'dashboard.html';
+            });
         }
 
-        // Add click handlers to role options
-        roleOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                const role = this.dataset.role;
-                setRole(role);
-            });
-        });
-
-        // Back button
-        document.getElementById('backBtn').addEventListener('click', () => {
-            window.location.href = '#';
-        });
-
-        // Menu item clicks (for demo)
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', function() {
+        // Menu items navigation binding
+        document.querySelectorAll('.menu-item[data-department]').forEach(item => {
+            item.addEventListener('click', function () {
                 const dept = this.dataset.department;
-                if (dept === 'dashboard') {
-                    window.location.href = '#';
-                } else if (dept === 'it') {
-                    window.location.href = '#';
-                } else if (dept === 'iot') {
-                    window.location.href = '#';
-                } else if (dept === 'finance') {
-                    window.location.href = '#';
-                } else if (dept === 'hr') {
-                    window.location.href = '#';
-                } else if (dept === 'access') {
-                    window.location.href = '#';
-                } else if (dept === 'ai') {
-                    window.location.href = '#';
-                } else if (dept === 'settings') {
-                    window.location.href = '#';
-                } else if (dept === 'profile') {
-                    // Zaten profil sayfası
+                if (navMap[dept]) {
+                    window.location.href = navMap[dept];
                 }
             });
         });
     </script>
 </body>
+
 </html>

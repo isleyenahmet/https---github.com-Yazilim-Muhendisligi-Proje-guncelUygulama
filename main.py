@@ -1,22 +1,26 @@
 """
-GNN-AIOps Backend — FastAPI + GAT Model + SQLite Streaming
+GNN-AIOps Backend — FastAPI + GAT Model + SQLite Streaming + RBAC Auth
 Port: 5003
 """
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
+import json
 import sqlite3
 import threading
 from contextlib import asynccontextmanager
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+import jwt  # PyJWT
 import numpy as np
 import torch
 import torch.nn.functional as F
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 from torch import nn
 from torch_geometric.nn import GATConv
 from torch_geometric.data import Data
@@ -25,6 +29,17 @@ from torch_geometric.data import Data
 BASE_DIR = Path(__file__).parent
 MODEL_PATH = BASE_DIR / "gat_aiops_model_final.pth"
 DB_PATH = BASE_DIR / "aiops_stream.db"
+USERS_PATH = BASE_DIR / "users.json"
+
+# ─── Auth Config ──────────────────────────────────────────────────────────────
+JWT_SECRET = "nexus-aiops-super-secret-2025"
+JWT_ALGORITHM = "HS256"
+JWT_EXPIRE_HOURS = 8
+
+# ─── Load Users ───────────────────────────────────────────────────────────────
+def load_users() -> list:
+    with open(USERS_PATH, encoding="utf-8") as f:
+        return json.load(f)["users"]
 
 # ─── GAT Model ────────────────────────────────────────────────────────────────
 class GATAnomalyModel(nn.Module):
@@ -110,6 +125,49 @@ COLS = [
 ]
 
 NODE_NAMES = ["IT", "IoT", "HR", "Finans"]
+
+
+# ─── Auth Models ──────────────────────────────────────────────────────────────
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+
+# ─── /api/login ───────────────────────────────────────────────────────────────
+@app.post("/api/login")
+async def login(req: LoginRequest):
+    users = load_users()
+    user = next((u for u in users if u["username"] == req.username and u["password"] == req.password), None)
+    if not user:
+        raise HTTPException(status_code=401, detail="Kullanıcı adı veya şifre hatalı")
+
+    payload = {
+        "sub": user["username"],
+        "name": user["name"],
+        "role": user["role"],
+        "initials": user["initials"],
+        "email": user["email"],
+        "department": user["department"],
+        "pages": user["pages"],
+        "exp": datetime.now(timezone.utc) + timedelta(hours=JWT_EXPIRE_HOURS)
+    }
+    token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    return {"token": token, "user": {k: v for k, v in user.items() if k != "password"}}
+
+
+# ─── /api/me ──────────────────────────────────────────────────────────────────
+@app.get("/api/me")
+async def me(authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Token gerekli")
+    token = authorization.split(" ", 1)[1]
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token süresi doldu")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Geçersiz token")
 
 
 # ─── /api/health ──────────────────────────────────────────────────────────────
@@ -201,6 +259,10 @@ async def stream():
 
 
 # ─── Static Files (HTML Pages) ────────────────────────────────────────────────
+@app.get("/")
+async def root():
+    return RedirectResponse(url="/login.html")
+
 app.mount("/", StaticFiles(directory=str(BASE_DIR), html=True), name="static")
 
 
