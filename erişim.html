@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEXUS · Erişim Belirleme · Yetki Yönetimi</title>
-    
+
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Three.js -->
     <script type="importmap">
         {
@@ -20,7 +23,7 @@
             }
         }
     </script>
-    
+
     <style>
         * {
             margin: 0;
@@ -59,7 +62,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(20, 184, 166, 0.02) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(20, 184, 166, 0.02) 1px, transparent 1px);
             background-size: 60px 60px;
@@ -74,9 +77,9 @@
             -webkit-backdrop-filter: blur(16px) saturate(180%);
             border: 1px solid rgba(20, 184, 166, 0.2);
             border-radius: 24px;
-            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 
-                        0 0 0 1px rgba(20, 184, 166, 0.1) inset,
-                        0 0 30px -10px rgba(20, 184, 166, 0.2);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8),
+                0 0 0 1px rgba(20, 184, 166, 0.1) inset,
+                0 0 30px -10px rgba(20, 184, 166, 0.2);
         }
 
         .glass-premium-light {
@@ -1039,11 +1042,13 @@
             color: #14b8a6;
         }
 
-        .permission-denied {
-            color: #64748b;
         }
     </style>
+
+    <!-- Auth -->
+    <script src="auth.js"></script>
 </head>
+
 <body>
 
     <!-- Particle Canvas - daha az partikül, daha küçük -->
@@ -1147,7 +1152,8 @@
         <!-- Sidebar Footer -->
         <div class="absolute bottom-0 left-0 right-0 p-5 border-t border-white/5">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center">
+                <div
+                    class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center">
                     <span class="text-xs font-bold">AD</span>
                 </div>
                 <div class="flex-1 min-w-0">
@@ -1161,17 +1167,19 @@
 
     <!-- Main Content Wrapper -->
     <div class="main-wrapper" id="mainWrapper">
-        
+
         <!-- Top Navigation -->
         <div class="top-nav" id="topNav">
             <div class="glass-premium px-6 py-3">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center">
+                    <div
+                        class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center">
                         <i class="fas fa-shield-alt text-white text-sm"></i>
                     </div>
                     <div>
                         <h1 class="text-lg font-bold tracking-tight text-white" id="pageTitle">Erişim Belirleme</h1>
-                        <p class="text-[10px] text-[#14b8a6] uppercase tracking-[0.2em] font-medium" id="pageSubtitle">Yetki Yönetim Paneli</p>
+                        <p class="text-[10px] text-[#14b8a6] uppercase tracking-[0.2em] font-medium" id="pageSubtitle">
+                            Yetki Yönetim Paneli</p>
                     </div>
                 </div>
             </div>
@@ -1190,7 +1198,8 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="text-right">
-                        <span class="text-2xl font-bold text-white">100<span class="text-sm text-[#14b8a6] ml-1">%</span></span>
+                        <span class="text-2xl font-bold text-white">100<span
+                                class="text-sm text-[#14b8a6] ml-1">%</span></span>
                         <p class="text-[10px] text-slate-400">Authority</p>
                     </div>
                     <div class="w-10 h-10 rounded-full bg-teal-500/20 flex items-center justify-center">
@@ -1207,7 +1216,7 @@
 
         <!-- Access Control Content -->
         <div class="access-container">
-            
+
             <!-- Admin Only Badge -->
             <div class="admin-only-badge">
                 <i class="fas fa-shield-alt"></i>
@@ -1339,7 +1348,8 @@
                                     </div>
                                 </div>
                             </td>
-                            <td><span class="role-badge role-finance"><i class="fas fa-chart-line"></i> Finans Müdürü</span></td>
+                            <td><span class="role-badge role-finance"><i class="fas fa-chart-line"></i> Finans
+                                    Müdürü</span></td>
                             <td>Finans</td>
                             <td><i class="fas fa-check-circle permission-allowed"></i></td>
                             <td><i class="fas fa-times-circle permission-denied"></i></td>
@@ -1467,60 +1477,120 @@
                         <div class="user-avatar" style="width: 30px; height: 30px; font-size: 12px;">AY</div>
                         <span>Ahmet Y.</span>
                     </div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle allowed"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle allowed"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle allowed"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle allowed"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle allowed"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle allowed"></div></div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle allowed"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle allowed"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle allowed"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle allowed"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle allowed"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle allowed"></div>
+                    </div>
 
                     <!-- Ayşe Demir -->
                     <div class="matrix-user-cell">
                         <div class="user-avatar" style="width: 30px; height: 30px; font-size: 12px;">AD</div>
                         <span>Ayşe D.</span>
                     </div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle allowed"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle allowed"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
 
                     <!-- Mehmet Kaya -->
                     <div class="matrix-user-cell">
                         <div class="user-avatar" style="width: 30px; height: 30px; font-size: 12px;">MK</div>
                         <span>Mehmet K.</span>
                     </div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle allowed"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle allowed"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
 
                     <!-- Zeynep Yıldız -->
                     <div class="matrix-user-cell">
                         <div class="user-avatar" style="width: 30px; height: 30px; font-size: 12px;">ZY</div>
                         <span>Zeynep Y.</span>
                     </div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle allowed"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle allowed"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
 
                     <!-- Can Aksoy -->
                     <div class="matrix-user-cell">
                         <div class="user-avatar" style="width: 30px; height: 30px; font-size: 12px;">CA</div>
                         <span>Can A.</span>
                     </div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle allowed"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
-                    <div class="matrix-permission-cell"><div class="permission-toggle denied"></div></div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle allowed"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
+                    <div class="matrix-permission-cell">
+                        <div class="permission-toggle denied"></div>
+                    </div>
                 </div>
             </div>
 
@@ -1665,7 +1735,7 @@
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-        
+
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
@@ -1680,15 +1750,15 @@
             const radius = 15 + Math.random() * 8;
             const theta = Math.random() * Math.PI * 2;
             const phi = Math.acos((Math.random() * 2) - 1);
-            
+
             posArray[i] = radius * Math.sin(phi) * Math.cos(theta);
-            posArray[i+1] = radius * Math.sin(phi) * Math.sin(theta) * 0.3;
-            posArray[i+2] = radius * Math.cos(phi);
+            posArray[i + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.3;
+            posArray[i + 2] = radius * Math.cos(phi);
 
             // Turkuaz/petrol tonları
             colorArray[i] = 0.0;
-            colorArray[i+1] = 0.7 + Math.random() * 0.3;
-            colorArray[i+2] = 0.6 + Math.random() * 0.2;
+            colorArray[i + 1] = 0.7 + Math.random() * 0.3;
+            colorArray[i + 2] = 0.6 + Math.random() * 0.2;
         }
 
         particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
@@ -1742,11 +1812,11 @@
         const backBtn = document.getElementById('backBtn');
 
         collapseBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-            mainWrapper.classList.toggle('sidebar-collapsed');
-            topNav.classList.toggle('sidebar-collapsed');
-            backBtn.classList.toggle('sidebar-collapsed');
-            
+            if (sidebar) sidebar.classList.toggle('collapsed');
+            if (mainWrapper) mainWrapper.classList.toggle('sidebar-collapsed');
+            if (topNav) topNav.classList.toggle('sidebar-collapsed');
+            if (backBtn) backBtn.classList.toggle('sidebar-collapsed');
+
             if (sidebar.classList.contains('collapsed')) {
                 collapseIcon.classList.remove('fa-chevron-left');
                 collapseIcon.classList.add('fa-chevron-right');
@@ -1783,7 +1853,7 @@
         // Filter buttons
         const filterBtns = document.querySelectorAll('.filter-btn');
         filterBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 filterBtns.forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
             });
@@ -1792,42 +1862,26 @@
         // Matrix tabs
         const matrixTabs = document.querySelectorAll('.matrix-tab');
         matrixTabs.forEach(tab => {
-            tab.addEventListener('click', function() {
+            tab.addEventListener('click', function () {
                 matrixTabs.forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
             });
         });
 
         // Back button
-        document.getElementById('backBtn').addEventListener('click', () => {
-            window.location.href = '#';
-        });
-
-        // Menu item clicks (for demo)
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const dept = this.dataset.department;
-                if (dept === 'dashboard') {
-                    window.location.href = '#';
-                } else if (dept === 'it') {
-                    window.location.href = '#';
-                } else if (dept === 'iot') {
-                    window.location.href = '#';
-                } else if (dept === 'finance') {
-                    window.location.href = '#';
-                } else if (dept === 'hr') {
-                    window.location.href = '#';
-                } else if (dept === 'access') {
-                    // Zaten erişim sayfası
-                } else if (dept === 'ai') {
-                    window.location.href = '#';
-                } else if (dept === 'settings') {
-                    window.location.href = '#';
-                } else if (dept === 'profile') {
-                    window.location.href = '#';
-                }
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                window.location.href = '#';
             });
-        });
+        }
+
+        // Menu item clicks handled by auth.js bindNavigation()
+
+        // ── Auth ──────────────────────────────────────────────────────────
+        (async () => {
+            await initAuth();
+        })();
     </script>
 </body>
+
 </html>

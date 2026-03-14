@@ -406,11 +406,10 @@
         .node-core {
             width: 120px;
             height: 120px;
-            background: radial-gradient(circle at 30% 30%, #4ade80, #0a8a40);
-            box-shadow: 0 0 50px #1fc762, 0 0 100px rgba(31, 199, 98, 0.3), 0 0 200px rgba(31, 199, 98, 0.1);
             left: calc(50% - 60px);
             top: calc(50% - 60px);
             border: 2px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.5s ease;
         }
 
         .node-core::after {
@@ -421,9 +420,38 @@
             top: -20%;
             left: -20%;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(31, 199, 98, 0.2) 0%, transparent 70%);
             z-index: -1;
             animation: pulseGlow 3s ease-in-out infinite;
+            transition: all 0.5s ease;
+        }
+
+        /* Stable State (Green) */
+        .core-stable {
+            background: radial-gradient(circle at 30% 30%, #4ade80, #0a8a40);
+            box-shadow: 0 0 50px #1fc762, 0 0 100px rgba(31, 199, 98, 0.3), 0 0 200px rgba(31, 199, 98, 0.1);
+        }
+        .core-stable::after {
+            background: radial-gradient(circle, rgba(31, 199, 98, 0.2) 0%, transparent 70%);
+        }
+
+        /* Warning State (Yellow/Orange) */
+        .core-warning {
+            background: radial-gradient(circle at 30% 30%, #facc15, #ca8a04);
+            box-shadow: 0 0 50px #eab308, 0 0 100px rgba(234, 179, 8, 0.3), 0 0 200px rgba(234, 179, 8, 0.1);
+        }
+        .core-warning::after {
+            background: radial-gradient(circle, rgba(234, 179, 8, 0.2) 0%, transparent 70%);
+        }
+
+        /* Critical State (Red) */
+        .core-critical {
+            background: radial-gradient(circle at 30% 30%, #ef4444, #b91c1c);
+            box-shadow: 0 0 50px #ef4444, 0 0 100px rgba(239, 68, 68, 0.5), 0 0 200px rgba(239, 68, 68, 0.2);
+            animation: pulse 1s ease-in-out infinite;
+        }
+        .core-critical::after {
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.3) 0%, transparent 70%);
+            animation: pulseGlow 1.5s ease-in-out infinite;
         }
 
         @keyframes pulseGlow {
@@ -837,7 +865,7 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="text-right">
-                        <span class="text-2xl font-bold text-white">92<span
+                        <span class="text-2xl font-bold text-white"><span id="sys-health-val">92</span><span
                                 class="text-sm text-brand ml-1">%</span></span>
                         <p class="text-[10px] text-slate-400">System Health</p>
                     </div>
@@ -1019,7 +1047,7 @@
                             <div class="stat-icon">
                                 <i class="fas fa-exclamation-triangle"></i>
                             </div>
-                            <div class="stat-value">3</div>
+                            <div class="stat-value" id="dash-alarms">3</div>
                             <div class="stat-label">Aktif Alarm</div>
                             <div class="stat-change negative">
                                 <i class="fas fa-arrow-up"></i> +1
@@ -1086,7 +1114,7 @@
                         <!-- NODES -->
                         
                         <!-- Central Server Node -->
-                        <div class="node node-core" id="central-node">
+                        <div class="node node-core core-stable" id="central-node">
                             <div class="text-center">
                                 <div class="text-[10px] font-extrabold text-white tracking-wider mb-1">PRIMARY</div>
                                 <div class="text-[8px] font-medium text-white/60">HUB·01</div>
@@ -1095,30 +1123,30 @@
                         </div>
 
                         <!-- IT Node (Green - Stable) -->
-                        <div class="node node-satellite" style="background: radial-gradient(circle at 30% 30%, #4ade80, #16a34a); left: 18%; top: 18%; box-shadow: 0 0 30px rgba(74, 222, 128, 0.3);">
+                        <div class="node node-satellite" id="node-it" style="background: radial-gradient(circle at 30% 30%, #4ade80, #16a34a); left: 18%; top: 18%; box-shadow: 0 0 30px rgba(74, 222, 128, 0.3);">
                             <span class="text-xs font-bold text-white">IT</span>
                         </div>
 
                         <!-- HR Node (Yellow - Warning) -->
-                        <div class="node node-satellite animate-pulse" style="background: radial-gradient(circle at 30% 30%, #facc15, #ca8a04); left: 72%; top: 18%; box-shadow: 0 0 30px rgba(250, 204, 21, 0.5);">
+                        <div class="node node-satellite animate-pulse" id="node-hr" style="background: radial-gradient(circle at 30% 30%, #facc15, #ca8a04); left: 72%; top: 18%; box-shadow: 0 0 30px rgba(250, 204, 21, 0.5);">
                             <span class="text-xs font-bold text-white">HR</span>
                         </div>
 
                         <!-- IoT Node (Red - Critical) -->
-                        <div class="node node-satellite" style="background: radial-gradient(circle at 30% 30%, #ef4444, #b91c1c); left: 18%; top: 72%; box-shadow: 0 0 40px rgba(239, 68, 68, 0.8); animation: pulse 1s ease-in-out infinite;">
+                        <div class="node node-satellite" id="node-iot" style="background: radial-gradient(circle at 30% 30%, #ef4444, #b91c1c); left: 18%; top: 72%; box-shadow: 0 0 40px rgba(239, 68, 68, 0.8); animation: pulse 1s ease-in-out infinite;">
                             <span class="text-xs font-bold text-white">IoT</span>
                         </div>
 
                         <!-- Finance Node (Green - Stable) -->
-                        <div class="node node-satellite" style="background: radial-gradient(circle at 30% 30%, #4ade80, #16a34a); left: 72%; top: 72%; box-shadow: 0 0 30px rgba(74, 222, 128, 0.3);">
+                        <div class="node node-satellite" id="node-fin" style="background: radial-gradient(circle at 30% 30%, #4ade80, #16a34a); left: 72%; top: 72%; box-shadow: 0 0 30px rgba(74, 222, 128, 0.3);">
                             <span class="text-xs font-bold text-white">FIN</span>
                         </div>
 
                         <!-- Floating metric labels -->
-                        <div class="indicator" style="left: 15%; top: 15%;">98% · 2ms</div>
-                        <div class="indicator" style="left: 75%; top: 15%;">74% · 120ms</div>
-                        <div class="indicator" style="left: 15%; top: 80%;">12% · 2000ms</div>
-                        <div class="indicator" style="left: 75%; top: 80%;">100% · 1ms</div>
+                        <div class="indicator" id="ind-it" style="left: 15%; top: 15%;">98% · 2ms</div>
+                        <div class="indicator" id="ind-hr" style="left: 75%; top: 15%;">74% · 120ms</div>
+                        <div class="indicator" id="ind-iot" style="left: 15%; top: 80%;">12% · 2000ms</div>
+                        <div class="indicator" id="ind-fin" style="left: 75%; top: 80%;">100% · 1ms</div>
                     </div>
 
                     <!-- Mini Metrics - Sayfanın en altına kaydırıldı, boyutlar aynı -->
@@ -1714,11 +1742,7 @@
             item.addEventListener('click', () => {
                 const department = item.dataset.department;
 
-                // Harici sayfalar için direkt yönlendir
-                if (navMap[department]) {
-                    window.location.href = navMap[department];
-                    return;
-                }
+                // External routing is handled globally by auth.js bindNavigation()
 
                 // Dashboard inline content
                 menuItems.forEach(mi => mi.classList.remove('active'));
@@ -1766,6 +1790,90 @@
         document.getElementById('forecastPanel').addEventListener('click', () => {
             alert('📈 Tahmin Modeli: Sistem yükü önümüzdeki 2 saat içinde %15 artacak. CPU kullanımının 14:30-16:00 arasında pik yapması bekleniyor.');
         });
+
+        // ═══════════════════════════════════════════════════════════════════
+        // LIVE DATA STREAM — Dashboard
+        // ═══════════════════════════════════════════════════════════════════
+        (function startDashboardLiveStream() {
+            const API = 'http://127.0.0.1:5003/api/stream';
+
+            async function fetchAndUpdate() {
+                try {
+                    const response = await fetch(API);
+                    if (!response.ok) return;
+                    const d = await response.json();
+
+                    // Update System Health
+                    const sysHealth = document.getElementById('sys-health-val');
+                    if (sysHealth) {
+                        const health = Math.max(0, 100 - (d.anomaly_score * 100)).toFixed(0);
+                        sysHealth.textContent = health;
+                    }
+
+                    // Update Active Alarms
+                    const dashAlarms = document.getElementById('dash-alarms');
+                    if (dashAlarms) {
+                        dashAlarms.textContent = d.anomaly ? "4" : "1";
+                    }
+
+                    // Update Nodes Colors based on risk scores
+                    const risk = d.risk_scores || {};
+                    function updateNode(id, score) {
+                        const el = document.getElementById(id);
+                        if (!el) return;
+                        if (score > 80 || d.anomaly) { // Critical - Also light up if general anomaly for aesthetic
+                            el.style.background = 'radial-gradient(circle at 30% 30%, #ef4444, #b91c1c)';
+                            el.style.boxShadow = '0 0 40px rgba(239, 68, 68, 0.8)';
+                            el.classList.add('animate-pulse');
+                        } else if (score > 40) { // Warning
+                            el.style.background = 'radial-gradient(circle at 30% 30%, #facc15, #ca8a04)';
+                            el.style.boxShadow = '0 0 30px rgba(250, 204, 21, 0.5)';
+                            el.classList.remove('animate-pulse');
+                        } else { // Stable
+                            el.style.background = 'radial-gradient(circle at 30% 30%, #4ade80, #16a34a)';
+                            el.style.boxShadow = '0 0 30px rgba(74, 222, 128, 0.3)';
+                            el.classList.remove('animate-pulse');
+                        }
+                    }
+
+                    updateNode('node-it', risk.IT);
+                    updateNode('node-hr', risk.HR);
+                    updateNode('node-iot', risk.IoT);
+                    updateNode('node-fin', risk.Finans);
+
+                    // Update Central Node
+                    const centralNode = document.getElementById('central-node');
+                    if (centralNode) {
+                        if (d.anomaly || (risk.IT > 80 && risk.HR > 80 && risk.IoT > 80 && risk.Finans > 80)) {
+                            centralNode.className = 'node node-core core-critical';
+                        } else if (risk.IT > 40 || risk.HR > 40 || risk.IoT > 40 || risk.Finans > 40) {
+                            centralNode.className = 'node node-core core-warning';
+                        } else {
+                            centralNode.className = 'node node-core core-stable';
+                        }
+                    }
+
+                    // Update Indicators dynamically
+                    const indIt = document.getElementById('ind-it');
+                    if (indIt) indIt.textContent = `${(d.net_rate * 100).toFixed(0)}% · ${(d.net_dur * 100).toFixed(0)}ms`;
+
+                    const indHr = document.getElementById('ind-hr');
+                    if (indHr) indHr.textContent = `${(d.hr_satisfaction * 10).toFixed(1)}/10 · ${(d.hr_age * 100).toFixed(0)}`;
+
+                    const indIot = document.getElementById('ind-iot');
+                    if (indIot) indIot.textContent = `${(d.iot_temp * 40 + 30).toFixed(1)}°C · ${(d.iot_speed * 1000).toFixed(0)}RPM`;
+
+                    const indFin = document.getElementById('ind-fin');
+                    if (indFin) indFin.textContent = `$${(d.fin_amount / 10).toFixed(1)}k · ${(d.fin_oldbal / 10).toFixed(1)}k`;
+
+                } catch (e) {
+                    // console.error("Dashboard stream init wait:", e);
+                }
+            }
+
+            setInterval(fetchAndUpdate, 1000);
+            setTimeout(fetchAndUpdate, 500); // Initial fast fetch
+        })();
 
         // ── Auth ──────────────────────────────────────────────────────────
         (async () => {

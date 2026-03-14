@@ -1817,26 +1817,7 @@
             alert('📈 Tahmin Modeli: İşlem hacmi önümüzdeki 2 saat içinde 1.4M\'ye yükselecek. Ödeme işlemlerinde yoğunluk bekleniyor.');
         });
 
-        // Menu item clicks
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', function () {
-                document.querySelectorAll('.menu-item').forEach(mi => mi.classList.remove('active'));
-                this.classList.add('active');
-                const navMap = {
-                    dashboard: 'dashboard.html',
-                    it: 'it.html',
-                    iot: 'ıot.html',
-                    finance: 'finans.html',
-                    hr: 'inasnKaynaklari.html',
-                    access: 'erişim.html',
-                    ai: 'yapayZeka.html',
-                    settings: 'ayarlar.html',
-                    profile: 'profil.html'
-                };
-                const dept = this.dataset.department;
-                if (navMap[dept]) window.location.href = navMap[dept];
-            });
-        });
+        // Menu item clicks handled by auth.js bindNavigation()
 
         // ═══════════════════════════════════════════════════════════════════
         // LIVE DATA STREAM — GNN-AIOps (Finance Department)

@@ -9,14 +9,14 @@ const TOKEN_KEY = 'nexus_token';
 /* ── Sayfa → İzin Anahtarı Haritası ──────────────────────────── */
 const PAGE_MAP = {
     'dashboard.html': 'dashboard',
-    'it.html':        'it',
-    'ıot.html':       'iot',
-    'finans.html':    'finance',
+    'it.html': 'it',
+    'ıot.html': 'iot',
+    'finans.html': 'finance',
     'inasnKaynaklari.html': 'hr',
-    'erişim.html':    'access',
+    'erişim.html': 'access',
     'yapayZeka.html': 'ai',
-    'ayarlar.html':   'settings',
-    'profil.html':    'profile',
+    'ayarlar.html': 'settings',
+    'profil.html': 'profile',
 };
 
 /* ── Token İşlemleri ──────────────────────────────────────────── */
@@ -85,14 +85,14 @@ function filterSidebar(user) {
     // Sidebar menü öğeleri
     const roleToPage = {
         'dashboard': 'dashboard',
-        'it':        'it',
-        'iot':       'iot',
-        'finance':   'finance',
-        'hr':        'hr',
-        'access':    'access',
-        'ai':        'ai',
-        'settings':  'settings',
-        'profile':   'profile',
+        'it': 'it',
+        'iot': 'iot',
+        'finance': 'finance',
+        'hr': 'hr',
+        'access': 'access',
+        'ai': 'ai',
+        'settings': 'settings',
+        'profile': 'profile',
     };
 
     document.querySelectorAll('.menu-item[data-department]').forEach(item => {
@@ -114,6 +114,34 @@ function updateSidebarUser(user) {
     if (initialsEl) initialsEl.textContent = user.initials;
 }
 
+/* ── bindNavigation: Global URL Router for Sidebar Menu ─────────── */
+function bindNavigation() {
+    document.querySelectorAll('.menu-item[data-department]').forEach(item => {
+        item.addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent default link behavior if any
+            const dept = this.dataset.department;
+
+            // Re-map internal data-departments to the actual HTML files
+            const routeMap = {
+                'dashboard': 'dashboard.html',
+                'it': 'it.html',
+                'iot': 'ıot.html',
+                'finance': 'finans.html',
+                'hr': 'inasnKaynaklari.html',
+                'access': 'erişim.html',
+                'ai': 'yapayZeka.html',
+                'settings': 'ayarlar.html',
+                'profile': 'profil.html',
+            };
+
+            const targetPage = routeMap[dept];
+            if (targetPage) {
+                window.location.href = targetPage;
+            }
+        });
+    });
+}
+
 /* ── Tüm sayfalarda çalışacak ortak başlatıcı ────────────────── */
 async function initAuth() {
     const user = await checkAuth();
@@ -121,5 +149,6 @@ async function initAuth() {
     guardPage(user);
     filterSidebar(user);
     updateSidebarUser(user);
+    bindNavigation();
     return user;
 }

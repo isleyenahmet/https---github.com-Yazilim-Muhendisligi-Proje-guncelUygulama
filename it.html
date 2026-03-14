@@ -1752,26 +1752,7 @@
             alert('📈 Tahmin Modeli: Network trafiği önümüzdeki 2 saat içinde %23 artacak. Bant genişliği kullanımının 16:00-18:00 arasında pik yapması bekleniyor.');
         });
 
-        // Menu item clicks (for demo)
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', function () {
-                document.querySelectorAll('.menu-item').forEach(mi => mi.classList.remove('active'));
-                this.classList.add('active');
-
-                const dept = this.dataset.department;
-                if (dept === 'dashboard') {
-                    window.location.href = '#'; // Dashboard'a yönlendir
-                } else if (dept === 'it') {
-                    window.location.href = '#'; // IT sayfası (zaten burası)
-                } else if (dept === 'iot') {
-                    window.location.href = '#'; // IoT sayfası
-                } else if (dept === 'finance') {
-                    window.location.href = '#'; // Finans sayfası
-                } else if (dept === 'hr') {
-                    window.location.href = '#'; // HR sayfası
-                }
-            });
-        });
+        // Menu item clicks handled by auth.js bindNavigation()
 
         // ═══════════════════════════════════════════════════════════════════
         // LIVE DATA STREAM — GNN-AIOps (IT Department)

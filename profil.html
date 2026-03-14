@@ -1613,15 +1613,14 @@
             });
         }
 
-        // Menu items navigation binding
-        document.querySelectorAll('.menu-item[data-department]').forEach(item => {
-            item.addEventListener('click', function () {
-                const dept = this.dataset.department;
-                if (navMap[dept]) {
-                    window.location.href = navMap[dept];
-                }
-            });
-        });
+        // Menu items navigation binding handled by auth.js bindNavigation()
+
+        // ── Auth ──────────────────────────────────────────────────────────
+        (async () => {
+            // Because profil.html already fetches 'user' in an independent IIFE, 
+            // calling initAuth will cleanly bind the navigation and guard logic.
+            await initAuth();
+        })();
     </script>
 </body>
 
