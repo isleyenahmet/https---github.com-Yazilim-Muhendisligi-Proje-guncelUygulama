@@ -27,8 +27,8 @@ from torch_geometric.data import Data
 
 # ─── Paths ────────────────────────────────────────────────────────────────────
 BASE_DIR = Path(__file__).parent
-MODEL_PATH = BASE_DIR / "gat_aiops_model_final.pth"
-DB_PATH = BASE_DIR / "aiops_stream.db"
+MODEL_PATH = BASE_DIR / "gigafactory_gat_model.pth"
+DB_PATH = BASE_DIR / "gigafactory_live.db"
 USERS_PATH = BASE_DIR / "users.json"
 
 # ─── Auth Config ──────────────────────────────────────────────────────────────
@@ -44,16 +44,16 @@ def load_users() -> list:
 # ─── GAT Model ────────────────────────────────────────────────────────────────
 class GATAnomalyModel(nn.Module):
     """
-    2-layer GAT:
-      conv1: GATConv(in=4, out=64, heads=4)  → [N, 256]
-      conv2: GATConv(in=256, out=64, heads=1) → [N, 64]
-      lin  : Linear(64, 2)
+    2-layer GAT (Gigafactory):
+      conv1: GATConv(in=4, out=32, heads=4)  → [N, 128]
+      conv2: GATConv(in=128, out=32, heads=1) → [N, 32]
+      lin  : Linear(32, 2)
     """
     def __init__(self):
         super().__init__()
-        self.conv1 = GATConv(4, 64, heads=4, concat=True)
-        self.conv2 = GATConv(256, 64, heads=1, concat=True)
-        self.lin = nn.Linear(64, 2)
+        self.conv1 = GATConv(4, 32, heads=4, concat=True)
+        self.conv2 = GATConv(128, 32, heads=1, concat=True)
+        self.lin = nn.Linear(32, 2)
 
     def forward(self, data: Data):
         x, edge_index = data.x, data.edge_index
@@ -97,10 +97,11 @@ async def lifespan(app: FastAPI):
     model.load_state_dict(state_dict)
     model.eval()
     state["model"] = model
-    state["cursor_id"] = 0          # sequential row pointer
-    state["total_rows"] = 175341
-    print(f"✅  GAT model loaded from {MODEL_PATH}")
-    print(f"✅  DB: {DB_PATH}  ({state['total_rows']:,} rows)")
+    state["cursor_id"] = 1          # ROWID starts at 1 in SQLite
+    state["total_rows"] = 500000    # gigafactory_live.db has 500K rows
+
+    print(f"[OK] GAT model loaded from {MODEL_PATH}")
+    print(f"[OK] DB: {DB_PATH}  ({state['total_rows']:,} rows)")
     yield
     # Cleanup (nothing heavy needed)
 
@@ -118,13 +119,13 @@ app.add_middleware(
 
 # ─── Column mapping ───────────────────────────────────────────────────────────
 COLS = [
-    "net_dur", "net_rate", "net_sbytes", "net_dbytes",   # Node 0: IT
-    "iot_temp", "iot_torque", "iot_speed", "iot_wear",   # Node 1: IoT
-    "hr_age", "hr_daily_rate", "hr_income", "hr_satisfaction",  # Node 2: HR
-    "fin_amount", "fin_oldbal", "fin_newbal", "fin_destbal",     # Node 3: Fin
+    "net_lat", "net_thr", "net_p_loss", "net_sec",        # Node 0: IT/Network
+    "iot_vib", "iot_temp", "iot_torq", "iot_cycle",       # Node 1: IoT
+    "fin_cost", "fin_fraud", "fin_risk", "fin_inv",        # Node 2: Finans
+    "log_path", "log_coll", "log_soc", "log_task",         # Node 3: Lojistik
 ]
 
-NODE_NAMES = ["IT", "IoT", "HR", "Finans"]
+NODE_NAMES = ["IT", "IoT", "Finans", "Lojistik"]
 
 
 # ─── Auth Models ──────────────────────────────────────────────────────────────
@@ -183,14 +184,16 @@ async def stream():
 
     with stream_lock:
         row_id = state["cursor_id"]
-        state["cursor_id"] = (row_id + 1) % state["total_rows"]
+        # ROWID cycles 1 … total_rows
+        next_id = (row_id % state["total_rows"]) + 1
+        state["cursor_id"] = next_id
 
-    # Fetch one row from SQLite
+    # Fetch one row from SQLite using ROWID
     conn = sqlite3.connect(str(DB_PATH))
     try:
         cur = conn.cursor()
         cur.execute(
-            f"SELECT {', '.join(COLS)} FROM live_telemetry WHERE id = ?",
+            f"SELECT {', '.join(COLS)} FROM live_telemetry WHERE ROWID = ?",
             (row_id,),
         )
         row = cur.fetchone()
@@ -229,31 +232,34 @@ async def stream():
         "row_id": row_id,
         "anomaly": anomaly,
         "anomaly_score": round(anomaly_score, 4),
-        # Raw features per department
-        "net_dur":    round(row_dict["net_dur"], 4),
-        "net_rate":   round(row_dict["net_rate"], 4),
-        "net_sbytes": round(row_dict["net_sbytes"], 4),
-        "net_dbytes": round(row_dict["net_dbytes"], 4),
-        "iot_temp":   round(row_dict["iot_temp"], 4),
-        "iot_torque": round(row_dict["iot_torque"], 4),
-        "iot_speed":  round(row_dict["iot_speed"], 4),
-        "iot_wear":   round(row_dict["iot_wear"], 4),
-        "hr_age":          round(row_dict["hr_age"], 4),
-        "hr_daily_rate":   round(row_dict["hr_daily_rate"], 4),
-        "hr_income":       round(row_dict["hr_income"], 4),
-        "hr_satisfaction": round(row_dict["hr_satisfaction"], 4),
-        "fin_amount":  round(row_dict["fin_amount"], 4),
-        "fin_oldbal":  round(row_dict["fin_oldbal"], 4),
-        "fin_newbal":  round(row_dict["fin_newbal"], 4),
-        "fin_destbal": round(row_dict["fin_destbal"], 4),
+        # Raw features — IT/Network node
+        "net_lat":    round(row_dict["net_lat"], 4),
+        "net_thr":    round(row_dict["net_thr"], 4),
+        "net_p_loss": round(row_dict["net_p_loss"], 4),
+        "net_sec":    round(row_dict["net_sec"], 4),
+        # Raw features — IoT node
+        "iot_vib":   round(row_dict["iot_vib"],   4),
+        "iot_temp":  round(row_dict["iot_temp"],  4),
+        "iot_torq":  round(row_dict["iot_torq"],  4),
+        "iot_cycle": round(row_dict["iot_cycle"], 4),
+        # Raw features — Finans node
+        "fin_cost":  round(row_dict["fin_cost"],  4),
+        "fin_fraud": round(row_dict["fin_fraud"], 4),
+        "fin_risk":  round(row_dict["fin_risk"],  4),
+        "fin_inv":   round(row_dict["fin_inv"],   4),
+        # Raw features — Lojistik node
+        "log_path":  round(row_dict["log_path"],  4),
+        "log_coll":  round(row_dict["log_coll"],  4),
+        "log_soc":   round(row_dict["log_soc"],   4),
+        "log_task":  round(row_dict["log_task"],  4),
         # Attention weights per node
         "attention_weights": [round(float(v), 4) for v in node_attn],
         # Department risk scores (0-100)
         "risk_scores": {
-            "IT":     round(float(node_attn[0]) * 100, 1),
-            "IoT":    round(float(node_attn[1]) * 100, 1),
-            "HR":     round(float(node_attn[2]) * 100, 1),
-            "Finans": round(float(node_attn[3]) * 100, 1),
+            "IT":       round(float(node_attn[0]) * 100, 1),
+            "IoT":      round(float(node_attn[1]) * 100, 1),
+            "Finans":   round(float(node_attn[2]) * 100, 1),
+            "Lojistik": round(float(node_attn[3]) * 100, 1),
         },
     })
 

@@ -772,7 +772,7 @@
                 <div class="menu-icon">
                     <i class="fas fa-users"></i>
                 </div>
-                <span class="menu-text">İnsan Kaynakları</span>
+                <span class="menu-text">Otonom Lojistik</span>
                 <span class="menu-badge">2</span>
             </div>
 
@@ -1732,7 +1732,7 @@
             finance: 'finans.html',
             hr: 'inasnKaynaklari.html',
             access: 'erişim.html',
-            ai: 'yapayZeka.html',
+            ai: 'yapayZekaV2.html',
             settings: 'ayarlar.html',
             profile: 'profil.html'
         };
@@ -1821,7 +1821,7 @@
                     function updateNode(id, score) {
                         const el = document.getElementById(id);
                         if (!el) return;
-                        if (score > 80 || d.anomaly) { // Critical - Also light up if general anomaly for aesthetic
+                        if (score > 80) { // Critical
                             el.style.background = 'radial-gradient(circle at 30% 30%, #ef4444, #b91c1c)';
                             el.style.boxShadow = '0 0 40px rgba(239, 68, 68, 0.8)';
                             el.classList.add('animate-pulse');
@@ -1855,16 +1855,16 @@
 
                     // Update Indicators dynamically
                     const indIt = document.getElementById('ind-it');
-                    if (indIt) indIt.textContent = `${(d.net_rate * 100).toFixed(0)}% · ${(d.net_dur * 100).toFixed(0)}ms`;
+                    if (indIt) indIt.textContent = `${(d.net_rate * 100).toFixed(0)}% Util · ${(d.net_dur * 100).toFixed(0)}ms`;
 
                     const indHr = document.getElementById('ind-hr');
-                    if (indHr) indHr.textContent = `${(d.hr_satisfaction * 10).toFixed(1)}/10 · ${(d.hr_age * 100).toFixed(0)}`;
+                    if (indHr) indHr.textContent = `${(d.hr_satisfaction * 10).toFixed(1)}/10 Sat · ${(d.hr_age * 100).toFixed(0)}`;
 
                     const indIot = document.getElementById('ind-iot');
-                    if (indIot) indIot.textContent = `${(d.iot_temp * 40 + 30).toFixed(1)}°C · ${(d.iot_speed * 1000).toFixed(0)}RPM`;
+                    if (indIot) indIot.textContent = `${(d.iot_temp * 50 + 20).toFixed(1)}°C · ${(d.iot_speed * 1000).toFixed(0)}R`;
 
                     const indFin = document.getElementById('ind-fin');
-                    if (indFin) indFin.textContent = `$${(d.fin_amount / 10).toFixed(1)}k · ${(d.fin_oldbal / 10).toFixed(1)}k`;
+                    if (indFin) indFin.textContent = `$${(d.fin_amount * 50).toFixed(1)}k · ${(d.fin_oldbal * 100).toFixed(1)}k`;
 
                 } catch (e) {
                     // console.error("Dashboard stream init wait:", e);

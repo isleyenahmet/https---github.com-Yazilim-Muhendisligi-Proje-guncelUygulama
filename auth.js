@@ -14,7 +14,7 @@ const PAGE_MAP = {
     'finans.html': 'finance',
     'inasnKaynaklari.html': 'hr',
     'erişim.html': 'access',
-    'yapayZeka.html': 'ai',
+    'yapayZekaV2.html': 'ai',
     'ayarlar.html': 'settings',
     'profil.html': 'profile',
 };
@@ -129,7 +129,7 @@ function bindNavigation() {
                 'finance': 'finans.html',
                 'hr': 'inasnKaynaklari.html',
                 'access': 'erişim.html',
-                'ai': 'yapayZeka.html',
+                'ai': 'yapayZekaV2.html',
                 'settings': 'ayarlar.html',
                 'profile': 'profil.html',
             };

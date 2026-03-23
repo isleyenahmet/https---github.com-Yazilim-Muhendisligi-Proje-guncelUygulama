@@ -719,7 +719,7 @@
         /* Chart grid layout */
         .charts-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 24px;
             margin-bottom: 24px;
         }
@@ -884,7 +884,7 @@
                 <div class="menu-icon">
                     <i class="fas fa-users"></i>
                 </div>
-                <span class="menu-text">İnsan Kaynakları</span>
+                <span class="menu-text">Otonom Lojistik</span>
                 <span class="menu-badge">2</span>
             </div>
 
@@ -1003,122 +1003,102 @@
                 <div class="orbital-ring"></div>
                 <div class="orbital-ring-inner"></div>
 
-                <!-- HR Primary Node -->
+                <!-- Otonom Lojistik Primary Node -->
                 <div class="node-hr-primary" id="hr-primary">
                     <div class="text-center">
-                        <div class="text-sm font-extrabold text-white tracking-wider mb-1">HUMAN RESOURCES</div>
-                        <div class="text-xs font-medium text-white/70">PRIMARY HUB</div>
+                        <div class="text-sm font-extrabold text-white tracking-wider mb-1">OTONOM LOJİSTİK</div>
+                        <div class="text-xs font-medium text-white/70">MERKEZİ YÖNETİM</div>
                     </div>
                     <div
                         class="absolute -top-3 -right-3 w-5 h-5 bg-[#a855f7] rounded-full border-2 border-white/40 animate-pulse">
                     </div>
                 </div>
 
-                <!-- HR Metric Nodes - 120° açı ile (3 metrik) -->
-                <!-- Login/Logout Count - Active (90°) -->
-                <div class="metric-node login-logout" id="metric-login"
-                    style="left: calc(50% - 65px + 250px * 0); top: calc(50% - 65px + 250px * -1);">
-                    <i class="fas fa-right-to-bracket text-2xl text-blue-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">LOGIN</span>
-                    <span class="text-xs text-blue-400">847</span>
+                <!-- HR Metric Nodes - 90° açı ile tam simetrik (4 metrik) -->
+                <!-- log_path - Top Left (-45°) -->
+                <div class="metric-node" id="metric-path"
+                    style="left: calc(50% - 65px - 180px); top: calc(50% - 65px - 180px);">
+                    <i class="fas fa-route text-2xl text-blue-400 mb-1"></i>
+                    <span class="text-sm font-bold text-white uppercase text-center">Rota<br/>Planlama</span>
+                    <span class="text-xs text-blue-400 font-bold mt-1" id="val-path">0.0</span>
 
                     <!-- Tooltip -->
                     <div class="tooltip-premium">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-sm font-bold text-white">Login/Logout Count</span>
-                            <span class="text-xs px-3 py-1 rounded-full bg-blue-500/30 text-blue-300">ACTIVE</span>
+                            <span class="text-sm font-bold text-white">Rota Planlama (log_path)</span>
+                            <span class="text-xs px-3 py-1 rounded-full bg-blue-500/30 text-blue-300">LIVE</span>
                         </div>
                         <div class="space-y-3">
                             <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Current:</span>
-                                <span class="text-white font-medium">847 events</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Daily Avg:</span>
-                                <span class="text-white font-medium">820</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Updated:</span>
-                                <span class="text-white font-medium">2s ago</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-xs">
-                                <span class="text-slate-400">Trend:</span>
-                                <i class="fas fa-arrow-up text-blue-400"></i>
-                                <span class="text-blue-400 font-medium">+3.2%</span>
+                                <span class="text-slate-400">Anlık Veri:</span>
+                                <span class="text-white font-medium" id="tooltip-path">0.0</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Internal App Usage - Normal (210°) -->
-                <div class="metric-node app-usage" id="metric-app"
-                    style="left: calc(50% - 65px + 250px * -0.866); top: calc(50% - 65px + 250px * 0.5);">
-                    <i class="fas fa-laptop text-2xl text-green-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">APPS</span>
-                    <span class="text-xs text-green-400">2.4K</span>
+                <!-- log_coll - Top Right (45°) -->
+                <div class="metric-node" id="metric-coll"
+                    style="left: calc(50% - 65px + 180px); top: calc(50% - 65px - 180px);">
+                    <i class="fas fa-boxes text-2xl text-green-400 mb-1"></i>
+                    <span class="text-sm font-bold text-white uppercase text-center">Toplama<br/>Verimliliği</span>
+                    <span class="text-xs text-green-400 font-bold mt-1" id="val-coll">0.0</span>
 
                     <!-- Tooltip -->
                     <div class="tooltip-premium">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-sm font-bold text-white">Internal App Usage</span>
-                            <span class="text-xs px-3 py-1 rounded-full bg-green-500/30 text-green-300">NORMAL</span>
+                            <span class="text-sm font-bold text-white">Toplama Verimliliği (log_coll)</span>
+                            <span class="text-xs px-3 py-1 rounded-full bg-green-500/30 text-green-300">LIVE</span>
                         </div>
                         <div class="space-y-3">
                             <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Current:</span>
-                                <span class="text-white font-medium">2,435 sessions</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Daily Avg:</span>
-                                <span class="text-white font-medium">2,200</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Updated:</span>
-                                <span class="text-white font-medium">4s ago</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-xs">
-                                <span class="text-slate-400">Trend:</span>
-                                <i class="fas fa-arrow-up text-green-400"></i>
-                                <span class="text-green-400 font-medium">+5.1%</span>
+                                <span class="text-slate-400">Anlık Veri:</span>
+                                <span class="text-white font-medium" id="tooltip-coll">0.0</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Helpdesk Tickets - Elevated (330°) -->
-                <div class="metric-node helpdesk" id="metric-helpdesk"
-                    style="left: calc(50% - 65px + 250px * 0.866); top: calc(50% - 65px + 250px * 0.5);">
-                    <i class="fas fa-headset text-2xl text-red-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">TICKETS</span>
-                    <span class="text-xs text-red-400">156</span>
+                <!-- log_soc - Bottom Left (-135°) -->
+                <div class="metric-node" id="metric-soc"
+                    style="left: calc(50% - 65px - 180px); top: calc(50% - 65px + 180px);">
+                    <i class="fas fa-shield-alt text-2xl text-orange-400 mb-1"></i>
+                    <span class="text-sm font-bold text-white uppercase text-center">Güvenlik<br/>Status</span>
+                    <span class="text-xs text-orange-400 font-bold mt-1" id="val-soc">0.0</span>
 
                     <!-- Tooltip -->
                     <div class="tooltip-premium">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-sm font-bold text-white">Helpdesk Tickets</span>
-                            <span class="text-xs px-3 py-1 rounded-full bg-red-500/30 text-red-300">ELEVATED</span>
+                            <span class="text-sm font-bold text-white">Güvenlik (log_soc)</span>
+                            <span class="text-xs px-3 py-1 rounded-full bg-orange-500/30 text-orange-300">LIVE</span>
                         </div>
                         <div class="space-y-3">
                             <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Current:</span>
-                                <span class="text-white font-medium">156 open</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Threshold:</span>
-                                <span class="text-white font-medium">120</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Updated:</span>
-                                <span class="text-white font-medium">1s ago</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-xs">
-                                <span class="text-slate-400">Trend:</span>
-                                <i class="fas fa-arrow-up text-red-400"></i>
-                                <span class="text-red-400 font-medium">+18%</span>
+                                <span class="text-slate-400">Anlık Veri:</span>
+                                <span class="text-white font-medium" id="tooltip-soc">0.0</span>
                             </div>
                         </div>
-                        <div class="mt-3 pt-3 border-t border-white/10">
-                            <div class="text-[10px] text-slate-500">Recommendation: Review IT support staffing</div>
+                    </div>
+                </div>
+
+                <!-- log_task - Bottom Right (135°) -->
+                <div class="metric-node" id="metric-task"
+                    style="left: calc(50% - 65px + 180px); top: calc(50% - 65px + 180px);">
+                    <i class="fas fa-tasks text-2xl text-purple-400 mb-1"></i>
+                    <span class="text-sm font-bold text-white uppercase text-center">Görev<br/>Başarımı</span>
+                    <span class="text-xs text-purple-400 font-bold mt-1" id="val-task">0.0</span>
+
+                    <!-- Tooltip -->
+                    <div class="tooltip-premium">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-sm font-bold text-white">Görev Başarımı (log_task)</span>
+                            <span class="text-xs px-3 py-1 rounded-full bg-purple-500/30 text-purple-300">LIVE</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-slate-400">Anlık Veri:</span>
+                                <span class="text-white font-medium" id="tooltip-task">0.0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1144,51 +1124,55 @@
                     <div>
                         <h1 class="text-3xl font-bold text-white">HR Analytics Dashboard</h1>
                         <p class="text-sm text-slate-400 mt-1">Real-time employee metrics · Last 24 hours</p>
-                    </div>
-                    <div class="flex-1"></div>
-                    <div class="glass-premium-light px-4 py-2 flex items-center gap-2">
-                        <i class="fas fa-sync-alt text-[#a855f7] text-sm"></i>
-                        <span class="text-sm text-white">Live</span>
-                        <div class="w-2 h-2 rounded-full bg-[#a855f7] animate-pulse ml-2"></div>
+                        <h1 class="text-3xl font-bold text-white">Otonom Lojistik Dashboard</h1>
+                        <p class="text-sm text-slate-400 mt-1">Sistem Lojistik Metrikleri · Canlı Takip</p>
                     </div>
                 </div>
 
-                <!-- Row 1: 3 Charts - Ana Metrikler -->
-                <div class="charts-grid">
-                    <!-- Login/Logout Chart -->
-                    <div class="chart-card">
+                <!-- LOG 2x2 Main Chart Grid -->
+                <div class="charts-grid-wide">
+                    <!-- Rota Chart -->
+                    <div class="chart-card" id="card-path">
                         <div class="chart-title">
-                            <i class="fas fa-right-to-bracket text-blue-400"></i>
-                            Login/Logout Activity
-                            <span
-                                class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full ml-auto">Active</span>
+                            <i class="fas fa-route text-blue-400"></i>
+                            Rota Planlama Verimliliği (log_path)
+                            <span id="label-path" class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full ml-auto">Optimal</span>
                         </div>
-                        <div class="chart-subtitle">Last 24 hours · Avg 820 · Peak 892</div>
-                        <div id="chart-login" style="width: 100%; height: 180px;"></div>
+                        <div class="chart-subtitle">Anlık lojistik veri · ms</div>
+                        <div id="chart-path" style="width: 100%; height: 220px;"></div>
                     </div>
 
-                    <!-- Internal App Usage Chart -->
-                    <div class="chart-card">
+                    <!-- Toplama Chart -->
+                    <div class="chart-card" id="card-coll">
                         <div class="chart-title">
-                            <i class="fas fa-laptop text-green-400"></i>
-                            Internal App Usage
-                            <span
-                                class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full ml-auto">Normal</span>
+                            <i class="fas fa-boxes text-green-400"></i>
+                            Toplama Verimliliği (log_coll)
+                            <span id="label-coll" class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full ml-auto">Stable</span>
                         </div>
-                        <div class="chart-subtitle">Last 24 hours · Avg 2.3K · Peak 2.6K</div>
-                        <div id="chart-app" style="width: 100%; height: 180px;"></div>
+                        <div class="chart-subtitle">Anlık toplama verisi · Score</div>
+                        <div id="chart-coll" style="width: 100%; height: 220px;"></div>
                     </div>
 
-                    <!-- Helpdesk Tickets Chart -->
-                    <div class="chart-card">
+                    <!-- Güvenlik Chart -->
+                    <div class="chart-card" id="card-soc">
                         <div class="chart-title">
-                            <i class="fas fa-headset text-red-400"></i>
-                            Helpdesk Tickets
-                            <span
-                                class="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full ml-auto">Elevated</span>
+                            <i class="fas fa-shield-alt text-orange-400"></i>
+                            Sistem Güvenlik Durumu (log_soc)
+                            <span id="label-soc" class="text-xs bg-orange-500/20 text-orange-300 px-2 py-1 rounded-full ml-auto">Secure</span>
                         </div>
-                        <div class="chart-subtitle">Last 24 hours · Avg 128 · Peak 168</div>
-                        <div id="chart-helpdesk" style="width: 100%; height: 180px;"></div>
+                        <div class="chart-subtitle">Anlık güvenlik analizi · Level</div>
+                        <div id="chart-soc" style="width: 100%; height: 220px;"></div>
+                    </div>
+
+                    <!-- Görev Chart -->
+                    <div class="chart-card" id="card-task">
+                        <div class="chart-title">
+                            <i class="fas fa-check-circle text-purple-400"></i>
+                            Genel Görev Başarımı (log_task)
+                            <span id="label-task" class="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full ml-auto">Success</span>
+                        </div>
+                        <div class="chart-subtitle">Anlık operasyonel veri · %</div>
+                        <div id="chart-task" style="width: 100%; height: 220px;"></div>
                     </div>
                 </div>
 
@@ -1394,24 +1378,30 @@
             }, 300);
         });
 
-        // Connection lines - düzeltildi
+        // Connection lines - düzeltildi (gerçek merkez bulma)
         function createConnectionLines() {
             const container = document.getElementById('connection-lines');
             if (!container) return;
             container.innerHTML = '';
 
             const hrNode = document.getElementById('hr-primary');
-            const metrics = ['metric-login', 'metric-app', 'metric-helpdesk'];
+            const metrics = ['metric-path', 'metric-coll', 'metric-soc', 'metric-task'];
 
-            const hrRect = hrNode.getBoundingClientRect();
-            const hrCenter = { x: hrRect.left + hrRect.width / 2, y: hrRect.top + hrRect.height / 2 };
+            const parentLayer = hrNode.offsetParent || document.body;
+            // Get center relative to the offset parent
+            const hrCenter = {
+                x: hrNode.offsetLeft + hrNode.offsetWidth / 2,
+                y: hrNode.offsetTop + hrNode.offsetHeight / 2
+            };
 
             metrics.forEach(id => {
                 const metric = document.getElementById(id);
                 if (!metric) return;
 
-                const metricRect = metric.getBoundingClientRect();
-                const metricCenter = { x: metricRect.left + metricRect.width / 2, y: metricRect.top + metricRect.height / 2 };
+                const metricCenter = {
+                    x: metric.offsetLeft + metric.offsetWidth / 2,
+                    y: metric.offsetTop + metric.offsetHeight / 2
+                };
 
                 const line = document.createElement('div');
                 line.className = 'connection-line';
@@ -1772,14 +1762,17 @@
 
         // Initialize all charts
         setTimeout(() => {
-            // Login Chart (blue)
-            drawLineChart('chart-login', generateTimeSeriesData(24, 750, 892, 0.08), '#3b82f6', true, '');
+            // Erişim Yolu Chart (blue)
+            drawLineChart('chart-path', generateTimeSeriesData(24, 10, 50, 0.1), '#3b82f6', true, 'ms');
 
-            // App Usage Chart (green)
-            drawLineChart('chart-app', generateTimeSeriesData(24, 2000, 2600, 0.1), '#22c55e', true, '');
+            // İşbirliği Chart (green)
+            drawLineChart('chart-coll', generateTimeSeriesData(24, 0.5, 1.0, 0.05), '#22c55e', true, '');
 
-            // Helpdesk Chart (red)
-            drawLineChart('chart-helpdesk', generateTimeSeriesData(24, 110, 168, 0.12), '#ef4444', true, '');
+            // SOC Güvenlik Chart (orange)
+            drawLineChart('chart-soc', generateTimeSeriesData(24, 1, 10, 0.1), '#f97316', true, '');
+
+            // Görev Verimi Chart (purple)
+            drawLineChart('chart-task', generateTimeSeriesData(24, 60, 100, 0.1), '#a855f7', true, '%');
 
             // Correlation Chart
             drawScatterPlot('chart-correlation');
@@ -1826,19 +1819,25 @@
         // Menu item clicks handled by auth.js bindNavigation()
 
         // ═══════════════════════════════════════════════════════════════════
-        // LIVE DATA STREAM — GNN-AIOps (HR Department)
+        // LIVE DATA STREAM — GNN-AIOps (Logistical/HR Metrics)
         // ═══════════════════════════════════════════════════════════════════
         (function startHRLiveStream() {
-            const API = 'http://127.0.0.1:5003/api/stream';
+            const API = '/api/stream';
             const MAX_POINTS = 30;
 
-            const loginData = generateTimeSeriesData(MAX_POINTS, 750, 892, 0.08);
-            const appData = generateTimeSeriesData(MAX_POINTS, 2000, 2600, 0.1);
-            const helpdeskData = generateTimeSeriesData(MAX_POINTS, 110, 168, 0.12);
-            const forecastData = generateTimeSeriesData(MAX_POINTS, 130, 165, 0.1);
+            const pathData = [];
+            const collData = [];
+            const socData = [];
+            const taskData = [];
+
+            for(let i=0; i<MAX_POINTS; i++) {
+                pathData.push({time: i, value: 0});
+                collData.push({time: i, value: 0});
+                socData.push({time: i, value: 0});
+                taskData.push({time: i, value: 0});
+            }
 
             let tick = MAX_POINTS;
-            let anomalyActive = false;
 
             function pushValue(arr, value) {
                 arr.push({ time: tick, value: value });
@@ -1846,29 +1845,43 @@
                 arr.forEach((d, i) => d.time = i);
             }
 
-            function setAnomalyAlarm(isAnomaly) {
-                const cards = document.querySelectorAll('.chart-card');
-                if (isAnomaly && !anomalyActive) {
-                    anomalyActive = true;
-                    cards.forEach(card => {
-                        card.style.borderColor = '#ff0000';
-                        card.style.boxShadow = '0 0 30px rgba(255,0,0,0.6), 0 20px 40px -15px rgba(0,0,0,0.6)';
-                    });
-                    const hrNode = document.getElementById('hr-primary');
-                    if (hrNode) {
-                        hrNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
-                        hrNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';
+            function updateUIState(metricName, value, isAnomaly, cardId, labelId, unit = "") {
+                const card = document.getElementById(cardId);
+                const label = document.getElementById(labelId);
+                const nodeVal = document.getElementById(`val-${metricName}`);
+                const tooltipVal = document.getElementById(`tooltip-${metricName}`);
+                
+                if (nodeVal) {
+                    nodeVal.textContent = value.toFixed(2) + (unit ? " " + unit : "");
+                }
+                if (tooltipVal) {
+                    tooltipVal.textContent = value.toFixed(2) + (unit ? " " + unit : "");
+                }
+
+                if (isAnomaly) {
+                    if (card) {
+                        card.style.borderColor = '#ef4444';
+                        card.style.boxShadow = '0 0 30px rgba(239, 68, 68, 0.4)';
                     }
-                } else if (!isAnomaly && anomalyActive) {
-                    anomalyActive = false;
-                    cards.forEach(card => {
+                    if (label) {
+                        label.textContent = 'Critical';
+                        label.className = 'text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full ml-auto';
+                    }
+                } else {
+                    if (card) {
                         card.style.borderColor = '';
                         card.style.boxShadow = '';
-                    });
-                    const hrNode = document.getElementById('hr-primary');
-                    if (hrNode) {
-                        hrNode.style.background = '';
-                        hrNode.style.boxShadow = '';
+                    }
+                    if (label) {
+                        const states = {
+                            'path': { text: 'Optimal', color: 'blue' },
+                            'coll': { text: 'Optimal', color: 'green' },
+                            'soc': { text: 'Secure', color: 'orange' },
+                            'task': { text: 'Success', color: 'purple' }
+                        };
+                        const s = states[metricName] || { text: 'Normal', color: 'blue' };
+                        label.textContent = s.text;
+                        label.className = `text-xs bg-${s.color}-500/20 text-${s.color}-300 px-2 py-1 rounded-full ml-auto`;
                     }
                 }
             }
@@ -1880,32 +1893,52 @@
                     const d = await response.json();
                     tick++;
 
-                    // Scale HR metrics to display ranges
-                    const scaledLogin = 700 + d.hr_satisfaction * 220;  // 700-920 logins
-                    const scaledApp = 1800 + d.hr_income * 900;       // 1800-2700 sessions
-                    const scaledHelpdesk = 100 + d.hr_daily_rate * 80;     // 100-180 tickets
-                    const scaledForecast = 120 + d.hr_satisfaction * 60;   // 120-180 forecast
+                    // Map metrics from API (normalization handled by scale)
+                    const path = (d.log_path || 0) * 100;
+                    const coll = (d.log_coll || 0) * 5;
+                    const soc = (d.log_soc || 0) * 10;
+                    const task = (d.log_task || 0) * 100;
 
-                    pushValue(loginData, scaledLogin);
-                    pushValue(appData, scaledApp);
-                    pushValue(helpdeskData, scaledHelpdesk);
-                    pushValue(forecastData, scaledForecast);
+                    pushValue(pathData, path);
+                    pushValue(collData, coll);
+                    pushValue(socData, soc);
+                    pushValue(taskData, task);
 
                     const isAnomaly = d.anomaly === 1;
-                    const alertColor = isAnomaly ? '#ff0000' : null;
+                    const anomalyColor = isAnomaly ? '#ef4444' : null;
 
-                    drawLineChart('chart-login', loginData, alertColor || '#3b82f6', true, '');
-                    drawLineChart('chart-app', appData, alertColor || '#22c55e', true, '');
-                    drawLineChart('chart-helpdesk', helpdeskData, alertColor || '#ef4444', true, '');
-                    drawLineChart('chart-forecast', forecastData, alertColor || '#06b6d4', true, '');
+                    // Redraw specific charts
+                    drawLineChart('chart-path', pathData, anomalyColor || '#3b82f6', true, 'ms');
+                    drawLineChart('chart-coll', collData, anomalyColor || '#22c55e', true, '');
+                    drawLineChart('chart-soc', socData, anomalyColor || '#f97316', true, '');
+                    drawLineChart('chart-task', taskData, anomalyColor || '#a855f7', true, '%');
 
-                    setAnomalyAlarm(isAnomaly);
+                    // Update Cards and Nodes
+                    updateUIState('path', path, isAnomaly, 'card-path', 'label-path', 'ms');
+                    updateUIState('coll', coll, isAnomaly, 'card-coll', 'label-coll', '');
+                    updateUIState('soc', soc, isAnomaly, 'card-soc', 'label-soc', '');
+                    updateUIState('task', task, isAnomaly, 'card-task', 'label-task', '%');
+
+                    // Overall Anomaly logic for the primary node
+                    const hrNode = document.getElementById('hr-primary');
+                    if (isAnomaly) {
+                        if (hrNode) {
+                            hrNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
+                            hrNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';
+                        }
+                    } else {
+                        if (hrNode) {
+                            hrNode.style.background = '';
+                            hrNode.style.boxShadow = '';
+                        }
+                    }
 
                 } catch (err) {
-                    // Silent fail
+                    console.error("HR Stream Error:", err);
                 }
             }
 
+            // Start loop
             setTimeout(() => {
                 setInterval(fetchAndUpdate, 1000);
                 fetchAndUpdate();

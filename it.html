@@ -975,7 +975,7 @@
                 <div class="menu-icon">
                     <i class="fas fa-users"></i>
                 </div>
-                <span class="menu-text">İnsan Kaynakları</span>
+                <span class="menu-text">Otonom Lojistik</span>
                 <span class="menu-badge">2</span>
             </div>
 
@@ -1105,40 +1105,33 @@
                     </div>
                 </div>
 
-                <!-- Metric Nodes - 72° açı ile -->
-                <div class="metric-node critical" id="metric-cpu"
-                    style="left: calc(50% - 50px + 220px * 0.809); top: calc(50% - 50px + 220px * 0.588);">
-                    <i class="fas fa-microchip text-2xl text-red-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">CPU</span>
-                    <span class="text-xs text-red-400">87%</span>
+                <!-- Metric Nodes - 90° açı ile 4 düğüm -->
+                <div class="metric-node normal" id="metric-latency"
+                    style="left: calc(50% - 50px + 220px * 0); top: calc(50% - 50px + 220px * -1);">
+                    <i class="fas fa-clock text-2xl text-blue-400 mb-1"></i>
+                    <span class="text-sm font-bold text-white">LATENCY</span>
+                    <span class="text-xs text-blue-400" id="val-net_lat">-- ms</span>
                 </div>
 
-                <div class="metric-node warning" id="metric-ram"
-                    style="left: calc(50% - 50px + 220px * -0.309); top: calc(50% - 50px + 220px * 0.951);">
-                    <i class="fas fa-memory text-2xl text-yellow-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">RAM</span>
-                    <span class="text-xs text-yellow-400">74%</span>
+                <div class="metric-node normal" id="metric-throughput"
+                    style="left: calc(50% - 50px + 220px * 1); top: calc(50% - 50px + 220px * 0);">
+                    <i class="fas fa-chart-line text-2xl text-green-400 mb-1"></i>
+                    <span class="text-sm font-bold text-white">THRPT</span>
+                    <span class="text-xs text-green-400" id="val-net_thr">-- Mbps</span>
                 </div>
 
-                <div class="metric-node critical" id="metric-packet"
-                    style="left: calc(50% - 50px + 220px * -1); top: calc(50% - 50px + 220px * 0);">
+                <div class="metric-node normal" id="metric-packetloss"
+                    style="left: calc(50% - 50px + 220px * 0); top: calc(50% - 50px + 220px * 1);">
                     <i class="fas fa-times-circle text-2xl text-red-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">PACKET</span>
-                    <span class="text-xs text-red-400">12%</span>
+                    <span class="text-sm font-bold text-white">LOSS</span>
+                    <span class="text-xs text-red-400" id="val-net_p_loss">-- %</span>
                 </div>
 
-                <div class="metric-node normal" id="metric-users"
-                    style="left: calc(50% - 50px + 220px * -0.309); top: calc(50% - 50px + 220px * -0.951);">
-                    <i class="fas fa-users text-2xl text-green-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">USERS</span>
-                    <span class="text-xs text-green-400">1.2k</span>
-                </div>
-
-                <div class="metric-node warning" id="metric-bandwidth"
-                    style="left: calc(50% - 50px + 220px * 0.809); top: calc(50% - 50px + 220px * -0.588);">
-                    <i class="fas fa-wifi text-2xl text-yellow-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">BAND</span>
-                    <span class="text-xs text-yellow-400">89%</span>
+                <div class="metric-node normal" id="metric-security"
+                    style="left: calc(50% - 50px + 220px * -1); top: calc(50% - 50px + 220px * 0);">
+                    <i class="fas fa-shield-alt text-2xl text-purple-400 mb-1"></i>
+                    <span class="text-sm font-bold text-white">SECURITY</span>
+                    <span class="text-xs text-purple-400" id="val-net_sec">--</span>
                 </div>
 
                 <!-- Connection lines container -->
@@ -1171,136 +1164,62 @@
                     </div>
                 </div>
 
-                <!-- Row 1: 3 Charts -->
-                <div class="charts-grid">
-                    <!-- CPU Trend Chart -->
-                    <div class="chart-card">
+                <!-- Row 1: 2 Charts -->
+                <div class="charts-grid-wide">
+                    <!-- Latency Chart -->
+                    <div class="chart-card" id="card-latency">
                         <div class="chart-title">
-                            <i class="fas fa-microchip text-red-400"></i>
-                            CPU Usage Trend
-                            <span
-                                class="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full ml-auto">Critical</span>
+                            <i class="fas fa-clock text-blue-400"></i>
+                            Network Latency (RTT)
+                            <span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full ml-auto" id="status-latency">Stable</span>
                         </div>
-                        <div class="chart-subtitle">Last 24 hours · Avg 78% · Peak 94%</div>
-                        <div id="chart-cpu" style="width: 100%; height: 180px;"></div>
+                        <div class="chart-subtitle">Real-time round trip time monitoring (ms)</div>
+                        <div id="chart-latency" style="width: 100%; height: 220px;"></div>
                     </div>
 
-                    <!-- RAM Usage Chart -->
-                    <div class="chart-card">
+                    <!-- Throughput Chart -->
+                    <div class="chart-card" id="card-throughput">
                         <div class="chart-title">
-                            <i class="fas fa-memory text-yellow-400"></i>
-                            RAM Usage Trend
-                            <span
-                                class="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-full ml-auto">Warning</span>
+                            <i class="fas fa-chart-line text-green-400"></i>
+                            Network Throughput
+                            <span class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full ml-auto" id="status-throughput">Optimal</span>
                         </div>
-                        <div class="chart-subtitle">Last 24 hours · Avg 68% · Peak 82%</div>
-                        <div id="chart-ram" style="width: 100%; height: 180px;"></div>
+                        <div class="chart-subtitle">Direct bandwidth utilization (Mbps)</div>
+                        <div id="chart-throughput" style="width: 100%; height: 220px;"></div>
                     </div>
+                </div>
 
+                <!-- Row 2: 2 Charts -->
+                <div class="charts-grid-wide mt-6">
                     <!-- Packet Loss Chart -->
-                    <div class="chart-card">
+                    <div class="chart-card" id="card-packetloss">
                         <div class="chart-title">
                             <i class="fas fa-times-circle text-red-400"></i>
                             Packet Loss Rate
-                            <span
-                                class="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full ml-auto">Critical</span>
+                            <span class="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full ml-auto" id="status-packetloss">Normal</span>
                         </div>
-                        <div class="chart-subtitle">Last 24 hours · Avg 3.2% · Peak 12.4%</div>
-                        <div id="chart-packet" style="width: 100%; height: 180px;"></div>
-                    </div>
-                </div>
-
-                <!-- Row 2: 3 Charts -->
-                <div class="charts-grid">
-                    <!-- Bandwidth Usage -->
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            <i class="fas fa-wifi text-yellow-400"></i>
-                            Bandwidth Utilization
-                            <span
-                                class="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-full ml-auto">Warning</span>
-                        </div>
-                        <div class="chart-subtitle">Inbound vs Outbound · 1 Gbps link</div>
-                        <div id="chart-bandwidth" style="width: 100%; height: 180px;"></div>
+                        <div class="chart-subtitle">Packet transmission failure rate (%)</div>
+                        <div id="chart-packetloss" style="width: 100%; height: 220px;"></div>
                     </div>
 
-                    <!-- Active Users -->
-                    <div class="chart-card">
+                    <!-- Security Chart -->
+                    <div class="chart-card" id="card-security">
                         <div class="chart-title">
-                            <i class="fas fa-users text-green-400"></i>
-                            Active Users
-                            <span
-                                class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full ml-auto">Normal</span>
+                            <i class="fas fa-shield-alt text-purple-400"></i>
+                            Network Security State
+                            <span class="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full ml-auto" id="status-security">Secure</span>
                         </div>
-                        <div class="chart-subtitle">Concurrent sessions · Peak 2,847</div>
-                        <div id="chart-users" style="width: 100%; height: 180px;"></div>
-                    </div>
-
-                    <!-- Network Latency (RTT) -->
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            <i class="fas fa-clock text-blue-400"></i>
-                            Round Trip Time (RTT)
-                            <span
-                                class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full ml-auto">Stable</span>
-                        </div>
-                        <div class="chart-subtitle">Average 24ms · 95th percentile 42ms</div>
-                        <div id="chart-rtt" style="width: 100%; height: 180px;"></div>
-                    </div>
-                </div>
-
-                <!-- Row 3: 2 Wide Charts -->
-                <div class="charts-grid-wide">
-                    <!-- Traffic Distribution (Area Chart) -->
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            <i class="fas fa-chart-area text-purple-400"></i>
-                            Network Traffic Distribution
-                        </div>
-                        <div class="chart-subtitle">Protocol breakdown · Last 24 hours</div>
-                        <div id="chart-traffic" style="width: 100%; height: 220px;"></div>
-                    </div>
-
-                    <!-- Heatmap Style (Connection Count) -->
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            <i class="fas fa-th text-orange-400"></i>
-                            Connection Density Heatmap
-                        </div>
-                        <div class="chart-subtitle">Hourly connection count · Last 7 days</div>
-                        <div id="chart-heatmap" style="width: 100%; height: 220px;"></div>
-                    </div>
-                </div>
-
-                <!-- Row 4: 2 Wide Charts -->
-                <div class="charts-grid-wide mt-6">
-                    <!-- TCP/UDP Distribution (Donut) -->
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            <i class="fas fa-chart-pie text-pink-400"></i>
-                            Protocol Distribution
-                        </div>
-                        <div class="chart-subtitle">TCP 68% · UDP 24% · ICMP 8%</div>
-                        <div id="chart-protocol" style="width: 100%; height: 200px;"></div>
-                    </div>
-
-                    <!-- Forecast Chart -->
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            <i class="fas fa-chart-line text-cyan-400"></i>
-                            Traffic Forecast
-                        </div>
-                        <div class="chart-subtitle">Next 2 hours prediction · +2h forecast</div>
-                        <div id="chart-forecast" style="width: 100%; height: 200px;"></div>
+                        <div class="chart-subtitle">Real-time security threat assessment</div>
+                        <div id="chart-security" style="width: 100%; height: 220px;"></div>
                     </div>
                 </div>
 
                 <!-- Last updated info -->
                 <div class="flex justify-between items-center mt-8 text-xs text-slate-500">
-                    <span>Last updated: 15:24:07 UTC · Auto-refresh every 30s</span>
+                    <span>Last updated: <span id="lastUpdate">--:--:--</span> · Auto-refresh active</span>
                     <span class="flex items-center gap-2">
-                        <i class="fas fa-circle text-green-400 text-[6px]"></i>
-                        Data stream active
+                        <i class="fas fa-circle text-green-400 text-[6px]" id="dataStatusIcon"></i>
+                        <span id="dataStatusText">Data stream active</span>
                     </span>
                 </div>
             </div>
@@ -1499,7 +1418,7 @@
             finance: 'finans.html',
             hr: 'inasnKaynaklari.html',
             access: 'erişim.html',
-            ai: 'yapayZeka.html',
+            ai: 'yapayZekaV2.html',
             settings: 'ayarlar.html',
             profile: 'profil.html'
         };
@@ -1755,19 +1674,25 @@
         // Menu item clicks handled by auth.js bindNavigation()
 
         // ═══════════════════════════════════════════════════════════════════
-        // LIVE DATA STREAM — GNN-AIOps (IT Department)
+        // LIVE DATA STREAM — GNN-AIOps (Network Metrics)
         // ═══════════════════════════════════════════════════════════════════
         (function startITLiveStream() {
-            const API = 'http://127.0.0.1:5003/api/stream';
+            const API = '/api/stream'; // FastAPI'den gelen ağ verileri
             const MAX_POINTS = 30;
 
-            // Rolling data buffers
-            const cpuData = generateTimeSeriesData(MAX_POINTS, 45, 94, 0.4);
-            const ramData = generateTimeSeriesData(MAX_POINTS, 40, 82, 0.3);
-            const bwData = generateTimeSeriesData(MAX_POINTS, 40, 89, 0.25);
-            const packetData = generateTimeSeriesData(MAX_POINTS, 0.5, 12.4, 0.5);
-            const usersData = generateTimeSeriesData(MAX_POINTS, 800, 2100, 0.2);
-            const rttData = generateTimeSeriesData(MAX_POINTS, 15, 42, 0.15);
+            // rolling data buffers for 4 network metrics
+            const latencyData = [];
+            const throughputData = [];
+            const packetLossData = [];
+            const securityData = [];
+
+            // Initialize buffers with empty data
+            for(let i=0; i<MAX_POINTS; i++) {
+                latencyData.push({time: i, value: 0});
+                throughputData.push({time: i, value: 0});
+                packetLossData.push({time: i, value: 0});
+                securityData.push({time: i, value: 0});
+            }
 
             let tick = MAX_POINTS;
             let anomalyActive = false;
@@ -1775,34 +1700,36 @@
             function pushValue(arr, value) {
                 arr.push({ time: tick, value: value });
                 if (arr.length > MAX_POINTS) arr.shift();
-                // Re-index time so x-axis stays consistent
                 arr.forEach((d, i) => d.time = i);
             }
 
-            function setAnomalyAlarm(isAnomaly) {
-                const cards = document.querySelectorAll('.chart-card');
-                if (isAnomaly && !anomalyActive) {
-                    anomalyActive = true;
-                    cards.forEach(card => {
-                        card.style.borderColor = '#ff0000';
-                        card.style.boxShadow = '0 0 30px rgba(255,0,0,0.6), 0 20px 40px -15px rgba(0,0,0,0.6)';
-                    });
-                    // Flash the IT primary node
-                    const itNode = document.getElementById('it-primary');
-                    if (itNode) {
-                        itNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
-                        itNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';
+            function updateUIState(metricName, value, isAnomaly, cardId, statusId, unit = "") {
+                const card = document.getElementById(cardId);
+                const status = document.getElementById(statusId);
+                const nodeVal = document.getElementById(`val-${metricName}`);
+                
+                if (nodeVal) {
+                    nodeVal.textContent = value.toFixed(unit === "%" ? 2 : 1) + (unit ? " " + unit : "");
+                }
+
+                if (isAnomaly) {
+                    if (card) {
+                        card.style.borderColor = '#ef4444';
+                        card.style.boxShadow = '0 0 30px rgba(239, 68, 68, 0.4)';
                     }
-                } else if (!isAnomaly && anomalyActive) {
-                    anomalyActive = false;
-                    cards.forEach(card => {
+                    if (status) {
+                        status.textContent = 'Critical';
+                        status.className = 'text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full ml-auto';
+                    }
+                } else {
+                    if (card) {
                         card.style.borderColor = '';
                         card.style.boxShadow = '';
-                    });
-                    const itNode = document.getElementById('it-primary');
-                    if (itNode) {
-                        itNode.style.background = '';
-                        itNode.style.boxShadow = '';
+                    }
+                    if (status) {
+                        status.textContent = metricName === 'net_lat' ? 'Stable' : (metricName === 'net_thr' ? 'Optimal' : (metricName === 'net_p_loss' ? 'Normal' : 'Secure'));
+                        const colorClass = metricName === 'net_lat' ? 'blue' : (metricName === 'net_thr' ? 'green' : (metricName === 'net_p_loss' ? 'green' : 'purple'));
+                        status.className = `text-xs bg-${colorClass}-500/20 text-${colorClass}-300 px-2 py-1 rounded-full ml-auto`;
                     }
                 }
             }
@@ -1814,44 +1741,56 @@
                     const d = await response.json();
                     tick++;
 
-                    // Scale normalized (0-1) values to display ranges
-                    const scaledRate = d.net_rate * 100;       // 0-100%
-                    const scaledSbytes = d.net_sbytes * 100;     // 0-100 Mbps
-                    const scaledDbytes = d.net_dbytes * 100;
-                    const scaledPacket = d.net_dur * 15;         // 0-15% packet
-                    const scaledUsers = 800 + d.net_rate * 1300; // 800-2100 users
-                    const scaledRtt = 15 + d.net_sbytes * 30;  // 15-45ms
+                    // Map metrics from API
+                    const lat = d.net_lat * 100; // Simulated ms
+                    const thr = d.net_thr * 1000; // Simulated Mbps
+                    const loss = d.net_p_loss * 5; // Simulated %
+                    const sec = d.net_sec * 100; // Simulated Security Score
 
-                    pushValue(cpuData, scaledRate);
-                    pushValue(ramData, scaledSbytes);
-                    pushValue(bwData, scaledDbytes);
-                    pushValue(packetData, scaledPacket);
-                    pushValue(usersData, scaledUsers);
-                    pushValue(rttData, scaledRtt);
+                    pushValue(latencyData, lat);
+                    pushValue(throughputData, thr);
+                    pushValue(packetLossData, loss);
+                    pushValue(securityData, sec);
 
-                    // Redraw charts
                     const isAnomaly = d.anomaly === 1;
-                    const lineColor = isAnomaly ? '#ff0000' : null;
+                    const anomalyColor = isAnomaly ? '#ef4444' : null;
 
-                    drawLineChart('chart-cpu', cpuData, lineColor || '#ef4444', true);
-                    drawLineChart('chart-ram', ramData, lineColor || '#facc15', true);
-                    drawLineChart('chart-packet', packetData, lineColor || '#ef4444');
-                    drawLineChart('chart-bandwidth', bwData, lineColor || '#facc15', true);
-                    drawLineChart('chart-users', usersData, lineColor || '#22c55e', true);
-                    drawLineChart('chart-rtt', rttData, lineColor || '#60a5fa', true);
+                    // Redraw specific charts
+                    drawLineChart('chart-latency', latencyData, anomalyColor || '#60a5fa', true);
+                    drawLineChart('chart-throughput', throughputData, anomalyColor || '#22c55e', true);
+                    drawLineChart('chart-packetloss', packetLossData, anomalyColor || '#ef4444', true);
+                    drawLineChart('chart-security', securityData, anomalyColor || '#a855f7', true);
 
-                    setAnomalyAlarm(isAnomaly);
+                    // Update Cards and Nodes
+                    updateUIState('net_lat', lat, isAnomaly, 'card-latency', 'status-latency', 'ms');
+                    updateUIState('net_thr', thr, isAnomaly, 'card-throughput', 'status-throughput', 'Mbps');
+                    updateUIState('net_p_loss', loss, isAnomaly, 'card-packetloss', 'status-packetloss', '%');
+                    updateUIState('net_sec', sec, isAnomaly, 'card-security', 'status-security', '');
 
-                    // Update metric nodes display values if elements exist
-                    const cpuEl = document.querySelector('#metric-cpu .metric-value');
-                    if (cpuEl) cpuEl.textContent = scaledRate.toFixed(1) + '%';
+                    // Update global UI elements
+                    const lastUpdate = document.getElementById('lastUpdate');
+                    if (lastUpdate) lastUpdate.textContent = new Date().toLocaleTimeString();
+
+                    // Overall Anomaly logic
+                    const itNode = document.getElementById('it-primary');
+                    if (isAnomaly) {
+                        if (itNode) {
+                            itNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
+                            itNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';
+                        }
+                    } else {
+                        if (itNode) {
+                            itNode.style.background = '';
+                            itNode.style.boxShadow = '';
+                        }
+                    }
 
                 } catch (err) {
-                    // Silent fail — API might not be ready yet
+                    console.error("Stream Error:", err);
                 }
             }
 
-            // Start after charts are initialized
+            // Start after a delay to allow initial setup
             setTimeout(() => {
                 setInterval(fetchAndUpdate, 1000);
                 fetchAndUpdate();

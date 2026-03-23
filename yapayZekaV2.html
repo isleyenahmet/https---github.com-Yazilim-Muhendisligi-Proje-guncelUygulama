@@ -24,6 +24,9 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
+    <!-- Auth -->
+    <script src="auth.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -913,7 +916,7 @@
                 <div class="menu-icon">
                     <i class="fas fa-users"></i>
                 </div>
-                <span class="menu-text">İnsan Kaynakları</span>
+                <span class="menu-text">Otonom Lojistik</span>
                 <span class="menu-badge">2</span>
             </div>
 
@@ -1009,7 +1012,7 @@
         </div>
 
         <!-- Back Button -->
-        <div class="back-button" onclick="window.location.href='#'" id="backBtn">
+        <div class="back-button" onclick="window.location.href='dashboard.html'" id="backBtn">
             <i class="fas fa-arrow-left text-[#8b5cf6] text-2xl"></i>
         </div>
 
@@ -1493,7 +1496,7 @@
 
         // Back button
         document.getElementById('backBtn').addEventListener('click', () => {
-            window.location.href = '#';
+            window.location.href = 'dashboard.html';
         });
 
         // Department filter functionality
@@ -1548,13 +1551,15 @@
         }
 
         // Create charts for each department
+        let chartIT_instance, chartIoT_instance, chartFinance_instance, chartHR_instance;
+        
         function createDepartmentCharts() {
             // IT Chart
             const ctxIT = document.getElementById('chartIT').getContext('2d');
             const itHistoric = [68, 72, 75, 78, 82, 79, 85, 87, 84, 82, 79, 76, 74, 72, 75, 78, 82, 85, 87, 84, 82, 79, 76, 74];
             const itForecast = [76, 79, 83, 87, 90, 92, 94, 95];
             
-            new Chart(ctxIT, {
+            chartIT_instance = new Chart(ctxIT, {
                 type: 'line',
                 data: {
                     labels: [...generateTimeLabels(), ...['+1h', '+2h', '+3h', '+4h', '+5h', '+6h', '+7h', '+8h']],
@@ -1603,7 +1608,7 @@
             const iotHistoric = [2.1, 2.3, 2.8, 3.2, 4.1, 5.2, 6.8, 8.2, 9.1, 10.2, 11.4, 12.4, 11.8, 10.5, 9.2, 8.1, 7.2, 6.8, 7.2, 8.4, 9.8, 11.2, 12.0, 11.5];
             const iotForecast = [12.2, 13.1, 13.8, 14.2, 14.8, 15.2, 15.8, 16.1];
             
-            new Chart(ctxIoT, {
+            chartIoT_instance = new Chart(ctxIoT, {
                 type: 'line',
                 data: {
                     labels: [...generateTimeLabels(), ...['+1h', '+2h', '+3h', '+4h', '+5h', '+6h', '+7h', '+8h']],
@@ -1652,7 +1657,7 @@
             const financeHistoric = [1.2, 1.4, 1.3, 1.5, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.1, 2.9, 2.7, 2.5, 2.4, 2.3, 2.4, 2.6, 2.8, 3.0, 3.1];
             const financeForecast = [3.2, 3.4, 3.6, 3.8, 3.9, 4.0, 4.1, 4.2];
             
-            new Chart(ctxFinance, {
+            chartFinance_instance = new Chart(ctxFinance, {
                 type: 'line',
                 data: {
                     labels: [...generateTimeLabels(), ...['+1h', '+2h', '+3h', '+4h', '+5h', '+6h', '+7h', '+8h']],
@@ -1701,7 +1706,7 @@
             const hrHistoric = [45, 52, 48, 55, 62, 68, 72, 78, 82, 88, 92, 98, 105, 112, 118, 124, 132, 138, 144, 148, 152, 155, 156, 154];
             const hrForecast = [158, 162, 166, 170, 173, 176, 178, 180];
             
-            new Chart(ctxHR, {
+            chartHR_instance = new Chart(ctxHR, {
                 type: 'line',
                 data: {
                     labels: [...generateTimeLabels(), ...['+1h', '+2h', '+3h', '+4h', '+5h', '+6h', '+7h', '+8h']],
@@ -1749,31 +1754,135 @@
         // Initialize charts
         createDepartmentCharts();
 
-        // Menu item clicks (for demo)
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const dept = this.dataset.department;
-                if (dept === 'dashboard') {
-                    window.location.href = '#';
-                } else if (dept === 'it') {
-                    window.location.href = '#';
-                } else if (dept === 'iot') {
-                    window.location.href = '#';
-                } else if (dept === 'finance') {
-                    window.location.href = '#';
-                } else if (dept === 'hr') {
-                    window.location.href = '#';
-                } else if (dept === 'access') {
-                    window.location.href = '#';
-                } else if (dept === 'ai') {
-                    // Zaten AI sayfası
-                } else if (dept === 'settings') {
-                    window.location.href = '#';
-                } else if (dept === 'profile') {
-                    window.location.href = '#';
-                }
-            });
-        });
+        // Menu item clicks handled by auth.js bindNavigation()
+
+        // ═══════════════════════════════════════════════════════════════════
+        // LIVE DATA STREAM — Yapay Zeka Anomali
+        // ═══════════════════════════════════════════════════════════════════
+        (function startLiveStream() {
+            const API = 'http://127.0.0.1:5003/api/stream';
+
+            async function fetchAndUpdateLive() {
+                try {
+                    const response = await fetch(API);
+                    if (!response.ok) return;
+                    const d = await response.json();
+                    const risk = d.risk_scores || {};
+
+                    // --- Update Metrics & Central Core ---
+                    const centralCore = document.getElementById('central-ai-core');
+                    const sysHealth = document.getElementById('ai-sys-health');
+                    const sysAnomaly = document.getElementById('ai-sys-anomaly');
+                    
+                    if (sysHealth) sysHealth.textContent = Math.max(0, 100 - (d.anomaly_score * 100)).toFixed(0);
+                    if (sysAnomaly) sysAnomaly.textContent = d.anomaly ? "Risk" : "Normal";
+
+                    if (centralCore) {
+                        if (d.anomaly) {
+                            centralCore.className = 'absolute inset-0 rounded-full border border-red-500 flex items-center justify-center bg-red-500/10 shadow-[0_0_50px_rgba(239,68,68,0.5)] z-20 transition-all duration-1000';
+                        } else if (d.anomaly_score > 0.4) {
+                            centralCore.className = 'absolute inset-0 rounded-full border border-yellow-500 flex items-center justify-center bg-yellow-500/10 shadow-[0_0_30px_rgba(234,179,8,0.3)] z-20 transition-all duration-1000';
+                        } else {
+                            centralCore.className = 'absolute inset-0 rounded-full border border-white/10 flex items-center justify-center bg-gradient-to-br from-brand/10 to-purple-500/10 shadow-[0_0_50px_rgba(59,130,246,0.2)] z-20 transition-all duration-1000';
+                        }
+                    }
+
+                    // --- Helper object for realistic mapping ---
+                    const depts = {
+                        it: {
+                            score: risk.IT,
+                            badgeSel: '.anomaly-card[data-dept="it"] .anomaly-badge',
+                            currSel: '.anomaly-card[data-dept="it"] .anomaly-current',
+                            chart: chartIT_instance,
+                            val: parseInt(d.net_dur * 100),
+                            suffix: '%'
+                        },
+                        iot: {
+                            score: risk.IoT,
+                            badgeSel: '.anomaly-card[data-dept="iot"] .anomaly-badge',
+                            currSel: '.anomaly-card[data-dept="iot"] .anomaly-current',
+                            chart: chartIoT_instance,
+                            val: (d.iot_temp * 15 + 2).toFixed(1),
+                            suffix: '%'
+                        },
+                        finance: {
+                            score: risk.Finans,
+                            badgeSel: '.anomaly-card[data-dept="finance"] .anomaly-badge',
+                            currSel: '.anomaly-card[data-dept="finance"] .anomaly-current',
+                            chart: chartFinance_instance,
+                            val: (d.fin_amount * 5).toFixed(1),
+                            suffix: '%'
+                        },
+                        hr: {
+                            score: risk.HR,
+                            badgeSel: '.anomaly-card[data-dept="hr"] .anomaly-badge',
+                            currSel: '.anomaly-card[data-dept="hr"] .anomaly-current',
+                            chart: chartHR_instance,
+                            val: parseInt((1 - d.hr_satisfaction) * 150 + d.hr_age * 50),
+                            suffix: ''
+                        }
+                    };
+
+                    for (const [key, info] of Object.entries(depts)) {
+                        // Color Badges
+                        const badge = document.querySelector(info.badgeSel);
+                        if (badge) {
+                            badge.className = 'anomaly-badge flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium border ';
+                            if (info.score > 80) { // Removed global override for realistic view
+                                badge.classList.add('bg-red-500/20', 'text-red-400', 'border-red-500/30', 'animate-pulse');
+                            } else if (info.score > 40) {
+                                badge.classList.add('bg-yellow-500/20', 'text-yellow-400', 'border-yellow-500/30');
+                            } else {
+                                badge.classList.add('bg-green-500/20', 'text-green-400', 'border-green-500/30');
+                            }
+                        }
+
+                        // Update Current Stat Text
+                        const currSpan = document.querySelector(info.currSel);
+                        if (currSpan) {
+                            currSpan.textContent = `${info.val}${info.suffix}`;
+                        }
+
+                        // Push to Chart
+                        if (info.chart) {
+                            const ds = info.chart.data.datasets[0];
+                            const dataArr = ds.data.filter(x => x !== null);
+                            dataArr.push(info.val);
+                            if (dataArr.length > 24) dataArr.shift(); // Keep visual length stable
+                            
+                            // Re-pad with nulls for the forecast
+                            ds.data = [...dataArr, ...Array(8).fill(null)];
+                            
+                            // Color lines based on specific risk
+                            if (info.score > 80) {
+                                ds.borderColor = '#ef4444';
+                                ds.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                            } else if (info.score > 40) {
+                                ds.borderColor = '#facc15';
+                                ds.backgroundColor = 'rgba(250, 204, 21, 0.1)';
+                            } else {
+                                // Natural original colors dynamically resetting:
+                                if (key==='it') { ds.borderColor = '#3b82f6'; ds.backgroundColor = 'rgba(59, 130, 246, 0.1)'; }
+                                else if (key==='iot') { ds.borderColor = '#ef4444'; ds.backgroundColor = 'rgba(239, 68, 68, 0.1)'; }
+                                else if (key==='finance') { ds.borderColor = '#22c55e'; ds.backgroundColor = 'rgba(34, 197, 94, 0.1)'; }
+                                else if (key==='hr') { ds.borderColor = '#a855f7'; ds.backgroundColor = 'rgba(168, 85, 247, 0.1)'; }
+                            }
+                            
+                            info.chart.update('none'); // Update without full anim for smooth streaming
+                        }
+                    }
+                } catch(e) { /* ignore network drop */ }
+            }
+            // Poll fast for realistic fast-paced UI streaming look
+            setInterval(fetchAndUpdateLive, 1000);
+            setTimeout(fetchAndUpdateLive, 100);
+        })();
+
+        // ── Auth ──────────────────────────────────────────────────────────
+        (async () => {
+            const user = await initAuth();
+            if (!user) return;
+        })();
     </script>
 </body>
 </html>

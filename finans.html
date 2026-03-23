@@ -897,7 +897,7 @@
                 <div class="menu-icon">
                     <i class="fas fa-users"></i>
                 </div>
-                <span class="menu-text">İnsan Kaynakları</span>
+                <span class="menu-text">Otonom Lojistik</span>
                 <span class="menu-badge">2</span>
             </div>
 
@@ -1021,117 +1021,96 @@
                 <div class="node-finance-primary" id="finance-primary">
                     <div class="text-center">
                         <div class="text-sm font-extrabold text-white tracking-wider mb-1">FINANCE ERP</div>
-                        <div class="text-xs font-medium text-white/70">PRIMARY HUB</div>
+                        <div class="text-xs font-medium text-white/70">MERKEZİ YÖNETİM</div>
                     </div>
                     <div
                         class="absolute -top-3 -right-3 w-5 h-5 bg-[#FFD700] rounded-full border-2 border-white/40 animate-pulse">
                     </div>
                 </div>
 
-                <!-- Financial Metric Nodes - 120° açı ile (3 metrik) -->
-                <!-- Transaction Volume - Normal (90°) -->
-                <div class="metric-node transaction-volume" id="metric-volume"
-                    style="left: calc(50% - 65px + 250px * 0); top: calc(50% - 65px + 250px * -1);">
-                    <i class="fas fa-arrow-trend-up text-2xl text-green-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">VOLUME</span>
-                    <span class="text-xs text-green-400">1.2M</span>
+                <!-- Cost (fin_cost) - Top Left (-45°) -->
+                <div class="metric-node" id="metric-cost"
+                    style="left: calc(50% - 65px - 180px); top: calc(50% - 65px - 180px);">
+                    <i class="fas fa-coins text-2xl text-yellow-400 mb-1"></i>
+                    <span class="text-sm font-bold text-white text-center">İŞLETME<br>MALİYETİ</span>
+                    <span class="text-xs text-yellow-400 font-bold" id="val-cost">0.0</span>
 
                     <!-- Tooltip -->
                     <div class="tooltip-premium">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-sm font-bold text-white">Transaction Volume</span>
-                            <span class="text-xs px-3 py-1 rounded-full bg-green-500/30 text-green-300">NORMAL</span>
+                            <span class="text-sm font-bold text-white">İşletme Maliyet (fin_cost)</span>
+                            <span class="text-xs px-3 py-1 rounded-full bg-yellow-500/30 text-yellow-300">LIVE</span>
                         </div>
                         <div class="space-y-3">
                             <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Current:</span>
-                                <span class="text-white font-medium">1,247,893</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Threshold:</span>
-                                <span class="text-white font-medium">1.5M</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Updated:</span>
-                                <span class="text-white font-medium">2s ago</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-xs">
-                                <span class="text-slate-400">Trend:</span>
-                                <i class="fas fa-arrow-up text-green-400"></i>
-                                <span class="text-green-400 font-medium">+5.2%</span>
+                                <span class="text-slate-400">Canlı Veri:</span>
+                                <span class="text-white font-medium" id="tooltip-cost">0.0</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Auth Error Rate - Critical (210°) -->
-                <div class="metric-node auth-error" id="metric-error"
-                    style="left: calc(50% - 65px + 250px * -0.866); top: calc(50% - 65px + 250px * 0.5);">
-                    <i class="fas fa-ban text-2xl text-red-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">ERROR</span>
-                    <span class="text-xs text-red-400">3.2%</span>
+                <!-- Fraud (fin_fraud) - Top Right (45°) -->
+                <div class="metric-node" id="metric-fraud"
+                    style="left: calc(50% - 65px + 180px); top: calc(50% - 65px - 180px);">
+                    <i class="fas fa-user-shield text-2xl text-red-400 mb-1"></i>
+                    <span class="text-sm font-bold text-white text-center">SAHTEKARLIK<br>ANALİZİ</span>
+                    <span class="text-xs text-red-400 font-bold" id="val-fraud">0.0</span>
 
                     <!-- Tooltip -->
                     <div class="tooltip-premium">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-sm font-bold text-white">Auth Error Rate</span>
-                            <span class="text-xs px-3 py-1 rounded-full bg-red-500/30 text-red-300">CRITICAL</span>
+                            <span class="text-sm font-bold text-white">Sahtekarlık (fin_fraud)</span>
+                            <span class="text-xs px-3 py-1 rounded-full bg-red-500/30 text-red-300">LIVE</span>
                         </div>
                         <div class="space-y-3">
                             <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Current:</span>
-                                <span class="text-white font-medium">3.2%</span>
+                                <span class="text-slate-400">Canlı Veri:</span>
+                                <span class="text-white font-medium" id="tooltip-fraud">0.0</span>
                             </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Threshold:</span>
-                                <span class="text-white font-medium">2.0%</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Updated:</span>
-                                <span class="text-white font-medium">1s ago</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-xs">
-                                <span class="text-slate-400">Trend:</span>
-                                <i class="fas fa-arrow-up text-red-400"></i>
-                                <span class="text-red-400 font-medium">+0.8%</span>
-                            </div>
-                        </div>
-                        <div class="mt-3 pt-3 border-t border-white/10">
-                            <div class="text-[10px] text-slate-500">Recommendation: Check payment gateway</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Average Cart Value - Stable (330°) -->
-                <div class="metric-node cart-value" id="metric-cart"
-                    style="left: calc(50% - 65px + 250px * 0.866); top: calc(50% - 65px + 250px * 0.5);">
-                    <i class="fas fa-cart-shopping text-2xl text-blue-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">CART</span>
-                    <span class="text-xs text-blue-400">$245</span>
+                <!-- Risk (fin_risk) - Bottom Left (-135°) -->
+                <div class="metric-node" id="metric-risk"
+                    style="left: calc(50% - 65px - 180px); top: calc(50% - 65px + 180px);">
+                    <i class="fas fa-exclamation-triangle text-2xl text-orange-400 mb-1"></i>
+                    <span class="text-sm font-bold text-white text-center">RİSK<br>SKORU</span>
+                    <span class="text-xs text-orange-400 font-bold" id="val-risk">0.0</span>
 
                     <!-- Tooltip -->
                     <div class="tooltip-premium">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-sm font-bold text-white">Average Cart Value</span>
-                            <span class="text-xs px-3 py-1 rounded-full bg-blue-500/30 text-blue-300">STABLE</span>
+                            <span class="text-sm font-bold text-white">Risk Skoru (fin_risk)</span>
+                            <span class="text-xs px-3 py-1 rounded-full bg-orange-500/30 text-orange-300">LIVE</span>
                         </div>
                         <div class="space-y-3">
                             <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Current:</span>
-                                <span class="text-white font-medium">$245.67</span>
+                                <span class="text-slate-400">Canlı Veri:</span>
+                                <span class="text-white font-medium" id="tooltip-risk">0.0</span>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inventory (fin_inv) - Bottom Right (135°) -->
+                <div class="metric-node" id="metric-inv"
+                    style="left: calc(50% - 65px + 180px); top: calc(50% - 65px + 180px);">
+                    <i class="fas fa-boxes text-2xl text-blue-400 mb-1"></i>
+                    <span class="text-sm font-bold text-white text-center">ENVANTER<br>DURUMU</span>
+                    <span class="text-xs text-blue-400 font-bold" id="val-inv">0.0</span>
+
+                    <!-- Tooltip -->
+                    <div class="tooltip-premium">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-sm font-bold text-white">Envanter (fin_inv)</span>
+                            <span class="text-xs px-3 py-1 rounded-full bg-blue-500/30 text-blue-300">LIVE</span>
+                        </div>
+                        <div class="space-y-3">
                             <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Threshold:</span>
-                                <span class="text-white font-medium">$300</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Updated:</span>
-                                <span class="text-white font-medium">5s ago</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-xs">
-                                <span class="text-slate-400">Trend:</span>
-                                <i class="fas fa-arrow-down text-blue-400"></i>
-                                <span class="text-blue-400 font-medium">-$2.30</span>
+                                <span class="text-slate-400">Canlı Veri:</span>
+                                <span class="text-white font-medium" id="tooltip-inv">0.0</span>
                             </div>
                         </div>
                     </div>
@@ -1167,42 +1146,50 @@
                     </div>
                 </div>
 
-                <!-- Row 1: 3 Charts - Ana Metrikler -->
-                <div class="charts-grid">
-                    <!-- Transaction Volume Chart -->
-                    <div class="chart-card">
+                <!-- Finance 2x2 Main Chart Grid -->
+                <div class="charts-grid-wide">
+                    <!-- Maliyet Chart -->
+                    <div class="chart-card" id="card-cost">
                         <div class="chart-title">
-                            <i class="fas fa-arrow-trend-up text-green-400"></i>
-                            Transaction Volume
-                            <span
-                                class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full ml-auto">Normal</span>
+                            <i class="fas fa-coins text-yellow-400"></i>
+                            İşletme Maliyeti (fin_cost)
+                            <span id="label-cost" class="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-full ml-auto">Optimal</span>
                         </div>
-                        <div class="chart-subtitle">Last 24 hours · Avg 1.1M · Peak 1.3M</div>
-                        <div id="chart-volume" style="width: 100%; height: 180px;"></div>
+                        <div class="chart-subtitle">Anlık finansal veri · USD</div>
+                        <div id="chart-cost" style="width: 100%; height: 220px;"></div>
                     </div>
 
-                    <!-- Auth Error Rate Chart -->
-                    <div class="chart-card">
+                    <!-- Sahtekarlık Chart -->
+                    <div class="chart-card" id="card-fraud">
                         <div class="chart-title">
-                            <i class="fas fa-ban text-red-400"></i>
-                            Auth Error Rate
-                            <span
-                                class="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full ml-auto">Critical</span>
+                            <i class="fas fa-user-shield text-red-400"></i>
+                            Sahtekarlık Analizi (fin_fraud)
+                            <span id="label-fraud" class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full ml-auto">Safe</span>
                         </div>
-                        <div class="chart-subtitle">Last 24 hours · Avg 2.4% · Peak 3.2%</div>
-                        <div id="chart-error" style="width: 100%; height: 180px;"></div>
+                        <div class="chart-subtitle">Anlık güvenlik verisi · Index</div>
+                        <div id="chart-fraud" style="width: 100%; height: 220px;"></div>
                     </div>
 
-                    <!-- Average Cart Value Chart -->
-                    <div class="chart-card">
+                    <!-- Risk Chart -->
+                    <div class="chart-card" id="card-risk">
                         <div class="chart-title">
-                            <i class="fas fa-cart-shopping text-blue-400"></i>
-                            Average Cart Value
-                            <span
-                                class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full ml-auto">Stable</span>
+                            <i class="fas fa-exclamation-triangle text-orange-400"></i>
+                            Stratejik Risk Skoru (fin_risk)
+                            <span id="label-risk" class="text-xs bg-orange-500/20 text-orange-300 px-2 py-1 rounded-full ml-auto">Moderate</span>
                         </div>
-                        <div class="chart-subtitle">Last 24 hours · Avg $242 · Peak $248</div>
-                        <div id="chart-cart" style="width: 100%; height: 180px;"></div>
+                        <div class="chart-subtitle">Anlık risk analizi · %</div>
+                        <div id="chart-risk" style="width: 100%; height: 220px;"></div>
+                    </div>
+
+                    <!-- Envanter Chart -->
+                    <div class="chart-card" id="card-inv">
+                        <div class="chart-title">
+                            <i class="fas fa-boxes text-blue-400"></i>
+                            Operasyonel Envanter (fin_inv)
+                            <span id="label-inv" class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full ml-auto">Stable</span>
+                        </div>
+                        <div class="chart-subtitle">Anlık operasyonel veri · Units</div>
+                        <div id="chart-inv" style="width: 100%; height: 220px;"></div>
                     </div>
                 </div>
 
@@ -1408,24 +1395,31 @@
             }, 300);
         });
 
-        // Connection lines - düzeltildi
+        // Connection lines - merkez düzeltmesi yapıldı
         function createConnectionLines() {
             const container = document.getElementById('connection-lines');
             if (!container) return;
             container.innerHTML = '';
 
-            const financeNode = document.getElementById('finance-primary');
-            const metrics = ['metric-volume', 'metric-error', 'metric-cart'];
+            const finNode = document.getElementById('finance-primary');
+            const metrics = ['metric-cost', 'metric-fraud', 'metric-risk', 'metric-inv'];
 
-            const financeRect = financeNode.getBoundingClientRect();
-            const financeCenter = { x: financeRect.left + financeRect.width / 2, y: financeRect.top + financeRect.height / 2 };
+            // Sayfadaki mutlak pozisyonları offsetLeft ve offsetTop ile hesapla
+            const offsetParent = finNode.offsetParent || document.body;
+            
+            const financeCenter = { 
+                x: financeNode.offsetLeft + financeNode.offsetWidth / 2, 
+                y: financeNode.offsetTop + financeNode.offsetHeight / 2 
+            };
 
             metrics.forEach(id => {
                 const metric = document.getElementById(id);
                 if (!metric) return;
 
-                const metricRect = metric.getBoundingClientRect();
-                const metricCenter = { x: metricRect.left + metricRect.width / 2, y: metricRect.top + metricRect.height / 2 };
+                const metricCenter = { 
+                    x: metric.offsetLeft + metric.offsetWidth / 2, 
+                    y: metric.offsetTop + metric.offsetHeight / 2 
+                };
 
                 const line = document.createElement('div');
                 line.className = 'connection-line';
@@ -1768,14 +1762,17 @@
 
         // Initialize all charts
         setTimeout(() => {
-            // Volume Chart (green)
-            drawLineChart('chart-volume', generateTimeSeriesData(24, 0.9, 1.3, 0.1), '#22c55e', true, 'M');
+            // Amount Chart (green)
+            drawLineChart('chart-amount', generateTimeSeriesData(24, 0.9, 1.3, 0.1), '#22c55e', true, 'M');
 
-            // Error Chart (red)
-            drawLineChart('chart-error', generateTimeSeriesData(24, 1.8, 3.2, 0.15), '#ef4444', true, '%');
+            // Old Balance Chart (blue)
+            drawLineChart('chart-oldbal', generateTimeSeriesData(24, 1.8, 3.2, 0.15), '#3b82f6', true, 'M');
 
-            // Cart Chart (blue)
-            drawLineChart('chart-cart', generateTimeSeriesData(24, 235, 248, 0.05), '#3b82f6', true, '$');
+            // New Balance Chart (orange)
+            drawLineChart('chart-newbal', generateTimeSeriesData(24, 235, 248, 0.05), '#f97316', true, 'M');
+            
+            // Dest Balance Chart (purple)
+            drawLineChart('chart-destbal', generateTimeSeriesData(24, 235, 248, 0.05), '#a855f7', true, 'M');
 
             // Correlation Chart
             drawScatterPlot('chart-correlation');
@@ -1820,19 +1817,25 @@
         // Menu item clicks handled by auth.js bindNavigation()
 
         // ═══════════════════════════════════════════════════════════════════
-        // LIVE DATA STREAM — GNN-AIOps (Finance Department)
+        // LIVE DATA STREAM — GNN-AIOps (Finance Metrics)
         // ═══════════════════════════════════════════════════════════════════
         (function startFinanceLiveStream() {
-            const API = 'http://127.0.0.1:5003/api/stream';
+            const API = '/api/stream'; 
             const MAX_POINTS = 30;
 
-            const volumeData = generateTimeSeriesData(MAX_POINTS, 0.9, 1.3, 0.1);
-            const errorData = generateTimeSeriesData(MAX_POINTS, 1.8, 3.2, 0.15);
-            const cartData = generateTimeSeriesData(MAX_POINTS, 235, 248, 0.05);
-            const forecastData = generateTimeSeriesData(MAX_POINTS, 1.0, 1.25, 0.08);
+            const costData = [];
+            const fraudData = [];
+            const riskData = [];
+            const invData = [];
+
+            for(let i=0; i<MAX_POINTS; i++) {
+                costData.push({time: i, value: 0});
+                fraudData.push({time: i, value: 0});
+                riskData.push({time: i, value: 0});
+                invData.push({time: i, value: 0});
+            }
 
             let tick = MAX_POINTS;
-            let anomalyActive = false;
 
             function pushValue(arr, value) {
                 arr.push({ time: tick, value: value });
@@ -1840,29 +1843,43 @@
                 arr.forEach((d, i) => d.time = i);
             }
 
-            function setAnomalyAlarm(isAnomaly) {
-                const cards = document.querySelectorAll('.chart-card');
-                if (isAnomaly && !anomalyActive) {
-                    anomalyActive = true;
-                    cards.forEach(card => {
-                        card.style.borderColor = '#ff0000';
-                        card.style.boxShadow = '0 0 30px rgba(255,0,0,0.6), 0 20px 40px -15px rgba(0,0,0,0.6)';
-                    });
-                    const finNode = document.getElementById('finance-primary');
-                    if (finNode) {
-                        finNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
-                        finNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';
+            function updateUIState(metricName, value, isAnomaly, cardId, labelId, unit = "") {
+                const card = document.getElementById(cardId);
+                const label = document.getElementById(labelId);
+                const nodeVal = document.getElementById(`val-${metricName}`);
+                const tooltipVal = document.getElementById(`tooltip-${metricName}`);
+                
+                if (nodeVal) {
+                    nodeVal.textContent = value.toFixed(2) + (unit ? " " + unit : "");
+                }
+                if (tooltipVal) {
+                    tooltipVal.textContent = value.toFixed(2) + (unit ? " " + unit : "");
+                }
+
+                if (isAnomaly) {
+                    if (card) {
+                        card.style.borderColor = '#ef4444';
+                        card.style.boxShadow = '0 0 30px rgba(239, 68, 68, 0.4)';
                     }
-                } else if (!isAnomaly && anomalyActive) {
-                    anomalyActive = false;
-                    cards.forEach(card => {
+                    if (label) {
+                        label.textContent = 'Critical';
+                        label.className = 'text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full ml-auto';
+                    }
+                } else {
+                    if (card) {
                         card.style.borderColor = '';
                         card.style.boxShadow = '';
-                    });
-                    const finNode = document.getElementById('finance-primary');
-                    if (finNode) {
-                        finNode.style.background = '';
-                        finNode.style.boxShadow = '';
+                    }
+                    if (label) {
+                        const states = {
+                            'cost': { text: 'Optimal', color: 'yellow' },
+                            'fraud': { text: 'Safe', color: 'green' },
+                            'risk': { text: 'Moderate', color: 'orange' },
+                            'inv': { text: 'Stable', color: 'blue' }
+                        };
+                        const s = states[metricName] || { text: 'Normal', color: 'blue' };
+                        label.textContent = s.text;
+                        label.className = `text-xs bg-${s.color}-500/20 text-${s.color}-300 px-2 py-1 rounded-full ml-auto`;
                     }
                 }
             }
@@ -1874,33 +1891,52 @@
                     const d = await response.json();
                     tick++;
 
-                    // Scale to finance display ranges
-                    const scaledVolume = 0.7 + d.fin_amount * 0.9;             // 0.7-1.6 M
-                    const balanceDelta = Math.abs(d.fin_newbal - d.fin_oldbal); // 0-1 normalized
-                    const scaledError = 1.5 + balanceDelta * 2.5;             // 1.5-4.0 %
-                    const scaledCart = 230 + d.fin_destbal * 25;             // 230-255 $
-                    const scaledForecast = 0.9 + d.fin_amount * 0.5;           // 0.9-1.4 M
+                    // Map metrics from API (normalization handled by scale)
+                    const cost = (d.fin_cost || 0) * 1000;
+                    const fraud = (d.fin_fraud || 0) * 100;
+                    const risk = (d.fin_risk || 0) * 100;
+                    const inv = (d.fin_inv || 0) * 500;
 
-                    pushValue(volumeData, scaledVolume);
-                    pushValue(errorData, scaledError);
-                    pushValue(cartData, scaledCart);
-                    pushValue(forecastData, scaledForecast);
+                    pushValue(costData, cost);
+                    pushValue(fraudData, fraud);
+                    pushValue(riskData, risk);
+                    pushValue(invData, inv);
 
                     const isAnomaly = d.anomaly === 1;
-                    const alertColor = isAnomaly ? '#ff0000' : null;
+                    const anomalyColor = isAnomaly ? '#ef4444' : null;
 
-                    drawLineChart('chart-volume', volumeData, alertColor || '#22c55e', true, 'M');
-                    drawLineChart('chart-error', errorData, alertColor || '#ef4444', true, '%');
-                    drawLineChart('chart-cart', cartData, alertColor || '#3b82f6', true, '$');
-                    drawLineChart('chart-forecast', forecastData, alertColor || '#06b6d4', true, 'M');
+                    // Redraw specific charts
+                    drawLineChart('chart-cost', costData, anomalyColor || '#fbbf24', true, '$');
+                    drawLineChart('chart-fraud', fraudData, anomalyColor || '#ef4444', true, '');
+                    drawLineChart('chart-risk', riskData, anomalyColor || '#f97316', true, '%');
+                    drawLineChart('chart-inv', invData, anomalyColor || '#3b82f6', true, '');
 
-                    setAnomalyAlarm(isAnomaly);
+                    // Update Cards and Nodes
+                    updateUIState('cost', cost, isAnomaly, 'card-cost', 'label-cost', '$');
+                    updateUIState('fraud', fraud, isAnomaly, 'card-fraud', 'label-fraud', '');
+                    updateUIState('risk', risk, isAnomaly, 'card-risk', 'label-risk', '%');
+                    updateUIState('inv', inv, isAnomaly, 'card-inv', 'label-inv', '');
+
+                    // Overall Anomaly logic for the primary node
+                    const finNode = document.getElementById('finance-primary');
+                    if (isAnomaly) {
+                        if (finNode) {
+                            finNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
+                            finNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';
+                        }
+                    } else {
+                        if (finNode) {
+                            finNode.style.background = '';
+                            finNode.style.boxShadow = '';
+                        }
+                    }
 
                 } catch (err) {
-                    // Silent fail
+                    console.error("Finance Stream Error:", err);
                 }
             }
 
+            // Start loop
             setTimeout(() => {
                 setInterval(fetchAndUpdate, 1000);
                 fetchAndUpdate();

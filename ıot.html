@@ -901,7 +901,7 @@
                 <div class="menu-icon">
                     <i class="fas fa-users"></i>
                 </div>
-                <span class="menu-text">İnsan Kaynakları</span>
+                <span class="menu-text">Otonom Lojistik</span>
                 <span class="menu-badge">2</span>
             </div>
 
@@ -1033,144 +1033,89 @@
                 </div>
 
                 <!-- Sensor Metric Nodes - 90° açı ile (4 metrik) -->
-                <!-- Sıcaklık - Critical (45°) -->
+                <!-- iot_temp (45°) -->
                 <div class="metric-node sensor-temp" id="metric-temp"
                     style="left: calc(50% - 55px + 230px * 0.707); top: calc(50% - 55px + 230px * 0.707);">
                     <i class="fas fa-temperature-high text-2xl text-red-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">SICAKLIK</span>
-                    <span class="text-xs text-red-400">68°C</span>
+                    <span class="text-[10px] font-bold text-white uppercase text-center">Sıcaklık<br/>(iot_temp)</span>
+                    <span class="text-xs text-red-400 font-bold mt-1" id="val-temp">0</span>
 
                     <!-- Tooltip -->
                     <div class="tooltip-premium">
                         <div class="flex justify-between items-center mb-3">
                             <span class="text-sm font-bold text-white">Sıcaklık Sensörü</span>
-                            <span class="text-xs px-3 py-1 rounded-full bg-red-500/30 text-red-300">CRITICAL</span>
+                            <span class="text-xs px-3 py-1 rounded-full bg-red-500/30 text-red-300">LIVE</span>
                         </div>
                         <div class="space-y-3">
                             <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Current:</span>
-                                <span class="text-white font-medium">68°C</span>
+                                <span class="text-slate-400">Durum:</span>
+                                <span class="text-white font-medium" id="status-temp">Stable</span>
                             </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Threshold:</span>
-                                <span class="text-white font-medium">65°C</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Updated:</span>
-                                <span class="text-white font-medium">2s ago</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-xs">
-                                <span class="text-slate-400">Trend:</span>
-                                <i class="fas fa-arrow-up text-red-400"></i>
-                                <span class="text-red-400 font-medium">+2.8°C</span>
-                            </div>
-                        </div>
-                        <div class="mt-3 pt-3 border-t border-white/10">
-                            <div class="text-[10px] text-slate-500">Recommendation: Check cooling system</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Basınç - Warning (135°) -->
-                <div class="metric-node pressure" id="metric-pressure"
+                <!-- iot_vib (135°) -->
+                <div class="metric-node pressure" id="metric-vib"
                     style="left: calc(50% - 55px + 230px * -0.707); top: calc(50% - 55px + 230px * 0.707);">
-                    <i class="fas fa-gauge-high text-2xl text-blue-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">BASINÇ</span>
-                    <span class="text-xs text-blue-400">1240</span>
+                    <i class="fas fa-wave-square text-2xl text-blue-400 mb-1"></i>
+                    <span class="text-[10px] font-bold text-white uppercase text-center">Titreşim<br/>(iot_vib)</span>
+                    <span class="text-xs text-blue-400 font-bold mt-1" id="val-vib">0</span>
 
                     <!-- Tooltip -->
                     <div class="tooltip-premium">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-sm font-bold text-white">Basınç Sensörü</span>
-                            <span class="text-xs px-3 py-1 rounded-full bg-blue-500/30 text-blue-300">WARNING</span>
+                            <span class="text-sm font-bold text-white">Titreşim Analizi</span>
+                            <span class="text-xs px-3 py-1 rounded-full bg-blue-500/30 text-blue-300">LIVE</span>
                         </div>
                         <div class="space-y-3">
                             <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Current:</span>
-                                <span class="text-white font-medium">1240 psi</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Threshold:</span>
-                                <span class="text-white font-medium">1200 psi</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Updated:</span>
-                                <span class="text-white font-medium">4s ago</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-xs">
-                                <span class="text-slate-400">Trend:</span>
-                                <i class="fas fa-arrow-up text-blue-400"></i>
-                                <span class="text-blue-400 font-medium">+40 psi</span>
+                                <span class="text-slate-400">Durum:</span>
+                                <span class="text-white font-medium" id="status-vib">Normal</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Nem - Normal (225°) -->
-                <div class="metric-node humidity" id="metric-humidity"
+                <!-- iot_cycle (225°) -->
+                <div class="metric-node humidity" id="metric-cycle"
                     style="left: calc(50% - 55px + 230px * -0.707); top: calc(50% - 55px + 230px * -0.707);">
-                    <i class="fas fa-droplet text-2xl text-green-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">NEM</span>
-                    <span class="text-xs text-green-400">45%</span>
+                    <i class="fas fa-redo text-2xl text-green-400 mb-1"></i>
+                    <span class="text-[10px] font-bold text-white uppercase text-center">Döngü<br/>(iot_cycle)</span>
+                    <span class="text-xs text-green-400 font-bold mt-1" id="val-cycle">0</span>
 
                     <!-- Tooltip -->
                     <div class="tooltip-premium">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-sm font-bold text-white">Nem Sensörü</span>
-                            <span class="text-xs px-3 py-1 rounded-full bg-green-500/30 text-green-300">NORMAL</span>
+                            <span class="text-sm font-bold text-white">Döngü Sayısı</span>
+                            <span class="text-xs px-3 py-1 rounded-full bg-green-500/30 text-green-300">LIVE</span>
                         </div>
                         <div class="space-y-3">
                             <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Current:</span>
-                                <span class="text-white font-medium">45%</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Threshold:</span>
-                                <span class="text-white font-medium">60%</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Updated:</span>
-                                <span class="text-white font-medium">6s ago</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-xs">
-                                <span class="text-slate-400">Trend:</span>
-                                <i class="fas fa-arrow-down text-green-400"></i>
-                                <span class="text-green-400 font-medium">-2%</span>
+                                <span class="text-slate-400">Durum:</span>
+                                <span class="text-white font-medium" id="status-cycle">Normal</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Titreşim - Warning (315°) -->
-                <div class="metric-node vibration" id="metric-vibration"
+                <!-- iot_torque (315°) -->
+                <div class="metric-node vibration" id="metric-torque"
                     style="left: calc(50% - 55px + 230px * 0.707); top: calc(50% - 55px + 230px * -0.707);">
-                    <i class="fas fa-wave-square text-2xl text-purple-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">TİTREŞİM</span>
-                    <span class="text-xs text-purple-400">2.8</span>
+                    <i class="fas fa-tools text-2xl text-purple-400 mb-1"></i>
+                    <span class="text-[10px] font-bold text-white uppercase text-center">Tork<br/>(iot_torq)</span>
+                    <span class="text-xs text-purple-400 font-bold mt-1" id="val-torq">0</span>
 
                     <!-- Tooltip -->
                     <div class="tooltip-premium">
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-sm font-bold text-white">Titreşim Sensörü</span>
-                            <span class="text-xs px-3 py-1 rounded-full bg-purple-500/30 text-purple-300">WARNING</span>
+                            <span class="text-sm font-bold text-white">Tork Seviyesi</span>
+                            <span class="text-xs px-3 py-1 rounded-full bg-purple-500/30 text-purple-300">LIVE</span>
                         </div>
                         <div class="space-y-3">
                             <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Current:</span>
-                                <span class="text-white font-medium">2.8 mm/s</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Threshold:</span>
-                                <span class="text-white font-medium">2.5 mm/s</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-slate-400">Updated:</span>
-                                <span class="text-white font-medium">3s ago</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-xs">
-                                <span class="text-slate-400">Trend:</span>
-                                <i class="fas fa-arrow-up text-purple-400"></i>
-                                <span class="text-purple-400 font-medium">+0.3 mm/s</span>
+                                <span class="text-slate-400">Durum:</span>
+                                <span class="text-white font-medium" id="status-torq">Normal</span>
                             </div>
                         </div>
                     </div>
@@ -1206,103 +1151,50 @@
                     </div>
                 </div>
 
-                <!-- Row 1: 2 Charts - Sıcaklık & Basınç -->
-                <div class="charts-grid">
+                <!-- IoT 2x2 Main Chart Grid -->
+                <div class="charts-grid-wide">
                     <!-- Sıcaklık Chart -->
-                    <div class="chart-card">
+                    <div class="chart-card" id="card-temp">
                         <div class="chart-title">
                             <i class="fas fa-temperature-high text-red-400"></i>
-                            Sıcaklık Trendi
-                            <span
-                                class="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full ml-auto">Critical</span>
+                            Sıcaklık Trendi (iot_temp)
+                            <span id="label-temp" class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full ml-auto">Stable</span>
                         </div>
-                        <div class="chart-subtitle">Last 24 hours · Avg 64°C · Peak 68°C</div>
-                        <div id="chart-temp" style="width: 100%; height: 200px;"></div>
-                    </div>
-
-                    <!-- Basınç Chart -->
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            <i class="fas fa-gauge-high text-blue-400"></i>
-                            Basınç Seviyesi
-                            <span
-                                class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full ml-auto">Warning</span>
-                        </div>
-                        <div class="chart-subtitle">Last 24 hours · Avg 1190 psi · Peak 1240 psi</div>
-                        <div id="chart-pressure" style="width: 100%; height: 200px;"></div>
-                    </div>
-                </div>
-
-                <!-- Row 2: 2 Charts - Nem & Titreşim -->
-                <div class="charts-grid">
-                    <!-- Nem Chart -->
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            <i class="fas fa-droplet text-green-400"></i>
-                            Nem Oranı
-                            <span
-                                class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full ml-auto">Normal</span>
-                        </div>
-                        <div class="chart-subtitle">Last 24 hours · Avg 46% · Peak 52%</div>
-                        <div id="chart-humidity" style="width: 100%; height: 200px;"></div>
+                        <div class="chart-subtitle">Anlık sensör verisi · Celsius</div>
+                        <div id="chart-temp" style="width: 100%; height: 220px;"></div>
                     </div>
 
                     <!-- Titreşim Chart -->
-                    <div class="chart-card">
+                    <div class="chart-card" id="card-vib">
                         <div class="chart-title">
-                            <i class="fas fa-wave-square text-purple-400"></i>
-                            Titreşim Seviyesi
-                            <span
-                                class="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full ml-auto">Warning</span>
+                            <i class="fas fa-wave-square text-blue-400"></i>
+                            Titreşim Seviyesi (iot_vib)
+                            <span id="label-vib" class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full ml-auto">Optimal</span>
                         </div>
-                        <div class="chart-subtitle">Last 24 hours · Avg 2.4 mm/s · Peak 2.8 mm/s</div>
-                        <div id="chart-vibration" style="width: 100%; height: 200px;"></div>
-                    </div>
-                </div>
-
-                <!-- Row 3: 2 Wide Charts - Korelasyon Analizi -->
-                <div class="charts-grid-wide">
-                    <!-- Sıcaklık vs Basınç Korelasyon -->
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            <i class="fas fa-chart-scatter text-purple-400"></i>
-                            Sıcaklık vs Basınç Korelasyonu
-                        </div>
-                        <div class="chart-subtitle">Last 24 hours · Korelasyon katsayısı: 0.82</div>
-                        <div id="chart-correlation" style="width: 100%; height: 220px;"></div>
+                        <div class="chart-subtitle">Anlık sensör verisi · Hz/G</div>
+                        <div id="chart-vib" style="width: 100%; height: 220px;"></div>
                     </div>
 
-                    <!-- Sensor Health Heatmap -->
-                    <div class="chart-card">
+                    <!-- Döngü Chart -->
+                    <div class="chart-card" id="card-cycle">
                         <div class="chart-title">
-                            <i class="fas fa-th text-orange-400"></i>
-                            Sensor Sağlık Heatmap
+                            <i class="fas fa-redo text-green-400"></i>
+                            Döngü Verimliliği (iot_cycle)
+                            <span id="label-cycle" class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full ml-auto">Normal</span>
                         </div>
-                        <div class="chart-subtitle">Hourly sensor status · Last 7 days</div>
-                        <div id="chart-heatmap" style="width: 100%; height: 220px;"></div>
-                    </div>
-                </div>
-
-                <!-- Row 4: 2 Wide Charts - Distribution & Forecast -->
-                <div class="charts-grid-wide mt-6">
-                    <!-- Sensor Distribution (Donut) -->
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            <i class="fas fa-chart-pie text-pink-400"></i>
-                            Sensor Alert Dağılımı
-                        </div>
-                        <div class="chart-subtitle">Critical 20% · Warning 35% · Normal 45%</div>
-                        <div id="chart-distribution" style="width: 100%; height: 200px;"></div>
+                        <div class="chart-subtitle">Anlık operasyonel veri · %</div>
+                        <div id="chart-cycle" style="width: 100%; height: 220px;"></div>
                     </div>
 
-                    <!-- Forecast Chart -->
-                    <div class="chart-card">
+                    <!-- Tork Chart -->
+                    <div class="chart-card" id="card-torq">
                         <div class="chart-title">
-                            <i class="fas fa-chart-line text-cyan-400"></i>
-                            Sıcaklık Tahmini
+                            <i class="fas fa-tools text-purple-400"></i>
+                            Tork Seviyesi (iot_torq)
+                            <span id="label-torq" class="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full ml-auto">Secure</span>
                         </div>
-                        <div class="chart-subtitle">Next 2 hours prediction · +2h forecast</div>
-                        <div id="chart-forecast" style="width: 100%; height: 200px;"></div>
+                        <div class="chart-subtitle">Anlık mekanik veri · Nm</div>
+                        <div id="chart-torq" style="width: 100%; height: 220px;"></div>
                     </div>
                 </div>
 
@@ -1445,17 +1337,23 @@
             container.innerHTML = '';
 
             const iotNode = document.getElementById('iot-primary');
-            const metrics = ['metric-temp', 'metric-pressure', 'metric-humidity', 'metric-vibration'];
+            const metrics = ['metric-temp', 'metric-vib', 'metric-cycle', 'metric-torque'];
 
-            const iotRect = iotNode.getBoundingClientRect();
-            const iotCenter = { x: iotRect.left + iotRect.width / 2, y: iotRect.top + iotRect.height / 2 };
+            const parentLayer = iotNode.offsetParent || document.body;
+            // Get center relative to the offset parent
+            const iotCenter = {
+                x: iotNode.offsetLeft + iotNode.offsetWidth / 2,
+                y: iotNode.offsetTop + iotNode.offsetHeight / 2
+            };
 
             metrics.forEach(id => {
                 const metric = document.getElementById(id);
                 if (!metric) return;
 
-                const metricRect = metric.getBoundingClientRect();
-                const metricCenter = { x: metricRect.left + metricRect.width / 2, y: metricRect.top + metricRect.height / 2 };
+                const metricCenter = {
+                    x: metric.offsetLeft + metric.offsetWidth / 2,
+                    y: metric.offsetTop + metric.offsetHeight / 2
+                };
 
                 const line = document.createElement('div');
                 line.className = 'connection-line';
@@ -1752,16 +1650,16 @@
         // Initialize all charts
         setTimeout(() => {
             // Temperature Chart (red)
-            drawLineChart('chart-temp', generateTimeSeriesData(24, 58, 68, 0.15), '#ef4444', true, '°C');
+            drawLineChart('chart-temp', generateTimeSeriesData(24, 0, 100, 0.05), '#ef4444', true, ' °C');
 
-            // Pressure Chart (blue)
-            drawLineChart('chart-pressure', generateTimeSeriesData(24, 1150, 1240, 0.1), '#3b82f6', true, ' psi');
+            // Speed Chart (blue)
+            drawLineChart('chart-speed', generateTimeSeriesData(24, 0, 100, 0.05), '#3b82f6', true, ' RPM');
 
-            // Humidity Chart (green)
-            drawLineChart('chart-humidity', generateTimeSeriesData(24, 42, 52, 0.12), '#22c55e', true, '%');
+            // Wear Chart (green)
+            drawLineChart('chart-wear', generateTimeSeriesData(24, 0, 100, 0.05), '#22c55e', true, ' %');
 
-            // Vibration Chart (purple)
-            drawLineChart('chart-vibration', generateTimeSeriesData(24, 2.1, 2.8, 0.1), '#a855f7', true, ' mm/s');
+            // Torque Chart (purple)
+            drawLineChart('chart-torque', generateTimeSeriesData(24, 0, 100, 0.05), '#a855f7', true, ' Nm');
 
             // Correlation Chart
             drawScatterPlot('chart-correlation');
@@ -1796,20 +1694,27 @@
         // Menu item clicks handled by auth.js bindNavigation()
 
         // ═══════════════════════════════════════════════════════════════════
-        // LIVE DATA STREAM — GNN-AIOps (IoT Department)
+        // LIVE DATA STREAM — GNN-AIOps (IoT Metrics)
         // ═══════════════════════════════════════════════════════════════════
         (function startIoTLiveStream() {
-            const API = 'http://127.0.0.1:5003/api/stream';
+            const API = '/api/stream'; 
             const MAX_POINTS = 30;
 
-            // Rolling buffers
-            const tempData = generateTimeSeriesData(MAX_POINTS, 58, 68, 0.15);
-            const pressureData = generateTimeSeriesData(MAX_POINTS, 1150, 1240, 0.1);
-            const humidityData = generateTimeSeriesData(MAX_POINTS, 42, 52, 0.12);
-            const vibData = generateTimeSeriesData(MAX_POINTS, 2.1, 2.8, 0.1);
+            // rolling data buffers for 4 IoT metrics
+            const tempData = [];
+            const vibData = [];
+            const cycleData = [];
+            const torqData = [];
+
+            // Initialize buffers with empty data
+            for(let i=0; i<MAX_POINTS; i++) {
+                tempData.push({time: i, value: 0});
+                vibData.push({time: i, value: 0});
+                cycleData.push({time: i, value: 0});
+                torqData.push({time: i, value: 0});
+            }
 
             let tick = MAX_POINTS;
-            let anomalyActive = false;
 
             function pushValue(arr, value) {
                 arr.push({ time: tick, value: value });
@@ -1817,30 +1722,37 @@
                 arr.forEach((d, i) => d.time = i);
             }
 
-            function setAnomalyAlarm(isAnomaly) {
-                const cards = document.querySelectorAll('.chart-card');
-                if (isAnomaly && !anomalyActive) {
-                    anomalyActive = true;
-                    cards.forEach(card => {
-                        card.style.borderColor = '#ff0000';
-                        card.style.boxShadow = '0 0 30px rgba(255,0,0,0.6), 0 20px 40px -15px rgba(0,0,0,0.6)';
-                    });
-                    const iotNode = document.getElementById('iot-primary');
-                    if (iotNode) {
-                        iotNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
-                        iotNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';
+            function updateUIState(metricName, value, isAnomaly, cardId, labelId, unit = "") {
+                const card = document.getElementById(cardId);
+                const label = document.getElementById(labelId);
+                const nodeVal = document.getElementById(`val-${metricName}`);
+                const statusNode = document.getElementById(`status-${metricName}`);
+                
+                if (nodeVal) {
+                    nodeVal.textContent = value.toFixed(unit === "%" ? 1 : 2) + (unit ? " " + unit : "");
+                }
+
+                if (isAnomaly) {
+                    if (card) {
+                        card.style.borderColor = '#ef4444';
+                        card.style.boxShadow = '0 0 30px rgba(239, 68, 68, 0.4)';
                     }
-                } else if (!isAnomaly && anomalyActive) {
-                    anomalyActive = false;
-                    cards.forEach(card => {
+                    if (label) {
+                        label.textContent = 'Critical';
+                        label.className = 'text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full ml-auto';
+                    }
+                    if (statusNode) statusNode.textContent = 'Critical';
+                } else {
+                    if (card) {
                         card.style.borderColor = '';
                         card.style.boxShadow = '';
-                    });
-                    const iotNode = document.getElementById('iot-primary');
-                    if (iotNode) {
-                        iotNode.style.background = '';
-                        iotNode.style.boxShadow = '';
                     }
+                    if (label) {
+                        label.textContent = metricName === 'temp' ? 'Stable' : (metricName === 'vib' ? 'Normal' : (metricName === 'cycle' ? 'Optimal' : 'Secure'));
+                        const colorClass = metricName === 'temp' ? 'blue' : (metricName === 'vib' ? 'blue' : (metricName === 'cycle' ? 'green' : 'purple'));
+                        label.className = `text-xs bg-${colorClass}-500/20 text-${colorClass}-300 px-2 py-1 rounded-full ml-auto`;
+                    }
+                    if (statusNode) statusNode.textContent = 'Normal';
                 }
             }
 
@@ -1851,32 +1763,52 @@
                     const d = await response.json();
                     tick++;
 
-                    // Scale normalized values to IoT sensor ranges
-                    const scaledTemp = 55 + d.iot_temp * 20;        // 55-75°C
-                    const scaledPressure = 1100 + d.iot_speed * 180;    // 1100-1280 psi
-                    const scaledHumidity = 38 + d.iot_wear * 20;        // 38-58%
-                    const scaledVib = 1.8 + d.iot_torque * 1.5;   // 1.8-3.3 mm/s
+                    // Map metrics from API (normalization handled by scale)
+                    const temp = (d.iot_temp || 0) * 100;
+                    const vib = (d.iot_vib || 0) * 100;
+                    const cycle = (d.iot_cycle || 0) * 100;
+                    const torq = (d.iot_torq || 0) * 100;
 
-                    pushValue(tempData, scaledTemp);
-                    pushValue(pressureData, scaledPressure);
-                    pushValue(humidityData, scaledHumidity);
-                    pushValue(vibData, scaledVib);
+                    pushValue(tempData, temp);
+                    pushValue(vibData, vib);
+                    pushValue(cycleData, cycle);
+                    pushValue(torqData, torq);
 
                     const isAnomaly = d.anomaly === 1;
-                    const alertColor = isAnomaly ? '#ff0000' : null;
+                    const anomalyColor = isAnomaly ? '#ef4444' : null;
 
-                    drawLineChart('chart-temp', tempData, alertColor || '#ef4444', true, '°C');
-                    drawLineChart('chart-pressure', pressureData, alertColor || '#3b82f6', true, ' psi');
-                    drawLineChart('chart-humidity', humidityData, alertColor || '#22c55e', true, '%');
-                    drawLineChart('chart-vibration', vibData, alertColor || '#a855f7', true, ' mm/s');
+                    // Redraw specific charts
+                    drawLineChart('chart-temp', tempData, anomalyColor || '#ef4444', true, '°C');
+                    drawLineChart('chart-vib', vibData, anomalyColor || '#3b82f6', true, 'Hz');
+                    drawLineChart('chart-cycle', cycleData, anomalyColor || '#22c55e', true, '%');
+                    drawLineChart('chart-torq', torqData, anomalyColor || '#a855f7', true, 'Nm');
 
-                    setAnomalyAlarm(isAnomaly);
+                    // Update Cards and Nodes
+                    updateUIState('temp', temp, isAnomaly, 'card-temp', 'label-temp', '°C');
+                    updateUIState('vib', vib, isAnomaly, 'card-vib', 'label-vib', 'Hz');
+                    updateUIState('cycle', cycle, isAnomaly, 'card-cycle', 'label-cycle', '%');
+                    updateUIState('torq', torq, isAnomaly, 'card-torq', 'label-torq', 'Nm');
+
+                    // Overall Anomaly logic for the primary node
+                    const iotNode = document.getElementById('iot-primary');
+                    if (isAnomaly) {
+                        if (iotNode) {
+                            iotNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
+                            iotNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';
+                        }
+                    } else {
+                        if (iotNode) {
+                            iotNode.style.background = '';
+                            iotNode.style.boxShadow = '';
+                        }
+                    }
 
                 } catch (err) {
-                    // Silent fail
+                    console.error("IoT Stream Error:", err);
                 }
             }
 
+            // Start loop
             setTimeout(() => {
                 setInterval(fetchAndUpdate, 1000);
                 fetchAndUpdate();
