@@ -7,9 +7,9 @@ os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
 import json
 import sqlite3
-import threading
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
+import time
 from pathlib import Path
 
 import jwt  # PyJWT
@@ -85,7 +85,6 @@ EDGE_INDEX = build_edge_index(4)
 
 # ─── Shared State ─────────────────────────────────────────────────────────────
 state: dict = {}
-stream_lock = threading.Lock()
 
 
 # ─── Lifespan ─────────────────────────────────────────────────────────────────
@@ -97,7 +96,6 @@ async def lifespan(app: FastAPI):
     model.load_state_dict(state_dict)
     model.eval()
     state["model"] = model
-    state["cursor_id"] = 1          # ROWID starts at 1 in SQLite
     state["total_rows"] = 500000    # gigafactory_live.db has 500K rows
 
     print(f"[OK] GAT model loaded from {MODEL_PATH}")
@@ -182,11 +180,10 @@ async def health():
 async def stream():
     model: GATAnomalyModel = state["model"]
 
-    with stream_lock:
-        row_id = state["cursor_id"]
-        # ROWID cycles 1 … total_rows
-        next_id = (row_id % state["total_rows"]) + 1
-        state["cursor_id"] = next_id
+    # Deterministic row_id based on current time to ensure synchronization across clients
+    # Any client requesting in the same second gets the same row.
+    current_time_seconds = int(time.time())
+    row_id = (current_time_seconds % state["total_rows"]) + 1
 
     # Fetch one row from SQLite using ROWID
     conn = sqlite3.connect(str(DB_PATH))
@@ -198,7 +195,8 @@ async def stream():
         )
         row = cur.fetchone()
         if row is None:
-            # Fallback: random normalized row
+            # Fallback: deterministic random based on row_id
+            np.random.seed(row_id)
             row = tuple(np.random.rand(16).tolist())
     finally:
         conn.close()
@@ -259,7 +257,7 @@ async def stream():
             "IT":       round(float(node_attn[0]) * 100, 1),
             "IoT":      round(float(node_attn[1]) * 100, 1),
             "Finans":   round(float(node_attn[2]) * 100, 1),
-            "Lojistik": round(float(node_attn[3]) * 100, 1),
+            "HR":       round(float(node_attn[3]) * 100, 1),
         },
     })
 

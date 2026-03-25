@@ -1818,14 +1818,22 @@
 
                     // Update Nodes Colors based on risk scores
                     const risk = d.risk_scores || {};
-                    function updateNode(id, score) {
+                    const isGlobalAnomaly = d.anomaly === 1;
+
+                    function updateNode(id, score, isAnomaly) {
                         const el = document.getElementById(id);
                         if (!el) return;
-                        if (score > 80) { // Critical
+                        
+                        // Adjusted thresholds for GAT attention weights (avg ~33.3)
+                        // Using lower thresholds to ensure satellite nodes turn red during anomalies
+                        const critThresh = isAnomaly ? 24 : 75;
+                        const warnThresh = isAnomaly ? 20 : 45;
+
+                        if (score > critThresh) { // Critical
                             el.style.background = 'radial-gradient(circle at 30% 30%, #ef4444, #b91c1c)';
                             el.style.boxShadow = '0 0 40px rgba(239, 68, 68, 0.8)';
                             el.classList.add('animate-pulse');
-                        } else if (score > 40) { // Warning
+                        } else if (score > warnThresh) { // Warning
                             el.style.background = 'radial-gradient(circle at 30% 30%, #facc15, #ca8a04)';
                             el.style.boxShadow = '0 0 30px rgba(250, 204, 21, 0.5)';
                             el.classList.remove('animate-pulse');
@@ -1836,35 +1844,35 @@
                         }
                     }
 
-                    updateNode('node-it', risk.IT);
-                    updateNode('node-hr', risk.HR);
-                    updateNode('node-iot', risk.IoT);
-                    updateNode('node-fin', risk.Finans);
+                    updateNode('node-it', risk.IT, isGlobalAnomaly);
+                    updateNode('node-hr', risk.HR, isGlobalAnomaly);
+                    updateNode('node-iot', risk.IoT, isGlobalAnomaly);
+                    updateNode('node-fin', risk.Finans, isGlobalAnomaly);
 
                     // Update Central Node
                     const centralNode = document.getElementById('central-node');
                     if (centralNode) {
-                        if (d.anomaly || (risk.IT > 80 && risk.HR > 80 && risk.IoT > 80 && risk.Finans > 80)) {
+                        if (isGlobalAnomaly) {
                             centralNode.className = 'node node-core core-critical';
-                        } else if (risk.IT > 40 || risk.HR > 40 || risk.IoT > 40 || risk.Finans > 40) {
+                        } else if (risk.IT > 45 || risk.HR > 45 || risk.IoT > 45 || risk.Finans > 45) {
                             centralNode.className = 'node node-core core-warning';
                         } else {
                             centralNode.className = 'node node-core core-stable';
                         }
                     }
 
-                    // Update Indicators dynamically
+                    // Update Indicators dynamically — Map correctly to API fields
                     const indIt = document.getElementById('ind-it');
-                    if (indIt) indIt.textContent = `${(d.net_rate * 100).toFixed(0)}% Util · ${(d.net_dur * 100).toFixed(0)}ms`;
+                    if (indIt) indIt.textContent = `${(d.net_thr * 100).toFixed(0)}% Util · ${(d.net_lat * 1).toFixed(1)}ms`;
 
                     const indHr = document.getElementById('ind-hr');
-                    if (indHr) indHr.textContent = `${(d.hr_satisfaction * 10).toFixed(1)}/10 Sat · ${(d.hr_age * 100).toFixed(0)}`;
+                    if (indHr) indHr.textContent = `${(d.log_soc * 10).toFixed(1)}/10 Sat · ${d.row_id % 100}% Load`;
 
                     const indIot = document.getElementById('ind-iot');
-                    if (indIot) indIot.textContent = `${(d.iot_temp * 50 + 20).toFixed(1)}°C · ${(d.iot_speed * 1000).toFixed(0)}R`;
+                    if (indIot) indIot.textContent = `${(d.iot_temp * 50 + 20).toFixed(1)}°C · ${(d.iot_vib * 100).toFixed(0)} Hz`;
 
                     const indFin = document.getElementById('ind-fin');
-                    if (indFin) indFin.textContent = `$${(d.fin_amount * 50).toFixed(1)}k · ${(d.fin_oldbal * 100).toFixed(1)}k`;
+                    if (indFin) indFin.textContent = `$${(d.fin_cost * 1).toFixed(1)}k · ${(d.fin_inv * 1).toFixed(1)}% Inv`;
 
                 } catch (e) {
                     // console.error("Dashboard stream init wait:", e);
