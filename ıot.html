@@ -58,7 +58,7 @@
             z-index: 1000;
         }
 
-        /* Grid overlay - IoT için kırmızı tonları */
+        /* Grid overlay - IoT için mavi tonları */
         .grid-overlay {
             position: fixed;
             top: 0;
@@ -66,8 +66,8 @@
             width: 100%;
             height: 100%;
             background-image:
-                linear-gradient(rgba(239, 68, 68, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(239, 68, 68, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
             background-size: 40px 40px;
             pointer-events: none;
             z-index: 5;
@@ -78,11 +78,11 @@
             background: rgba(10, 15, 25, 0.4);
             backdrop-filter: blur(16px) saturate(180%);
             -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border: 1px solid rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.15);
             border-radius: 24px;
             box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8),
-                0 0 0 1px rgba(239, 68, 68, 0.1) inset,
-                0 0 30px -10px rgba(239, 68, 68, 0.3);
+                0 0 0 1px rgba(56, 189, 248, 0.1) inset,
+                0 0 30px -10px rgba(56, 189, 248, 0.3);
         }
 
         .glass-premium-light {
@@ -103,7 +103,7 @@
             background: rgba(5, 10, 18, 0.85);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(239, 68, 68, 0.15);
+            border-right: 1px solid rgba(56, 189, 248, 0.15);
             z-index: 100;
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
@@ -138,12 +138,12 @@
             width: 40px;
             height: 40px;
             min-width: 40px;
-            background: radial-gradient(circle at 30% 30%, #ef4444, #991b1b);
+            background: radial-gradient(circle at 30% 30%, #38bdf8, #0369a1);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
         }
 
         .logo-text {
@@ -174,9 +174,9 @@
         }
 
         .collapse-btn:hover {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: rgba(239, 68, 68, 0.3);
-            color: #ef4444;
+            background: rgba(56, 189, 248, 0.1);
+            border-color: rgba(56, 189, 248, 0.3);
+            color: #38bdf8;
         }
 
         .sidebar-menu {
@@ -204,13 +204,13 @@
             top: 0;
             height: 100%;
             width: 0;
-            background: linear-gradient(90deg, rgba(239, 68, 68, 0.15), transparent);
+            background: linear-gradient(90deg, rgba(56, 189, 248, 0.15), transparent);
             transition: width 0.3s ease;
             z-index: -1;
         }
 
         .menu-item:hover {
-            background: rgba(239, 68, 68, 0.05);
+            background: rgba(56, 189, 248, 0.05);
             color: white;
         }
 
@@ -219,14 +219,14 @@
         }
 
         .menu-item.active {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
         }
 
         .menu-item.active::before {
             width: 4px;
-            background: #ef4444;
+            background: #38bdf8;
         }
 
         .menu-icon {
@@ -253,8 +253,8 @@
 
         .menu-badge {
             margin-left: auto;
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
             font-size: 10px;
             padding: 2px 6px;
             border-radius: 12px;
@@ -313,8 +313,8 @@
             position: absolute;
             width: 180px;
             height: 180px;
-            background: radial-gradient(circle at 30% 30%, #ef4444, #991b1b);
-            box-shadow: 0 0 80px #ef4444, 0 0 150px rgba(239, 68, 68, 0.5), 0 0 200px rgba(239, 68, 68, 0.2);
+            background: radial-gradient(circle at 30% 30%, #38bdf8, #0369a1);
+            box-shadow: 0 0 80px #38bdf8, 0 0 150px rgba(56, 189, 248, 0.5), 0 0 200px rgba(56, 189, 248, 0.2);
             left: calc(50% - 90px);
             top: calc(50% - 90px);
             border: 3px solid rgba(255, 255, 255, 0.5);
@@ -348,7 +348,7 @@
             top: -50%;
             left: -50%;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(239, 68, 68, 0.3) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.3) 0%, transparent 70%);
             z-index: -1;
             animation: glowPulse 3s ease-in-out infinite;
         }
@@ -390,13 +390,13 @@
         .metric-node:hover {
             transform: scale(1.25) translateY(-10px);
             z-index: 100;
-            border-color: rgba(239, 68, 68, 0.7);
-            box-shadow: 0 30px 50px -15px rgba(239, 68, 68, 0.4);
+            border-color: rgba(56, 189, 248, 0.7);
+            box-shadow: 0 30px 50px -15px rgba(56, 189, 248, 0.4);
         }
 
         /* IoT metrikleri için özel renkler */
         .metric-node.sensor-temp {
-            box-shadow: 0 0 50px rgba(239, 68, 68, 0.6), 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.6), 0 20px 40px -15px rgba(0, 0, 0, 0.6);
             animation: tempPulse 2s ease-in-out infinite;
         }
 
@@ -415,14 +415,13 @@
         }
 
         @keyframes tempPulse {
-
             0%,
             100% {
-                box-shadow: 0 0 50px rgba(239, 68, 68, 0.6);
+                box-shadow: 0 0 50px rgba(56, 189, 248, 0.6);
             }
 
             50% {
-                box-shadow: 0 0 80px rgba(239, 68, 68, 0.9);
+                box-shadow: 0 0 80px rgba(56, 189, 248, 0.9);
             }
         }
 
@@ -456,13 +455,13 @@
         .connection-line {
             position: absolute;
             height: 3px;
-            background: linear-gradient(90deg, transparent, #ef4444, #ef4444, #ef4444, transparent);
+            background: linear-gradient(90deg, transparent, #38bdf8, #38bdf8, #38bdf8, transparent);
             transform-origin: left center;
             pointer-events: none;
             z-index: 20;
             opacity: 0.7;
             transition: opacity 0.3s ease;
-            filter: drop-shadow(0 0 12px #ef4444) blur(0.5px);
+            filter: drop-shadow(0 0 12px #38bdf8) blur(0.5px);
             border-radius: 3px;
         }
 
@@ -474,7 +473,7 @@
             transform: translateX(-50%) translateY(-15px);
             background: rgba(8, 18, 28, 0.98);
             backdrop-filter: blur(16px);
-            border: 1px solid rgba(239, 68, 68, 0.4);
+            border: 1px solid rgba(56, 189, 248, 0.4);
             border-radius: 20px;
             padding: 16px 20px;
             min-width: 260px;
@@ -500,7 +499,7 @@
             transform: translate(-50%, -50%);
             width: 750px;
             height: 750px;
-            border: 1px solid rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.1);
             border-radius: 50%;
             animation: rotateSlow 70s linear infinite reverse;
             z-index: 8;
@@ -513,24 +512,24 @@
             transform: translate(-50%, -50%);
             width: 650px;
             height: 650px;
-            border: 2px solid rgba(239, 68, 68, 0.15);
+            border: 2px solid rgba(56, 189, 248, 0.15);
             border-radius: 50%;
             animation: rotateSlow 50s linear infinite;
             z-index: 10;
-            box-shadow: 0 0 30px rgba(239, 68, 68, 0.1);
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.1);
         }
 
         .orbital-ring-inner {
             width: 550px;
             height: 550px;
-            border: 2px dashed rgba(239, 68, 68, 0.2);
+            border: 2px dashed rgba(56, 189, 248, 0.2);
             border-radius: 50%;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             animation: rotateReverse 35s linear infinite;
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
         }
 
         @keyframes rotateSlow {
@@ -558,13 +557,13 @@
             position: absolute;
             width: 4px;
             height: 4px;
-            background: #ef4444;
+            background: #38bdf8;
             border-radius: 50%;
             filter: blur(1.5px);
             animation: flowParticle 5s linear infinite;
             pointer-events: none;
             z-index: 12;
-            box-shadow: 0 0 15px #ef4444;
+            box-shadow: 0 0 15px #38bdf8;
         }
 
         @keyframes flowParticle {
@@ -637,7 +636,7 @@
         .chart-card {
             background: rgba(10, 20, 35, 0.6);
             backdrop-filter: blur(16px);
-            border: 1px solid rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.15);
             border-radius: 24px;
             padding: 24px;
             transition: all 0.3s ease;
@@ -646,8 +645,8 @@
         }
 
         .chart-card:hover {
-            border-color: rgba(239, 68, 68, 0.4);
-            box-shadow: 0 30px 50px -20px rgba(239, 68, 68, 0.2);
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 30px 50px -20px rgba(56, 189, 248, 0.2);
             transform: translateY(-5px);
         }
 
@@ -678,7 +677,7 @@
             z-index: 200;
             background: rgba(10, 20, 35, 0.6);
             backdrop-filter: blur(16px);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            border: 1px solid rgba(56, 189, 248, 0.3);
             border-radius: 40px;
             padding: 12px 24px;
             display: flex;
@@ -720,13 +719,13 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
         }
 
         .back-button:hover {
             transform: scale(1.15);
-            border-color: rgba(239, 68, 68, 1);
-            box-shadow: 0 0 40px rgba(239, 68, 68, 0.5);
+            border-color: rgba(56, 189, 248, 1);
+            box-shadow: 0 0 40px rgba(56, 189, 248, 0.5);
         }
 
         .back-button.sidebar-collapsed {
@@ -769,13 +768,13 @@
         }
 
         .forecast-panel:hover {
-            border-color: rgba(239, 68, 68, 0.6);
-            box-shadow: 0 10px 30px -5px rgba(239, 68, 68, 0.3);
+            border-color: rgba(56, 189, 248, 0.6);
+            box-shadow: 0 10px 30px -5px rgba(56, 189, 248, 0.3);
             transform: translateY(-2px);
         }
 
         .forecast-time {
-            color: #ef4444;
+            color: #38bdf8;
             font-weight: 600;
         }
 
@@ -814,9 +813,9 @@
         }
 
         .quick-action-btn:hover {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: rgba(239, 68, 68, 0.3);
-            color: #ef4444;
+            background: rgba(56, 189, 248, 0.1);
+            border-color: rgba(56, 189, 248, 0.3);
+            color: #38bdf8;
             transform: scale(1.1);
         }
 
@@ -827,7 +826,7 @@
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            background: #ef4444;
+            background: #38bdf8;
             color: white;
             font-size: 10px;
             display: flex;
@@ -1202,7 +1201,7 @@
                 <div class="flex justify-between items-center mt-8 text-xs text-slate-500">
                     <span>Last updated: 15:24:07 UTC · Auto-refresh every 30s</span>
                     <span class="flex items-center gap-2">
-                        <i class="fas fa-circle text-[#ef4444] text-[6px]"></i>
+                        <i class="fas fa-circle text-[#38bdf8] text-[6px]"></i>
                         Sensor data stream active
                     </span>
                 </div>
@@ -1229,10 +1228,10 @@
 
     <!-- Forecast Panel (Dashboard ile aynı) -->
     <div class="forecast-panel" id="forecastPanel" title="Tahmin: Sıcaklık önümüzdeki 2 saat içinde 72°C'ye yükselecek">
-        <i class="fas fa-clock text-[#ef4444]"></i>
+        <i class="fas fa-clock text-[#38bdf8]"></i>
         <span>15:24:07 <span class="text-slate-400">UTC</span></span>
         <div class="forecast-divider"></div>
-        <i class="fas fa-chart-line text-[#ef4444]"></i>
+        <i class="fas fa-chart-line text-[#38bdf8]"></i>
         <span class="forecast-time">+2h forecast</span>
         <i class="fas fa-info-circle text-slate-400 text-[10px] ml-1 opacity-50"></i>
     </div>
@@ -1267,7 +1266,7 @@
 
         const particlesMaterial = new THREE.PointsMaterial({
             size: 0.15,
-            color: '#ef4444',
+            color: '#38bdf8',
             transparent: true,
             opacity: 0.25,
             blending: THREE.AdditiveBlending
@@ -1557,7 +1556,7 @@
                 for (let j = 0; j < 24; j++) { // 24 hours
                     const value = Math.random();
                     let color;
-                    if (i === 0) color = d3.interpolateRgb("#ef4444", "#facc15")(value); // temp
+                    if (i === 0) color = d3.interpolateRgb("#38bdf8", "#facc15")(value); // temp
                     else if (i === 1) color = d3.interpolateRgb("#3b82f6", "#facc15")(value); // pressure
                     else if (i === 2) color = d3.interpolateRgb("#22c55e", "#3b82f6")(value); // humidity
                     else color = d3.interpolateRgb("#a855f7", "#ef4444")(value); // vibration
@@ -1640,17 +1639,17 @@
                 .attr("cx", d => x(d.temp))
                 .attr("cy", d => y(d.pressure))
                 .attr("r", 4)
-                .attr("fill", "#ef4444")
+                .attr("fill", "#38bdf8")
                 .attr("opacity", 0.7)
                 .attr("stroke", "white")
                 .attr("stroke-width", 1)
-                .attr("filter", "drop-shadow(0 0 4px #ef4444)");
+                .attr("filter", "drop-shadow(0 0 4px #38bdf8)");
         }
 
         // Initialize all charts
         setTimeout(() => {
-            // Temperature Chart (red)
-            drawLineChart('chart-temp', generateTimeSeriesData(24, 0, 100, 0.05), '#ef4444', true, ' °C');
+            // Temperature Chart (blue)
+            drawLineChart('chart-temp', generateTimeSeriesData(24, 0, 100, 0.05), '#38bdf8', true, ' °C');
 
             // Speed Chart (blue)
             drawLineChart('chart-speed', generateTimeSeriesData(24, 0, 100, 0.05), '#3b82f6', true, ' RPM');
@@ -1778,7 +1777,7 @@
                     const anomalyColor = isAnomaly ? '#ef4444' : null;
 
                     // Redraw specific charts
-                    drawLineChart('chart-temp', tempData, anomalyColor || '#ef4444', true, '°C');
+                    drawLineChart('chart-temp', tempData, anomalyColor || '#38bdf8', true, '°C');
                     drawLineChart('chart-vib', vibData, anomalyColor || '#3b82f6', true, 'Hz');
                     drawLineChart('chart-cycle', cycleData, anomalyColor || '#22c55e', true, '%');
                     drawLineChart('chart-torq', torqData, anomalyColor || '#a855f7', true, 'Nm');
