@@ -1074,6 +1074,59 @@
             margin-bottom: 40px;
             page-break-inside: avoid;
         }
+
+        /* Notification Center */
+        .notification-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 380px;
+            height: 100vh;
+            background: rgba(5, 12, 18, 0.95);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(139, 92, 246, 0.2);
+            z-index: 1000;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -20px 0 50px rgba(0,0,0,0.5);
+        }
+        .notification-panel.active { right: 0; }
+        .notif-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;}
+        .notif-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 5px; scrollbar-width: none; }
+        .notif-list::-webkit-scrollbar { display: none; }
+        .notif-item { background: rgba(255,255,255,0.05); border-left: 3px solid #8b5cf6; padding: 15px; border-radius: 8px; font-size: 13px; animation: slideInRight 0.3s ease; }
+        .notif-item.critical { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+        .notif-item.warning { border-left-color: #facc15; background: rgba(250, 204, 21, 0.1); }
+        .notif-item .time { font-size: 10px; color: #94a3b8; margin-top: 5px; display: block; }
+        .close-notif { cursor: pointer; color: #94a3b8; transition: color 0.2s; }
+        .close-notif:hover { color: white; }
+
+        /* Prescriptive AI Toast */
+        .ai-toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
+        .ai-toast { background: rgba(15, 30, 40, 0.95); backdrop-filter: blur(16px); border: 1px solid #8b5cf6; box-shadow: 0 10px 30px rgba(139,92,246,0.3); border-radius: 16px; padding: 20px; width: 350px; animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .ai-toast.warning { border-color: #facc15; box-shadow: 0 10px 30px rgba(250,204,21,0.2); }
+        .ai-toast.critical { border-color: #ef4444; box-shadow: 0 10px 30px rgba(239,68,68,0.3); }
+        .ai-toast.closing { animation: slideDown 0.3s ease forwards; }
+        .toast-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .toast-title { font-weight: 700; color: white; display:flex; align-items: center; gap:8px;}
+        .toast-title i { font-size: 18px; }
+        .toast-body { font-size: 13px; color: #cbd5e1; margin-bottom: 15px; line-height: 1.5; }
+        .toast-actions { display: flex; gap: 10px; }
+        .toast-btn { flex: 1; padding: 8px; border-radius: 8px; text-align: center; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; border: none; outline: none; }
+        .toast-btn.apply { background: #8b5cf6; color: white; }
+        .toast-btn.apply:hover { background: #7c3aed; }
+        .toast-btn.apply.critical { background: #ef4444; }
+        .toast-btn.apply.critical:hover { background: #dc2626; }
+        .toast-btn.apply.warning { background: #facc15; color: black; }
+        .toast-btn.apply.warning:hover { background: #eab308; }
+        .toast-btn.dismiss { background: rgba(255,255,255,0.1); color: white; }
+        .toast-btn.dismiss:hover { background: rgba(255,255,255,0.2); }
+
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideDown { from { transform: translateY(0); opacity: 1; } to { transform: translateY(100px); opacity: 0; } }
     </style>
 </head>
 <body>
@@ -1649,9 +1702,9 @@
         <div class="quick-action-btn">
             <i class="fas fa-search"></i>
         </div>
-        <div class="quick-action-btn">
+        <div class="quick-action-btn" id="notifBtn">
             <i class="fas fa-bell"></i>
-            <span class="badge">3</span>
+            <span class="badge" id="notifBadge" style="display:none;">0</span>
         </div>
         <div class="quick-action-btn">
             <i class="fas fa-cog"></i>
@@ -1663,6 +1716,20 @@
             <i class="fas fa-chart-line"></i>
         </div>
     </div>
+
+    <!-- Notification Center Panel -->
+    <div class="notification-panel" id="notificationPanel">
+        <div class="notif-header">
+            <h3 class="text-lg font-bold text-white"><i class="fas fa-bell text-[#8b5cf6] mr-2"></i> Sistem Bildirimleri</h3>
+            <i class="fas fa-times close-notif" id="closeNotifBtn"></i>
+        </div>
+        <div class="notif-list" id="notifList">
+            <div class="text-slate-500 text-sm text-center mt-5" id="emptyNotifMsg">Henüz yeni bir anomali tespit edilmedi.</div>
+        </div>
+    </div>
+
+    <!-- AI Toast Container -->
+    <div class="ai-toast-container" id="aiToastContainer"></div>
 
     <!-- Report Modal -->
     <div class="modal-overlay" id="reportModalOverlay">
@@ -1777,12 +1844,30 @@
             mouseY = (event.clientY / window.innerHeight - 0.5) * 1.5;
         });
 
+        window.systemStressLevel = 1.0; // 1.0 is normal, higher is stressful
+        let currentStress = 1.0;
+
         function animate() {
             requestAnimationFrame(animate);
-            particlesMesh.rotation.y += 0.0002;
-            particlesMesh.rotation.x += 0.00005;
-            particlesMesh.rotation.y += mouseX * 0.0002;
-            particlesMesh.rotation.x += mouseY * 0.0001;
+            
+            // Smoothly approach target stress level
+            currentStress += (window.systemStressLevel - currentStress) * 0.05;
+            
+            // Speed up particles based on stress
+            particlesMesh.rotation.y += 0.0002 * currentStress;
+            particlesMesh.rotation.x += 0.00005 * currentStress;
+            particlesMesh.rotation.y += mouseX * 0.0002 * currentStress;
+            particlesMesh.rotation.x += mouseY * 0.0001 * currentStress;
+            
+            // Change color dynamically based on stress
+            if (currentStress > 1.5) {
+                // Shift from white towards red
+                const intensity = Math.min(1.0, (currentStress - 1.5) / 3.0);
+                particlesMaterial.color.setRGB(1.0, 1.0 - intensity * 0.8, 1.0 - intensity * 0.8);
+            } else {
+                particlesMaterial.color.setRGB(1.0, 1.0, 1.0);
+            }
+            
             renderer.render(scene, camera);
         }
         animate();
@@ -2132,6 +2217,79 @@
         // Menu item clicks handled by auth.js bindNavigation()
 
         // ═══════════════════════════════════════════════════════════════════
+        // NOTIFICATION & AI TOAST LOGIC
+        // ═══════════════════════════════════════════════════════════════════
+        const notificationPanel = document.getElementById('notificationPanel');
+        const notifList = document.getElementById('notifList');
+        const notifBtn = document.getElementById('notifBtn');
+        const closeNotifBtn = document.getElementById('closeNotifBtn');
+        const notifBadge = document.getElementById('notifBadge');
+        const emptyNotifMsg = document.getElementById('emptyNotifMsg');
+        const aiToastContainer = document.getElementById('aiToastContainer');
+
+        let unreadNotifs = 0;
+        let lastReportedState = { it:0, iot:0, finance:0, hr:0 };
+
+        notifBtn.addEventListener('click', () => {
+            notificationPanel.classList.add('active');
+            unreadNotifs = 0;
+            notifBadge.style.display = 'none';
+        });
+        closeNotifBtn.addEventListener('click', () => {
+            notificationPanel.classList.remove('active');
+        });
+
+        function addNotification(deptName, message, type) {
+            if (emptyNotifMsg) emptyNotifMsg.style.display = 'none';
+            const item = document.createElement('div');
+            item.className = `notif-item ${type}`;
+            const time = new Date().toLocaleTimeString('tr-TR');
+            let icon = 'fa-info-circle text-blue-400';
+            if (type === 'critical') icon = 'fa-exclamation-triangle text-red-400';
+            if (type === 'warning') icon = 'fa-exclamation-circle text-yellow-400';
+            if (type === 'stable') icon = 'fa-check text-green-400';
+
+            item.innerHTML = `
+                <div class="font-bold mb-1"><i class="fas ${icon} mr-1"></i> ${deptName}</div>
+                <div>${message}</div>
+                <span class="time">${time}</span>
+            `;
+            notifList.prepend(item);
+            
+            unreadNotifs++;
+            notifBadge.textContent = unreadNotifs > 99 ? '99+' : unreadNotifs;
+            notifBadge.style.display = 'flex';
+        }
+
+        function showAIToast(title, desc, actionText, type) {
+            const toast = document.createElement('div');
+            toast.className = `ai-toast ${type}`;
+            let icon = 'fa-magic text-blue-400';
+            if (type === 'critical') icon = 'fa-bolt text-red-400';
+            if (type === 'warning') icon = 'fa-shield-alt text-yellow-400';
+
+            toast.innerHTML = `
+                <div class="toast-header">
+                    <span class="toast-title"><i class="fas ${icon}"></i> ${title}</span>
+                    <i class="fas fa-times cursor-pointer text-slate-400 hover:text-white" onclick="this.closest('.ai-toast').classList.add('closing'); setTimeout(() => this.closest('.ai-toast').remove(), 300)"></i>
+                </div>
+                <div class="toast-body">${desc}</div>
+                <div class="toast-actions">
+                    <button class="toast-btn apply ${type}" onclick="this.innerHTML='<i class=\\'fas fa-spinner fa-spin\\'></i> İşleniyor...'; setTimeout(() => { this.closest('.ai-toast').classList.add('closing'); setTimeout(() => this.closest('.ai-toast').remove(), 300); }, 1000)">${actionText}</button>
+                    <button class="toast-btn dismiss" onclick="this.closest('.ai-toast').classList.add('closing'); setTimeout(() => this.closest('.ai-toast').remove(), 300)">Yoksay</button>
+                </div>
+            `;
+            aiToastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                if(document.body.contains(toast) && !toast.classList.contains('closing')) {
+                    toast.classList.add('closing');
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 12000);
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
         // LIVE DATA STREAM — Yapay Zeka Anomali
         // ═══════════════════════════════════════════════════════════════════
         (function startLiveStream() {
@@ -2144,6 +2302,9 @@
                     const d = await response.json();
                     const risk = d.risk_scores || {};
 
+                    // --- Update Global Stress Level for 3D Particles ---
+                    window.systemStressLevel = 1.0 + ((d.anomaly_score || 0) * 4.0);
+                    
                     // --- Update Metrics & Central Core ---
                     const centralCore = document.getElementById('central-ai-core');
                     const sysHealth = document.getElementById('ai-sys-health');
@@ -2218,6 +2379,31 @@
                             currSpan.textContent = `${info.val}${info.suffix}`;
                         }
 
+                        // Check for Notifications & Prescriptive AI
+                        if (info.score > 80 && lastReportedState[key] !== 2) {
+                            addNotification(key.toUpperCase() + ' Departmanı', `Kritik eşik aşıldı! Risk Score: ${info.score.toFixed(1)}%`, 'critical');
+                            lastReportedState[key] = 2; // Critical state
+                            
+                            // Emit AI Prescriptive Action specifically for this issue
+                            let actionText = "Müdahale Et";
+                            let toastTitle = "Prescriptive AI Aksiyonu";
+                            let toastDesc = "Anomaliyi çözmek için otonom müdahale öneriliyor.";
+                            
+                            if (key === 'it') { toastTitle = "IT Yük Dengeleme"; toastDesc = "Sunucu CPU kullanımı çok yüksek. Trafiğin %30'u Yedek Bölge B'ye aktarılsın mı?"; actionText = "Trafiği Yönlendir"; }
+                            if (key === 'iot') { toastTitle = "IoT Gateway Restart"; toastDesc = "Cihazlarda iletişim koptu. Edge cihazlar yeniden başlatılsın mı?"; actionText = "Gateway Restart"; }
+                            if (key === 'finance') { toastTitle = "Finans İşlem Durdurma"; toastDesc = "Olası hatalı işlem paterni tespit edildi. Yüksek riskli işlemler bloklansın mı?"; actionText = "İşlemleri Blokla"; }
+                            if (key === 'hr') { toastTitle = "Otomatik Destek Ataması"; toastDesc = "Destek talepleri birikiyor. AI robot ajanlar 1. Seviye desteği devralsın mı?"; actionText = "AI Destek Aktif"; }
+                            
+                            showAIToast(toastTitle, toastDesc, actionText, 'critical');
+                            
+                        } else if (info.score > 40 && info.score <= 80 && lastReportedState[key] !== 1) {
+                            addNotification(key.toUpperCase() + ' Departmanı', `Yüksek riskli aktivite tespit edildi. Score: ${info.score.toFixed(1)}%`, 'warning');
+                            lastReportedState[key] = 1; // Warning state
+                        } else if (info.score <= 40 && lastReportedState[key] !== 0) {
+                            addNotification(key.toUpperCase() + ' Departmanı', `Sistem normale döndü. Operasyonlar stabil.`, 'stable');
+                            lastReportedState[key] = 0; // Normal state
+                        }
+
                         // Push to Chart
                         if (info.chart) {
                             const dsHistoric = info.chart.data.datasets[0];
@@ -2262,6 +2448,50 @@
                             info.chart.update('none');
                         }
                     }
+
+                    // --- Dynamic XAI Update ---
+                    const featureBars = document.querySelectorAll('.feature-bar-fill');
+                    const featureVals = document.querySelectorAll('.feature-value');
+                    
+                    if (featureBars.length >= 9) {
+                        const it_val = Math.max(0.1, (risk.IT / 100) + (Math.random()*0.1 - 0.05));
+                        const iot_val = Math.max(0.1, (risk.IoT / 100) + (Math.random()*0.1 - 0.05));
+                        const fin_val = Math.max(0.1, (risk.Finans / 100) + (Math.random()*0.1 - 0.05));
+                        const hr_val = Math.max(0.1, (risk.HR / 100) + (Math.random()*0.1 - 0.05));
+                        
+                        function updateBar(idx, val, overrideColor) {
+                            if (!featureBars[idx]) return;
+                            let v = Math.min(0.99, val);
+                            featureBars[idx].style.width = (v * 100) + '%';
+                            featureVals[idx].textContent = v.toFixed(2);
+                            
+                            if (overrideColor) {
+                                featureBars[idx].style.background = overrideColor;
+                            } else {
+                                if (v > 0.8) featureBars[idx].style.background = '#ef4444';
+                                else if (v > 0.5) featureBars[idx].style.background = '#facc15';
+                                else featureBars[idx].style.background = 'linear-gradient(90deg, #8b5cf6, #14b8a6)';
+                            }
+                            
+                            if (v > 0.8) featureVals[idx].style.color = '#ef4444';
+                            else if (v > 0.5) featureVals[idx].style.color = '#facc15';
+                            else featureVals[idx].style.color = '#8b5cf6';
+                        }
+                        
+                        // SHAP
+                        updateBar(0, it_val); // hub_cpu
+                        updateBar(1, iot_val); // iot_pdr
+                        updateBar(2, it_val * 0.8); // it_response
+                        updateBar(3, fin_val); // fin_error
+                        updateBar(4, hr_val); // hr_tickets
+                        
+                        // LIME
+                        updateBar(5, iot_val, '#ef4444');
+                        updateBar(6, iot_val * 0.85, '#f97316');
+                        updateBar(7, it_val * 0.7, '#facc15');
+                        updateBar(8, it_val * 0.5, 'linear-gradient(90deg, #8b5cf6, #14b8a6)');
+                    }
+
                 } catch(e) { /* ignore network drop */ }
             }
             // Poll fast for realistic fast-paced UI streaming look
