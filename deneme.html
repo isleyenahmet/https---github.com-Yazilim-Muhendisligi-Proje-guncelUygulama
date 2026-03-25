@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>NEXUS INTELLIGENCE · 3D Digital Twin</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Three.js + Add-ons -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #03050A;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Premium grain texture overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Glass morphism panels */
+        .glass-premium {
+            background: rgba(10, 15, 25, 0.5);
+            backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(31, 199, 98, 0.2);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(31, 199, 98, 0.1) inset;
+        }
+
+        /* Sidebar (compact) */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 280px;
+            background: rgba(5, 10, 18, 0.85);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(31, 199, 98, 0.2);
+            z-index: 100;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        .sidebar::-webkit-scrollbar { display: none; }
+        .sidebar.collapsed { width: 80px; }
+
+        .sidebar-header { padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; }
+        .sidebar-logo { display: flex; align-items: center; gap: 12px; overflow: hidden; }
+        .logo-icon { width: 40px; height: 40px; background: radial-gradient(circle at 30% 30%, #4ade80, #0a8a40); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(31,199,98,0.4); }
+        .logo-text { font-weight: 700; font-size: 18px; white-space: nowrap; transition: opacity 0.3s; }
+        .sidebar.collapsed .logo-text { opacity: 0; }
+        .collapse-btn { width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; color: rgba(255,255,255,0.5); }
+        .collapse-btn:hover { background: rgba(31,199,98,0.2); color: #1fc762; }
+
+        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 16px; cursor: pointer; margin-bottom: 6px; color: rgba(255,255,255,0.6); transition: all 0.2s; }
+        .menu-item:hover { background: rgba(31,199,98,0.1); color: white; }
+        .menu-item.active { background: rgba(31,199,98,0.15); color: #1fc762; border-left: 3px solid #1fc762; }
+        .menu-icon { width: 24px; font-size: 18px; }
+        .menu-text { font-size: 14px; font-weight: 500; white-space: nowrap; transition: opacity 0.3s; }
+        .sidebar.collapsed .menu-text { opacity: 0; pointer-events: none; }
+        .menu-badge { margin-left: auto; background: rgba(239,68,68,0.3); color: #ef4444; font-size: 10px; padding: 2px 6px; border-radius: 12px; }
+        .menu-divider { height: 1px; background: rgba(255,255,255,0.05); margin: 16px; }
+
+        /* Main wrapper */
+        .main-wrapper {
+            margin-left: 280px;
+            transition: margin-left 0.3s;
+            height: 100vh;
+            overflow-y: auto;
+            scrollbar-width: none;
+            position: relative;
+        }
+        .main-wrapper.sidebar-collapsed { margin-left: 80px; }
+
+        /* Content area */
+        .department-content {
+            padding: 100px 30px 30px 30px;
+            min-height: 100vh;
+            position: relative;
+        }
+        .content-header { margin-bottom: 24px; }
+        .content-title { font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #fff, #4ade80); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .content-subtitle { color: rgba(255,255,255,0.5); font-size: 14px; letter-spacing: 1px; }
+
+        /* 3D Canvas container */
+        #twin-canvas-container {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            min-height: 550px;
+            border-radius: 28px;
+            overflow: hidden;
+            background: #03050A;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.8), 0 0 0 1px rgba(31,199,98,0.2);
+            margin-bottom: 24px;
+        }
+        #digital-twin-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Stats row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-tile {
+            background: rgba(10,20,35,0.5);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(31,199,98,0.2);
+            border-radius: 20px;
+            padding: 16px;
+            transition: all 0.2s;
+        }
+        .stat-tile:hover { border-color: rgba(31,199,98,0.5); transform: translateY(-2px); }
+        .stat-value { font-size: 28px; font-weight: 800; color: white; }
+        .stat-label { font-size: 11px; text-transform: uppercase; color: rgba(255,255,255,0.5); letter-spacing: 1px; }
+
+        /* Mini metrics */
+        .mini-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        .mini-card {
+            background: rgba(10,20,35,0.4);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .mini-icon { width: 36px; height: 36px; background: rgba(31,199,98,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #1fc762; }
+        .mini-info h4 { font-size: 14px; font-weight: 600; color: white; margin-bottom: 2px; }
+        .mini-info p { font-size: 10px; color: rgba(255,255,255,0.5); }
+
+        /* forecast panel */
+        .forecast-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 200;
+            background: rgba(10,20,35,0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(31,199,98,0.4);
+            border-radius: 40px;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .forecast-panel:hover { border-color: #1fc762; transform: translateY(-2px); }
+        .forecast-time { color: #1fc762; font-weight: 600; }
+
+        /* top nav adjustments */
+        .top-nav {
+            position: fixed;
+            top: 24px;
+            left: 310px;
+            right: 24px;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            transition: left 0.3s;
+        }
+        .top-nav.sidebar-collapsed { left: 110px; }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(1.2); opacity: 0; }
+        }
+        .critical-pulse { animation: pulse 1.2s infinite; }
+    </style>
+    <script src="auth.js"></script>
+</head>
+<body>
+
+    <canvas id="particle-canvas" style="position: fixed; top:0; left:0; width:100%; height:100%; pointer-events: none; z-index: 1;"></canvas>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="logo-icon"><i class="fas fa-brain text-white text-xl"></i></div>
+                <span class="logo-text">NEXUS·AI</span>
+            </div>
+            <div class="collapse-btn" id="collapseBtn"><i class="fas fa-chevron-left" id="collapseIcon"></i></div>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-item active" data-department="dashboard"><div class="menu-icon"><i class="fas fa-cube"></i></div><span class="menu-text">Digital Twin</span></div>
+            <div class="menu-divider"></div>
+            <div class="menu-item" data-department="it"><div class="menu-icon"><i class="fas fa-microchip"></i></div><span class="menu-text">IT Department</span><span class="menu-badge">3</span></div>
+            <div class="menu-item" data-department="iot"><div class="menu-icon"><i class="fas fa-wifi"></i></div><span class="menu-text">IoT Department</span><span class="menu-badge critical-pulse">!</span></div>
+            <div class="menu-item" data-department="finance"><div class="menu-icon"><i class="fas fa-chart-line"></i></div><span class="menu-text">Finans</span></div>
+            <div class="menu-item" data-department="hr"><div class="menu-icon"><i class="fas fa-truck-fast"></i></div><span class="menu-text">Otonom Lojistik</span></div>
+            <div class="menu-divider"></div>
+            <div class="menu-item" data-department="ai"><div class="menu-icon"><i class="fas fa-brain"></i></div><span class="menu-text">Yapay Zeka Karar Sistemi</span></div>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 p-5 border-t border-white/5">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center"><span class="text-xs font-bold" id="sidebarInitials">AD</span></div>
+                <div class="flex-1 min-w-0 sidebar-text"><p class="text-sm font-medium truncate" id="sidebarName">Admin User</p><p class="text-xs text-slate-400 truncate" id="sidebarEmail">admin@nexus.ai</p></div>
+                <button onclick="logout()" class="text-slate-400 hover:text-red-400 transition"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-wrapper" id="mainWrapper">
+        <div class="top-nav" id="topNav">
+            <div class="glass-premium px-6 py-3 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center"><i class="fas fa-cube text-emerald-400"></i></div>
+                <div><h1 class="text-lg font-bold" id="pageTitle">3D Digital Twin</h1><p class="text-[10px] text-emerald-400 tracking-wider" id="pageSubtitle">SİSTEM TOPOLOJİSİ · ANOMALİ TESPİTİ</p></div>
+            </div>
+            <div class="glass-premium px-6 py-3 flex items-center gap-6">
+                <div><span class="text-2xl font-bold text-white"><span id="sys-health-val">98</span><span class="text-sm text-emerald-400">%</span></span><p class="text-[10px] text-slate-400">System Health</p></div>
+                <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center"><div class="w-6 h-6 rounded-full bg-emerald-400 animate-pulse"></div></div>
+            </div>
+        </div>
+
+        <div class="department-content" id="departmentContent">
+            <!-- dynamic content will be placed here -->
+        </div>
+
+        <div class="forecast-panel" id="forecastPanel">
+            <i class="fas fa-chart-line text-emerald-400"></i>
+            <span>AI Tahmin: <span class="forecast-time">+2h yük +18%</span></span>
+        </div>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        
+        // ---- THREE.JS DIGITAL TWIN SETUP ----
+        const container = document.createElement('div');
+        container.id = 'twin-canvas-container';
+        const canvas3D = document.createElement('canvas');
+        canvas3D.id = 'digital-twin-canvas';
+        container.appendChild(canvas3D);
+        
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x03050A);
+        scene.fog = new THREE.FogExp2(0x03050A, 0.008);
+        
+        const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+        camera.position.set(5, 3, 8);
+        camera.lookAt(0, 0, 0);
+        
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas3D, alpha: false, antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.toneMapping = THREE.ReinhardToneMapping;
+        renderer.toneMappingExposure = 1.2;
+        
+        // Post Processing Bloom
+        const renderScene = new RenderPass(scene, camera);
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.2, 0.3, 0.85);
+        bloomPass.threshold = 0.1;
+        bloomPass.strength = 0.8;
+        bloomPass.radius = 0.5;
+        const effectComposer = new EffectComposer(renderer);
+        effectComposer.addPass(renderScene);
+        effectComposer.addPass(bloomPass);
+        
+        // Controls
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 1.2;
+        controls.enableZoom = true;
+        controls.enablePan = false;
+        controls.target.set(0, 0, 0);
+        
+        // --- Lights ---
+        const ambientLight = new THREE.AmbientLight(0x111122);
+        scene.add(ambientLight);
+        const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+        mainLight.position.set(2, 5, 3);
+        scene.add(mainLight);
+        const fillLight = new THREE.PointLight(0x226622, 0.5);
+        fillLight.position.set(-2, 1, 4);
+        scene.add(fillLight);
+        const backLight = new THREE.PointLight(0x1fc762, 0.4);
+        backLight.position.set(0, 2, -5);
+        scene.add(backLight);
+        
+        // Glow effect helper for nodes
+        function createGlowMesh(color, size = 0.8) {
+            const geometry = new THREE.SphereGeometry(size, 32, 32);
+            const material = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.15, side: THREE.BackSide });
+            const glow = new THREE.Mesh(geometry, material);
+            return glow;
+        }
+        
+        // --- Central Core Node (Crystalline Icosahedron) ---
+        const coreGeo = new THREE.IcosahedronGeometry(0.9, 0);
+        const coreMat = new THREE.MeshStandardMaterial({ color: 0x2ecc71, emissive: 0x1a8442, emissiveIntensity: 0.8, metalness: 0.7, roughness: 0.2, flatShading: false });
+        const coreNode = new THREE.Mesh(coreGeo, coreMat);
+        coreNode.castShadow = true;
+        scene.add(coreNode);
+        
+        // Core halo rings
+        const ringGeo = new THREE.TorusGeometry(1.15, 0.04, 64, 200);
+        const ringMat = new THREE.MeshStandardMaterial({ color: 0x4ade80, emissive: 0x2ecc71, emissiveIntensity: 0.5 });
+        const ringX = new THREE.Mesh(ringGeo, ringMat);
+        ringX.rotation.x = Math.PI / 2;
+        scene.add(ringX);
+        const ringY = new THREE.Mesh(ringGeo, ringMat);
+        ringY.rotation.z = Math.PI / 2;
+        scene.add(ringY);
+        const ringZ = new THREE.Mesh(ringGeo, ringMat);
+        ringZ.rotation.x = Math.PI / 3;
+        ringZ.rotation.z = Math.PI / 3;
+        scene.add(ringZ);
+        
+        // Pulse animation for core
+        function animateRings(time) {
+            const s = 1 + Math.sin(time * 3) * 0.03;
+            ringX.scale.set(s, s, s);
+            ringY.scale.set(s, s, s);
+            ringZ.scale.set(s, s, s);
+        }
+        
+        // --- Satellite Nodes positions (in a circular pattern elevated) ---
+        const nodesData = [
+            { id: 'it', name: 'IT', pos: new THREE.Vector3(2.2, 0.8, 1.8), color: 0x4ade80, emissive: 0x2ecc71, risk: 0 },
+            { id: 'hr', name: 'LOG', pos: new THREE.Vector3(1.2, 1.2, -2.4), color: 0xfacc15, emissive: 0xca8a04, risk: 45 },
+            { id: 'iot', name: 'IoT', pos: new THREE.Vector3(-2.4, 0.2, 1.5), color: 0xef4444, emissive: 0xb91c1c, risk: 85 },
+            { id: 'fin', name: 'FIN', pos: new THREE.Vector3(-1.3, -0.9, -2.0), color: 0x4ade80, emissive: 0x2ecc71, risk: 12 }
+        ];
+        
+        const satellites = [];
+        const glowSpheres = [];
+        
+        nodesData.forEach((node, idx) => {
+            const geo = new THREE.SphereGeometry(0.55, 48, 48);
+            const mat = new THREE.MeshStandardMaterial({ color: node.color, emissive: node.emissive, emissiveIntensity: 0.4, metalness: 0.6, roughness: 0.3 });
+            const sphere = new THREE.Mesh(geo, mat);
+            sphere.position.copy(node.pos);
+            scene.add(sphere);
+            
+            const glow = createGlowMesh(node.color, 0.85);
+            glow.position.copy(node.pos);
+            scene.add(glow);
+            
+            satellites.push({ mesh: sphere, glow, data: node, baseColor: node.color, baseEmissive: node.emissive });
+            
+            // add text label using canvas texture (simple)
+            const canvas = document.createElement('canvas');
+            canvas.width = 128;
+            canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#fff';
+            ctx.font = 'Bold 24px "Plus Jakarta Sans"';
+            ctx.fillText(node.name, 10, 40);
+            const texture = new THREE.CanvasTexture(canvas);
+            const labelMat = new THREE.SpriteMaterial({ map: texture, transparent: true });
+            const sprite = new THREE.Sprite(labelMat);
+            sprite.scale.set(0.8, 0.4, 0.8);
+            sprite.position.copy(node.pos.clone().add(new THREE.Vector3(0, 0.85, 0)));
+            scene.add(sprite);
+        });
+        
+        // --- Connection Lines: Curved Bezier between core and satellites ---
+        const lineMaterial = new THREE.LineBasicMaterial({ color: 0x4ade80 });
+        const glowLineMaterial = new THREE.LineBasicMaterial({ color: 0x88ff88 });
+        nodesData.forEach(node => {
+            const start = new THREE.Vector3(0, 0, 0);
+            const end = node.pos;
+            const mid = start.clone().lerp(end, 0.5);
+            mid.y += 1.2;
+            const curve = new THREE.CubicBezierCurve3(start, mid, mid, end);
+            const points = curve.getPoints(50);
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const line = new THREE.Line(geometry, lineMaterial);
+            scene.add(line);
+            
+            // Floating particles along the line
+            const particleCount = 8;
+            for (let i = 0; i < particleCount; i++) {
+                const particleGeo = new THREE.SphereGeometry(0.05, 8, 8);
+                const particleMat = new THREE.MeshStandardMaterial({ color: 0x4ade80, emissive: 0x22ff88 });
+                const particle = new THREE.Mesh(particleGeo, particleMat);
+                particle.userData = { curve, t: i / particleCount, speed: 0.005 + Math.random() * 0.008 };
+                scene.add(particle);
+            }
+        });
+        
+        // --- Floating particles / data streams animation ---
+        const dataStreamParticles = [];
+        for (let i = 0; i < 200; i++) {
+            const geo = new THREE.SphereGeometry(0.03, 6, 6);
+            const mat = new THREE.MeshStandardMaterial({ color: 0x4ade80, emissive: 0x88ff88 });
+            const particle = new THREE.Mesh(geo, mat);
+            particle.userData = { vel: new THREE.Vector3((Math.random() - 0.5) * 0.01, (Math.random() - 0.5) * 0.01, (Math.random() - 0.5) * 0.01), pos: new THREE.Vector3((Math.random() - 0.5) * 6, (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 5) };
+            particle.position.copy(particle.userData.pos);
+            scene.add(particle);
+            dataStreamParticles.push(particle);
+        }
+        
+        // --- Ground Grid (holographic) ---
+        const gridHelper = new THREE.GridHelper(14, 28, 0x2ecc71, 0x22aa55);
+        gridHelper.position.y = -1.6;
+        gridHelper.material.transparent = true;
+        gridHelper.material.opacity = 0.35;
+        scene.add(gridHelper);
+        
+        const ringPlane = new THREE.Mesh(
+            new THREE.RingGeometry(2.2, 3.2, 32),
+            new THREE.MeshStandardMaterial({ color: 0x1fc762, emissive: 0x0a5a2a, side: THREE.DoubleSide, transparent: true, opacity: 0.2 })
+        );
+        ringPlane.rotation.x = -Math.PI / 2;
+        ringPlane.position.y = -1.5;
+        scene.add(ringPlane);
+        
+        // --- Anomaly detection visual effects: pulsing red on IoT node ---
+        function updateNodeRisk() {
+            satellites.forEach(sat => {
+                const riskVal = sat.data.risk;
+                let intensity = 0.4;
+                let colorHex = sat.baseColor;
+                if (riskVal > 70) {
+                    colorHex = 0xef4444;
+                    intensity = 0.9;
+                    sat.mesh.material.emissiveIntensity = 0.7 + Math.sin(Date.now() * 0.008) * 0.3;
+                    sat.glow.material.color.setHex(0xff3333);
+                    sat.glow.material.opacity = 0.5;
+                } else if (riskVal > 40) {
+                    colorHex = 0xfacc15;
+                    intensity = 0.6;
+                    sat.mesh.material.emissiveIntensity = 0.4 + Math.sin(Date.now() * 0.005) * 0.2;
+                    sat.glow.material.color.setHex(0xffaa33);
+                } else {
+                    sat.mesh.material.emissiveIntensity = 0.3;
+                    sat.glow.material.color.setHex(sat.baseColor);
+                    sat.glow.material.opacity = 0.2;
+                }
+                sat.mesh.material.color.setHex(colorHex);
+            });
+        }
+        
+        // --- LIVE DATA FETCH ---
+        const API_URL = 'http://127.0.0.1:5003/api/stream';
+        async function fetchLiveMetrics() {
+            try {
+                const res = await fetch(API_URL);
+                if (!res.ok) return;
+                const data = await res.json();
+                const risk = data.risk_scores || { IT: 12, IoT: 85, HR: 45, Finans: 10 };
+                // update satellite risk dynamically
+                satellites.forEach(sat => {
+                    if (sat.data.id === 'it') sat.data.risk = risk.IT || 12;
+                    if (sat.data.id === 'iot') sat.data.risk = risk.IoT || 85;
+                    if (sat.data.id === 'hr') sat.data.risk = risk.HR || 45;
+                    if (sat.data.id === 'fin') sat.data.risk = risk.Finans || 10;
+                });
+                // update system health
+                const healthEl = document.getElementById('sys-health-val');
+                if (healthEl) {
+                    let anomalyScore = data.anomaly_score || 0.12;
+                    let health = Math.max(0, 100 - (anomalyScore * 100)).toFixed(0);
+                    healthEl.textContent = health;
+                }
+                // update stat cards if present (dash stats)
+                const uptimeVal = document.getElementById('uptime-val');
+                if (uptimeVal) uptimeVal.textContent = '99.9%';
+                const activeAlarms = document.getElementById('active-alarms');
+                if (activeAlarms) activeAlarms.textContent = risk.IoT > 70 ? '4' : '2';
+            } catch(e) { /* silent */ }
+        }
+        
+        // --- Build Dashboard content with 3D container ---
+        const departmentContent = document.getElementById('departmentContent');
+        function renderDashboard() {
+            departmentContent.innerHTML = `
+                <div class="content-header">
+                    <h1 class="content-title">3D Digital Twin · Nexus Core</h1>
+                    <p class="content-subtitle">Gerçek Zamanlı Sistem Topolojisi | Anomali Görselleştirme | GNN Tabanlı Tespit</p>
+                </div>
+                <div id="twin-container-placeholder"></div>
+                <div class="stats-row">
+                    <div class="stat-tile"><div class="stat-value" id="active-nodes-val">4</div><div class="stat-label">AKTİF NODE</div></div>
+                    <div class="stat-tile"><div class="stat-value" id="active-alarms">2</div><div class="stat-label">AKTİF ALARM</div></div>
+                    <div class="stat-tile"><div class="stat-value">99.9%</div><div class="stat-label">UPTIME</div></div>
+                    <div class="stat-tile"><div class="stat-value" id="avg-latency">2.4ms</div><div class="stat-label">ORT. LATENCY</div></div>
+                </div>
+                <div class="mini-metrics-grid">
+                    <div class="mini-card"><div class="mini-icon"><i class="fas fa-microchip"></i></div><div class="mini-info"><h4>3.4 GHz</h4><p>Ort. CPU</p></div></div>
+                    <div class="mini-card"><div class="mini-icon"><i class="fas fa-memory"></i></div><div class="mini-info"><h4>24 GB</h4><p>RAM Kullanımı</p></div></div>
+                    <div class="mini-card"><div class="mini-icon"><i class="fas fa-database"></i></div><div class="mini-info"><h4>842 GB</h4><p>Depolama</p></div></div>
+                    <div class="mini-card"><div class="mini-icon"><i class="fas fa-shield-alt"></i></div><div class="mini-info"><h4>Quantum Safe</h4><p>Şifreleme Aktif</p></div></div>
+                </div>
+            `;
+            const placeholder = document.getElementById('twin-container-placeholder');
+            if (placeholder) {
+                placeholder.appendChild(container);
+                // resize handler
+                const resizeObserver = new ResizeObserver(() => {
+                    const width = container.clientWidth;
+                    const height = container.clientHeight;
+                    camera.aspect = width / height;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(width, height);
+                    effectComposer.setSize(width, height);
+                });
+                resizeObserver.observe(container);
+                renderer.setSize(container.clientWidth, container.clientHeight);
+                effectComposer.setSize(container.clientWidth, container.clientHeight);
+            }
+        }
+        
+        // --- Animation Loop ---
+        let time = 0;
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+            time += 0.016;
+            
+            // core rotation
+            coreNode.rotation.y += 0.008;
+            coreNode.rotation.x = Math.sin(time * 0.5) * 0.1;
+            animateRings(time);
+            
+            // update particle streams along curves
+            scene.children.forEach(child => {
+                if (child.isMesh && child.userData.curve) {
+                    child.userData.t += child.userData.speed;
+                    if (child.userData.t > 1) child.userData.t = 0;
+                    const point = child.userData.curve.getPoint(child.userData.t);
+                    child.position.copy(point);
+                }
+            });
+            
+            // floating particles drift
+            dataStreamParticles.forEach(p => {
+                p.userData.pos.x += p.userData.vel.x;
+                p.userData.pos.y += p.userData.vel.y;
+                p.userData.pos.z += p.userData.vel.z;
+                if (Math.abs(p.userData.pos.x) > 5) p.userData.vel.x *= -1;
+                if (Math.abs(p.userData.pos.y) > 3.5) p.userData.vel.y *= -1;
+                if (Math.abs(p.userData.pos.z) > 5) p.userData.vel.z *= -1;
+                p.position.copy(p.userData.pos);
+            });
+            
+            updateNodeRisk();
+            controls.update(); // autoRotate enabled by orbit
+            effectComposer.render();
+        }
+        
+        // init 3d and dashboard
+        renderDashboard();
+        animate3D();
+        fetchLiveMetrics();
+        setInterval(fetchLiveMetrics, 1200);
+        
+        // background particles (simple canvas 2d)
+        const bgCanvas = document.getElementById('particle-canvas');
+        if (bgCanvas) {
+            const ctx2d = bgCanvas.getContext('2d');
+            let particles = [];
+            function initBgParticles() {
+                const w = window.innerWidth, h = window.innerHeight;
+                bgCanvas.width = w; bgCanvas.height = h;
+                for (let i = 0; i < 150; i++) {
+                    particles.push({ x: Math.random() * w, y: Math.random() * h, radius: Math.random() * 1.5, alpha: Math.random() * 0.4 });
+                }
+                function draw() {
+                    if (!ctx2d) return;
+                    ctx2d.clearRect(0, 0, w, h);
+                    ctx2d.fillStyle = '#1fc762';
+                    particles.forEach(p => {
+                        ctx2d.beginPath();
+                        ctx2d.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx2d.fillStyle = `rgba(31, 199, 98, ${p.alpha * 0.5})`;
+                        ctx2d.fill();
+                    });
+                    requestAnimationFrame(draw);
+                }
+                draw();
+            }
+            window.addEventListener('resize', () => { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; });
+            initBgParticles();
+        }
+        
+        // sidebar interaction
+        const sidebar = document.getElementById('sidebar');
+        const mainWrapper = document.getElementById('mainWrapper');
+        const collapseBtn = document.getElementById('collapseBtn');
+        const topNav = document.getElementById('topNav');
+        collapseBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainWrapper.classList.toggle('sidebar-collapsed');
+            topNav.classList.toggle('sidebar-collapsed');
+            const icon = document.getElementById('collapseIcon');
+            if (sidebar.classList.contains('collapsed')) {
+                icon.classList.remove('fa-chevron-left');
+                icon.classList.add('fa-chevron-right');
+            } else {
+                icon.classList.remove('fa-chevron-right');
+                icon.classList.add('fa-chevron-left');
+            }
+        });
+        
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+                item.classList.add('active');
+                const dept = item.dataset.department;
+                if (dept === 'dashboard') {
+                    renderDashboard();
+                    document.getElementById('pageTitle').innerText = '3D Digital Twin';
+                    document.getElementById('pageSubtitle').innerHTML = 'SİSTEM TOPOLOJİSİ · ANOMALİ TESPİTİ';
+                } else {
+                    departmentContent.innerHTML = `<div class="glass-premium p-8 text-center"><i class="fas fa-cog fa-spin text-4xl text-emerald-400 mb-4"></i><h2 class="text-2xl">${item.querySelector('.menu-text')?.innerText || 'Modül'}</h2><p class="text-slate-400 mt-2">Gelişmiş görselleştirme yakında</p></div>`;
+                    document.getElementById('pageTitle').innerText = item.querySelector('.menu-text')?.innerText || 'Modül';
+                    document.getElementById('pageSubtitle').innerHTML = 'DIGITAL TWIN ENTEGRASYONU';
+                }
+            });
+        });
+        
+        document.getElementById('forecastPanel').addEventListener('click', () => {
+            alert('📊 AI Tahmin: Önümüzdeki 2 saat içinde IoT düğümünde yüksek anomali olasılığı. CPU spike bekleniyor.');
+        });
+        
+        // auth integration
+        (async () => {
+            const user = await initAuth();
+            if (user) {
+                document.getElementById('sidebarInitials').innerText = user.initials || 'AD';
+                document.getElementById('sidebarName').innerText = user.name || 'Admin User';
+                document.getElementById('sidebarEmail').innerText = user.email || 'admin@nexus.ai';
+            }
+        })();
+    </script>
+</body>
+</html>

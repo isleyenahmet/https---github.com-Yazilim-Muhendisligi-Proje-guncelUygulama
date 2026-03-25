@@ -1843,17 +1843,16 @@
         });
 
         // Chart data helper
-        function generateTimeLabels() {
+        function generateWindowLabels() {
             const labels = [];
-            for (let i = 0; i < 24; i++) {
-                labels.push(`${i}:00`);
-            }
+            for (let i = 30; i >= 1; i--) labels.push(`-${i}m`);
+            for (let i = 1; i <= 30; i++) labels.push(`+${i}m`);
             return labels;
         }
 
         function generateHistoricData(baseValue, volatility, anomalyIndex) {
             const data = [];
-            for (let i = 0; i < 24; i++) {
+            for (let i = 0; i < 30; i++) {
                 let value = baseValue + (Math.random() - 0.5) * volatility;
                 if (i >= anomalyIndex) {
                     value += volatility * 1.5;
@@ -1863,7 +1862,7 @@
             return data;
         }
 
-        function generateForecastData(lastValue, trend, steps = 8) {
+        function generateForecastData(lastValue, trend, steps = 30) {
             const data = [];
             for (let i = 0; i < steps; i++) {
                 let value = lastValue + trend * (i + 1) + (Math.random() - 0.5) * 0.5;
@@ -1876,33 +1875,40 @@
         let chartIT_instance, chartIoT_instance, chartFinance_instance, chartHR_instance;
         
         function createDepartmentCharts() {
+            const labels = generateWindowLabels();
+            const configTension = 0.4;
+            const configPointRadius = 0;
+            const configHitRadius = 10;
+
             // IT Chart
             const ctxIT = document.getElementById('chartIT').getContext('2d');
-            const itHistoric = [68, 72, 75, 78, 82, 79, 85, 87, 84, 82, 79, 76, 74, 72, 75, 78, 82, 85, 87, 84, 82, 79, 76, 74];
-            const itForecast = [76, 79, 83, 87, 90, 92, 94, 95];
+            const itHistoric = [68, 72, 75, 78, 82, 79, 85, 87, 84, 82, 79, 76, 74, 72, 75, 78, 82, 85, 87, 84, 82, 79, 76, 74, 76, 79, 82, 84, 86, 87];
+            const itForecast = generateForecastData(itHistoric[29], 0.2, 30);
             
             chartIT_instance = new Chart(ctxIT, {
                 type: 'line',
                 data: {
-                    labels: [...generateTimeLabels(), ...['+1h', '+2h', '+3h', '+4h', '+5h', '+6h', '+7h', '+8h']],
+                    labels: labels,
                     datasets: [
                         {
                             label: 'CPU Kullanımı (%)',
-                            data: [...itHistoric, ...Array(8).fill(null)],
+                            data: [...itHistoric, ...Array(30).fill(null)],
                             borderColor: '#3b82f6',
                             backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                            tension: 0.4,
+                            tension: configTension,
                             fill: true,
-                            pointRadius: 2
+                            pointRadius: configPointRadius,
+                            pointHitRadius: configHitRadius
                         },
                         {
                             label: 'Tahmin',
-                            data: [...Array(24).fill(null), ...itForecast],
+                            data: [...Array(29).fill(null), itHistoric[29], ...itForecast],
                             borderColor: '#8b5cf6',
                             borderDash: [5, 5],
                             backgroundColor: 'transparent',
-                            tension: 0.4,
-                            pointRadius: 0
+                            tension: configTension,
+                            pointRadius: configPointRadius,
+                            pointHitRadius: configHitRadius
                         }
                     ]
                 },
@@ -1919,7 +1925,7 @@
                                 font: { size: 10 },
                                 maxRotation: 0,
                                 autoSkip: true,
-                                maxTicksLimit: 12
+                                maxTicksLimit: 7
                             }
                         },
                         y: { 
@@ -1937,31 +1943,33 @@
 
             // IoT Chart
             const ctxIoT = document.getElementById('chartIoT').getContext('2d');
-            const iotHistoric = [2.1, 2.3, 2.8, 3.2, 4.1, 5.2, 6.8, 8.2, 9.1, 10.2, 11.4, 12.4, 11.8, 10.5, 9.2, 8.1, 7.2, 6.8, 7.2, 8.4, 9.8, 11.2, 12.0, 11.5];
-            const iotForecast = [12.2, 13.1, 13.8, 14.2, 14.8, 15.2, 15.8, 16.1];
+            const iotHistoric = [4450, 4452, 4455, 4458, 4462, 4460, 4465, 4468, 4470, 4472, 4474, 4475, 4473, 4470, 4468, 4465, 4462, 4460, 4462, 4466, 4468, 4472, 4474, 4476, 4475, 4472, 4470, 4474, 4475, 4475];
+            const iotForecast = generateForecastData(iotHistoric[29], 5.0, 30);
             
             chartIoT_instance = new Chart(ctxIoT, {
                 type: 'line',
                 data: {
-                    labels: [...generateTimeLabels(), ...['+1h', '+2h', '+3h', '+4h', '+5h', '+6h', '+7h', '+8h']],
+                    labels: labels,
                     datasets: [
                         {
                             label: 'Packet Loss (%)',
-                            data: [...iotHistoric, ...Array(8).fill(null)],
+                            data: [...iotHistoric, ...Array(30).fill(null)],
                             borderColor: '#ef4444',
                             backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                            tension: 0.4,
+                            tension: configTension,
                             fill: true,
-                            pointRadius: 2
+                            pointRadius: configPointRadius,
+                            pointHitRadius: configHitRadius
                         },
                         {
                             label: 'Tahmin',
-                            data: [...Array(24).fill(null), ...iotForecast],
+                            data: [...Array(29).fill(null), iotHistoric[29], ...iotForecast],
                             borderColor: '#8b5cf6',
                             borderDash: [5, 5],
                             backgroundColor: 'transparent',
-                            tension: 0.4,
-                            pointRadius: 0
+                            tension: configTension,
+                            pointRadius: configPointRadius,
+                            pointHitRadius: configHitRadius
                         }
                     ]
                 },
@@ -1978,7 +1986,69 @@
                                 font: { size: 10 },
                                 maxRotation: 0,
                                 autoSkip: true,
-                                maxTicksLimit: 12
+                                maxTicksLimit: 7
+                            }
+                        },
+                        y: { 
+                            min: 0,
+                            max: 6000,
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: { 
+                                color: 'rgba(255,255,255,0.7)',
+                                font: { size: 10 },
+                                stepSize: 1000
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Finance Chart
+            const ctxFinance = document.getElementById('chartFinance').getContext('2d');
+            const financeHistoric = [1.2, 1.4, 1.3, 1.5, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.1, 2.9, 2.7, 2.5, 2.4, 2.3, 2.4, 2.6, 2.8, 3.0, 3.1, 2.9, 2.8, 2.9, 3.0, 3.1, 3.2];
+            const financeForecast = generateForecastData(financeHistoric[29], 0.05, 30);
+            
+            chartFinance_instance = new Chart(ctxFinance, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Hata Oranı (%)',
+                            data: [...financeHistoric, ...Array(30).fill(null)],
+                            borderColor: '#22c55e',
+                            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                            tension: configTension,
+                            fill: true,
+                            pointRadius: configPointRadius,
+                            pointHitRadius: configHitRadius
+                        },
+                        {
+                            label: 'Tahmin',
+                            data: [...Array(29).fill(null), financeHistoric[29], ...financeForecast],
+                            borderColor: '#8b5cf6',
+                            borderDash: [5, 5],
+                            backgroundColor: 'transparent',
+                            tension: configTension,
+                            pointRadius: configPointRadius,
+                            pointHitRadius: configHitRadius
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { 
+                            display: true,
+                            grid: { display: false },
+                            ticks: { 
+                                color: 'rgba(255,255,255,0.6)',
+                                font: { size: 10 },
+                                maxRotation: 0,
+                                autoSkip: true,
+                                maxTicksLimit: 7
                             }
                         },
                         y: { 
@@ -1994,92 +2064,35 @@
                 }
             });
 
-            // Finance Chart
-            const ctxFinance = document.getElementById('chartFinance').getContext('2d');
-            const financeHistoric = [1.2, 1.4, 1.3, 1.5, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.1, 2.9, 2.7, 2.5, 2.4, 2.3, 2.4, 2.6, 2.8, 3.0, 3.1];
-            const financeForecast = [3.2, 3.4, 3.6, 3.8, 3.9, 4.0, 4.1, 4.2];
-            
-            chartFinance_instance = new Chart(ctxFinance, {
-                type: 'line',
-                data: {
-                    labels: [...generateTimeLabels(), ...['+1h', '+2h', '+3h', '+4h', '+5h', '+6h', '+7h', '+8h']],
-                    datasets: [
-                        {
-                            label: 'Hata Oranı (%)',
-                            data: [...financeHistoric, ...Array(8).fill(null)],
-                            borderColor: '#22c55e',
-                            backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                            tension: 0.4,
-                            fill: true,
-                            pointRadius: 2
-                        },
-                        {
-                            label: 'Tahmin',
-                            data: [...Array(24).fill(null), ...financeForecast],
-                            borderColor: '#8b5cf6',
-                            borderDash: [5, 5],
-                            backgroundColor: 'transparent',
-                            tension: 0.4,
-                            pointRadius: 0
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { 
-                            display: true,
-                            grid: { display: false },
-                            ticks: { 
-                                color: 'rgba(255,255,255,0.6)',
-                                font: { size: 10 },
-                                maxRotation: 0,
-                                autoSkip: true,
-                                maxTicksLimit: 12
-                            }
-                        },
-                        y: { 
-                            min: 0,
-                            max: 10,
-                            grid: { color: 'rgba(255,255,255,0.1)' },
-                            ticks: { 
-                                color: 'rgba(255,255,255,0.7)',
-                                font: { size: 10 }
-                            }
-                        }
-                    }
-                }
-            });
-
             // HR Chart
             const ctxHR = document.getElementById('chartHR').getContext('2d');
-            const hrHistoric = [45, 52, 48, 55, 62, 68, 72, 78, 82, 88, 92, 98, 105, 112, 118, 124, 132, 138, 144, 148, 152, 155, 156, 154];
-            const hrForecast = [158, 162, 166, 170, 173, 176, 178, 180];
+            const hrHistoric = [45, 52, 48, 55, 62, 68, 72, 78, 82, 88, 92, 98, 105, 112, 118, 124, 132, 138, 144, 148, 152, 155, 156, 154, 152, 153, 154, 155, 156, 156];
+            const hrForecast = generateForecastData(hrHistoric[29], 0.8, 30);
             
             chartHR_instance = new Chart(ctxHR, {
                 type: 'line',
                 data: {
-                    labels: [...generateTimeLabels(), ...['+1h', '+2h', '+3h', '+4h', '+5h', '+6h', '+7h', '+8h']],
+                    labels: labels,
                     datasets: [
                         {
                             label: 'Helpdesk Talepleri',
-                            data: [...hrHistoric, ...Array(8).fill(null)],
+                            data: [...hrHistoric, ...Array(30).fill(null)],
                             borderColor: '#a855f7',
                             backgroundColor: 'rgba(168, 85, 247, 0.1)',
-                            tension: 0.4,
+                            tension: configTension,
                             fill: true,
-                            pointRadius: 2
+                            pointRadius: configPointRadius,
+                            pointHitRadius: configHitRadius
                         },
                         {
                             label: 'Tahmin',
-                            data: [...Array(24).fill(null), ...hrForecast],
+                            data: [...Array(29).fill(null), hrHistoric[29], ...hrForecast],
                             borderColor: '#8b5cf6',
                             borderDash: [5, 5],
                             backgroundColor: 'transparent',
-                            tension: 0.4,
-                            pointRadius: 0
+                            tension: configTension,
+                            pointRadius: configPointRadius,
+                            pointHitRadius: configHitRadius
                         }
                     ]
                 },
@@ -2096,12 +2109,12 @@
                                 font: { size: 10 },
                                 maxRotation: 0,
                                 autoSkip: true,
-                                maxTicksLimit: 12
+                                maxTicksLimit: 7
                             }
                         },
                         y: { 
                             min: 0,
-                            max: 250,
+                            max: 300,
                             grid: { color: 'rgba(255,255,255,0.1)' },
                             ticks: { 
                                 color: 'rgba(255,255,255,0.7)',
@@ -2156,7 +2169,7 @@
                             badgeSel: '.anomaly-card[data-dept="it"] .anomaly-badge',
                             currSel: '.anomaly-card[data-dept="it"] .anomaly-current',
                             chart: chartIT_instance,
-                            val: parseInt((d.net_dur || 0) * 100),
+                            val: d.net_dur ? parseInt(d.net_dur * 100) : Math.min(100, Math.max(0, parseInt((chartIT_instance.data.datasets[0].data.filter(x => x !== null).slice(-1)[0] || 85) + (Math.random() - 0.5) * 3))),
                             suffix: '%'
                         },
                         iot: {
@@ -2164,7 +2177,7 @@
                             badgeSel: '.anomaly-card[data-dept="iot"] .anomaly-badge',
                             currSel: '.anomaly-card[data-dept="iot"] .anomaly-current',
                             chart: chartIoT_instance,
-                            val: ((d.iot_temp || 0) * 15 + 2).toFixed(1),
+                            val: d.iot_temp ? ((d.iot_temp) * 15 + 2).toFixed(1) : ((chartIoT_instance.data.datasets[0].data.filter(x => x !== null).slice(-1)[0] || 4475) + (Math.random() - 0.5) * 5).toFixed(1),
                             suffix: '%'
                         },
                         finance: {
@@ -2172,7 +2185,7 @@
                             badgeSel: '.anomaly-card[data-dept="finance"] .anomaly-badge',
                             currSel: '.anomaly-card[data-dept="finance"] .anomaly-current',
                             chart: chartFinance_instance,
-                            val: ((d.fin_amount || 0) * 5).toFixed(1),
+                            val: d.fin_amount ? ((d.fin_amount) * 5).toFixed(1) : Math.max(0, ((chartFinance_instance.data.datasets[0].data.filter(x => x !== null).slice(-1)[0] || 3.0) + (Math.random() - 0.5) * 0.4)).toFixed(1),
                             suffix: '%'
                         },
                         hr: {
@@ -2180,7 +2193,7 @@
                             badgeSel: '.anomaly-card[data-dept="hr"] .anomaly-badge',
                             currSel: '.anomaly-card[data-dept="hr"] .anomaly-current',
                             chart: chartHR_instance,
-                            val: parseInt((1 - (d.hr_satisfaction || 0)) * 150 + (d.hr_age || 0) * 50),
+                            val: (d.hr_satisfaction || d.hr_age) ? parseInt((1 - (d.hr_satisfaction || 0)) * 150 + (d.hr_age || 0) * 50) : parseInt((chartHR_instance.data.datasets[0].data.filter(x => x !== null).slice(-1)[0] || 150) + (Math.random() - 0.5) * 2),
                             suffix: ''
                         }
                     };
@@ -2212,18 +2225,24 @@
                             
                             const dataArr = dsHistoric.data.filter(x => x !== null);
                             dataArr.push(Number(info.val) || 0);
-                            if (dataArr.length > 24) dataArr.shift(); 
+                            if (dataArr.length > 30) dataArr.shift(); 
                             
                             // Real Data (Solid)
-                            dsHistoric.data = [...dataArr, ...Array(8).fill(null)];
+                            dsHistoric.data = [...dataArr, ...Array(30).fill(null)];
                             
                             // Forecast Data (Dashed) - Ensure it connects to the last real data point
                             if (dsForecast) {
-                                const forecastValues = dsForecast.data.filter(x => x !== null);
-                                // The forecast values start after the real data. 
-                                // We keep the forecast offset correctly.
-                                const nullPadding = Array(dataArr.length - 1).fill(null);
-                                dsForecast.data = [...nullPadding, dataArr[dataArr.length - 1], ...forecastValues.slice(1)];
+                                let trend = 0.1;
+                                if (info.score > 80) trend = 0.5;
+                                else if (info.score > 40) trend = 0.2;
+                                else if (key === 'finance') trend = 0.05;
+                                else if (key === 'iot') trend = 0.1;
+                                else if (key === 'hr') trend = 0.6;
+                                else trend = 0.15;
+                                
+                                const newForecast = generateForecastData(dataArr[dataArr.length - 1], trend, 30);
+                                const nullPadding = Array(29).fill(null);
+                                dsForecast.data = [...nullPadding, dataArr[dataArr.length - 1], ...newForecast];
                             }
 
                             // Color lines based on specific risk

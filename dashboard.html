@@ -19,7 +19,8 @@
     <script type="importmap">
         {
             "imports": {
-                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
             }
         }
     </script>
@@ -709,6 +710,58 @@
             height: 20px;
             background: rgba(255, 255, 255, 0.2);
         }
+
+        /* 3D Canvas container */
+        #twin-canvas-container {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            min-height: 550px;
+            border-radius: 28px;
+            overflow: hidden;
+            background: #03050A;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.8), 0 0 0 1px rgba(31,199,98,0.2);
+            margin-bottom: 24px;
+        }
+        #digital-twin-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Stats row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-tile {
+            background: rgba(10,20,35,0.5);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(31,199,98,0.2);
+            border-radius: 20px;
+            padding: 16px;
+            transition: all 0.2s;
+        }
+        .stat-tile:hover { border-color: rgba(31,199,98,0.5); transform: translateY(-2px); }
+
+        /* Mini metrics grid */
+        .mini-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        .mini-card {
+            background: rgba(10,20,35,0.4);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
     </style>
     <!-- Auth -->
     <script src="auth.js"></script>
@@ -917,6 +970,10 @@
     <script type="module">
         // Three.js Particle System
         import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
         const canvas = document.getElementById('particle-canvas');
         const scene = new THREE.Scene();
@@ -1018,173 +1075,70 @@
         // Department data with graph
         const departments = {
             dashboard: {
-                title: 'Dashboard',
-                subtitle: 'Genel Bakış',
+                title: '3D Digital Twin',
+                subtitle: 'SİSTEM TOPOLOJİSİ · ANOMALİ TESPİTİ',
                 content: `
-                    <!-- Stats Grid - Küçültülmüş -->
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-server"></i>
-                            </div>
-                            <div class="stat-value">12</div>
-                            <div class="stat-label">Aktif Sunucu</div>
-                            <div class="stat-change positive">
-                                <i class="fas fa-arrow-up"></i> +2
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="stat-value">2,847</div>
-                            <div class="stat-label">Aktif Kullanıcı</div>
-                            <div class="stat-change positive">
-                                <i class="fas fa-arrow-up"></i> +12%
+                    <!-- 3D Dijital İkiz Alanı -->
+                    <div id="twin-container-placeholder"></div>
+                    
+                    <div class="stats-row">
+                        <div class="stat-tile">
+                            <div class="stat-value" id="active-nodes-val">4</div>
+                            <div class="stat-label">AKTİF NODE</div>
+                            <div class="stat-change positive mt-2 text-[11px] flex gap-1 items-center">
+                                <i class="fas fa-check text-green-500"></i> <span class="text-green-500">Stable</span>
                             </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </div>
-                            <div class="stat-value" id="dash-alarms">3</div>
-                            <div class="stat-label">Aktif Alarm</div>
-                            <div class="stat-change negative">
-                                <i class="fas fa-arrow-up"></i> +1
+                        <div class="stat-tile">
+                            <div class="stat-value" id="dash-alarms">2</div>
+                            <div class="stat-label">AKTİF ALARM</div>
+                            <div class="stat-change negative mt-2 text-[11px] flex gap-1 items-center">
+                                <i class="fas fa-arrow-up text-red-500"></i> <span class="text-red-500">+1</span>
                             </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-clock"></i>
-                            </div>
+                        <div class="stat-tile">
                             <div class="stat-value">99.9%</div>
-                            <div class="stat-label">Uptime</div>
-                            <div class="stat-change positive">
-                                <i class="fas fa-arrow-up"></i> +0.1%
+                            <div class="stat-label">UPTIME</div>
+                            <div class="stat-change positive mt-2 text-[11px] flex gap-1 items-center">
+                                <i class="fas fa-arrow-up text-green-500"></i> <span class="text-green-500">+0.1%</span>
+                            </div>
+                        </div>
+                        <div class="stat-tile">
+                            <div class="stat-value" id="avg-latency">2.4ms</div>
+                            <div class="stat-label">ORT. LATENCY</div>
+                            <div class="stat-change positive mt-2 text-[11px] flex gap-1 items-center">
+                                <i class="fas fa-arrow-down text-green-500"></i> <span class="text-green-500">-0.2ms</span>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Graf Container - Boyuna büyütülmüş (550px) -->
-                    <div class="graph-container">
-                        <div class="graph-title">
-                            <i class="fas fa-project-diagram text-brand"></i>
-                            Sistem Topolojisi ve Anomali Tespiti
-                        </div>
-                        
-                        <!-- Orbital rings -->
-                        <div class="orbital-ring"></div>
-                        <div class="orbital-ring-inner"></div>
-                        
-                        <!-- Connection lines SVG -->
-                        <svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 5;">
-                            <defs>
-                                <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" stop-color="#1fc762" stop-opacity="0.2" />
-                                    <stop offset="50%" stop-color="#1fc762" stop-opacity="0.8" />
-                                    <stop offset="100%" stop-color="#1fc762" stop-opacity="0.2" />
-                                </linearGradient>
-                                <filter id="glow">
-                                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                                    <feMerge>
-                                        <feMergeNode in="coloredBlur"/>
-                                        <feMergeNode in="SourceGraphic"/>
-                                    </feMerge>
-                                </filter>
-                            </defs>
-                            
-                            <!-- Central to IT -->
-                            <line x1="50%" y1="50%" x2="25%" y2="25%" stroke="url(#line-gradient)" stroke-width="1.5" stroke-dasharray="4 4" filter="url(#glow)">
-                                <animate attributeName="stroke-dashoffset" values="0;100" dur="10s" repeatCount="indefinite" />
-                            </line>
-                            <!-- Central to HR -->
-                            <line x1="50%" y1="50%" x2="75%" y2="25%" stroke="url(#line-gradient)" stroke-width="1.5" stroke-dasharray="4 4" filter="url(#glow)">
-                                <animate attributeName="stroke-dashoffset" values="0;100" dur="10s" repeatCount="indefinite" begin="2s" />
-                            </line>
-                            <!-- Central to IoT -->
-                            <line x1="50%" y1="50%" x2="25%" y2="75%" stroke="url(#line-gradient)" stroke-width="2" stroke-dasharray="6 4" filter="url(#glow)">
-                                <animate attributeName="stroke-dashoffset" values="0;100" dur="8s" repeatCount="indefinite" begin="1s" />
-                            </line>
-                            <!-- Central to Finance -->
-                            <line x1="50%" y1="50%" x2="75%" y2="75%" stroke="url(#line-gradient)" stroke-width="1.5" stroke-dasharray="4 4" filter="url(#glow)">
-                                <animate attributeName="stroke-dashoffset" values="0;100" dur="10s" repeatCount="indefinite" begin="3s" />
-                            </line>
-                        </svg>
-
-                        <!-- NODES -->
-                        
-                        <!-- Central Server Node -->
-                        <div class="node node-core core-stable" id="central-node">
-                            <div class="text-center">
-                                <div class="text-[10px] font-extrabold text-white tracking-wider mb-1">PRIMARY</div>
-                                <div class="text-[8px] font-medium text-white/60">HUB·01</div>
-                            </div>
-                            <div class="pulse-ring"></div>
-                        </div>
-
-                        <!-- IT Node (Green - Stable) -->
-                        <div class="node node-satellite" id="node-it" style="background: radial-gradient(circle at 30% 30%, #4ade80, #16a34a); left: 18%; top: 18%; box-shadow: 0 0 30px rgba(74, 222, 128, 0.3);">
-                            <span class="text-xs font-bold text-white">IT</span>
-                        </div>
-
-                        <!-- HR Node (Yellow - Warning) -->
-                        <div class="node node-satellite animate-pulse" id="node-hr" style="background: radial-gradient(circle at 30% 30%, #facc15, #ca8a04); left: 72%; top: 18%; box-shadow: 0 0 30px rgba(250, 204, 21, 0.5);">
-                            <span class="text-xs font-bold text-white">HR</span>
-                        </div>
-
-                        <!-- IoT Node (Red - Critical) -->
-                        <div class="node node-satellite" id="node-iot" style="background: radial-gradient(circle at 30% 30%, #ef4444, #b91c1c); left: 18%; top: 72%; box-shadow: 0 0 40px rgba(239, 68, 68, 0.8); animation: pulse 1s ease-in-out infinite;">
-                            <span class="text-xs font-bold text-white">IoT</span>
-                        </div>
-
-                        <!-- Finance Node (Green - Stable) -->
-                        <div class="node node-satellite" id="node-fin" style="background: radial-gradient(circle at 30% 30%, #4ade80, #16a34a); left: 72%; top: 72%; box-shadow: 0 0 30px rgba(74, 222, 128, 0.3);">
-                            <span class="text-xs font-bold text-white">FIN</span>
-                        </div>
-
-                        <!-- Floating metric labels -->
-                        <div class="indicator" id="ind-it" style="left: 15%; top: 15%;">98% · 2ms</div>
-                        <div class="indicator" id="ind-hr" style="left: 75%; top: 15%;">74% · 120ms</div>
-                        <div class="indicator" id="ind-iot" style="left: 15%; top: 80%;">12% · 2000ms</div>
-                        <div class="indicator" id="ind-fin" style="left: 75%; top: 80%;">100% · 1ms</div>
-                    </div>
-
-                    <!-- Mini Metrics - Sayfanın en altına kaydırıldı, boyutlar aynı -->
-                    <div class="mini-metrics">
-                        <div class="mini-metric">
-                            <div class="mini-icon">
-                                <i class="fas fa-database"></i>
-                            </div>
+                    
+                    <div class="mini-metrics-grid">
+                        <div class="mini-card">
+                            <div class="mini-icon"><i class="fas fa-microchip"></i></div>
                             <div class="mini-info">
-                                <h4>342 GB</h4>
-                                <p>Depolama</p>
-                            </div>
-                        </div>
-                        <div class="mini-metric">
-                            <div class="mini-icon">
-                                <i class="fas fa-tachometer-alt"></i>
-                            </div>
-                            <div class="mini-info">
-                                <h4>2.4 GHz</h4>
+                                <h4>3.4 GHz</h4>
                                 <p>Ort. CPU</p>
                             </div>
                         </div>
-                        <div class="mini-metric">
-                            <div class="mini-icon">
-                                <i class="fas fa-memory"></i>
-                            </div>
+                        <div class="mini-card">
+                            <div class="mini-icon"><i class="fas fa-memory"></i></div>
                             <div class="mini-info">
-                                <h4>16 GB</h4>
+                                <h4>24 GB</h4>
                                 <p>RAM Kullanımı</p>
                             </div>
                         </div>
-                        <div class="mini-metric">
-                            <div class="mini-icon">
-                                <i class="fas fa-network-wired"></i>
-                            </div>
+                        <div class="mini-card">
+                            <div class="mini-icon"><i class="fas fa-database"></i></div>
                             <div class="mini-info">
-                                <h4>1.2 Gbps</h4>
-                                <p>Bant Genişliği</p>
+                                <h4>842 GB</h4>
+                                <p>Depolama</p>
+                            </div>
+                        </div>
+                        <div class="mini-card">
+                            <div class="mini-icon"><i class="fas fa-shield-alt"></i></div>
+                            <div class="mini-info">
+                                <h4>Quantum Safe</h4>
+                                <p>Şifreleme Aktif</p>
                             </div>
                         </div>
                     </div>
@@ -1752,9 +1706,241 @@
                     pageTitle.textContent = departments[department].title;
                     pageSubtitle.textContent = departments[department].subtitle;
                     departmentContent.innerHTML = departments[department].content;
+                    
+                    // Eğer dashboard tab'ı seçildiyse, twin canvas'ı bağla
+                    if (department === 'dashboard') {
+                        const placeholder = document.getElementById('twin-container-placeholder');
+                        if (placeholder && typeof twinContainer !== 'undefined') {
+                            placeholder.appendChild(twinContainer);
+                        }
+                    }
                 }
             });
         });
+
+        // ═══════════════════════════════════════════════════════════════════
+        // DIGITAL TWIN 3D SETUP
+        // ═══════════════════════════════════════════════════════════════════
+        const twinGlobalConfig = {
+            speedMul: 1.0,
+            deptSpeeds: { it: 1.0, hr: 1.0, iot: 1.0, fin: 1.0 }
+        };
+
+        const twinContainer = document.createElement('div');
+        twinContainer.id = 'twin-canvas-container';
+        const canvas3D = document.createElement('canvas');
+        canvas3D.id = 'digital-twin-canvas';
+        twinContainer.appendChild(canvas3D);
+        
+        const twinScene = new THREE.Scene();
+        twinScene.background = new THREE.Color(0x03050A);
+        twinScene.fog = new THREE.FogExp2(0x03050A, 0.008);
+        
+        const twinCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+        twinCamera.position.set(5, 3, 8);
+        twinCamera.lookAt(0, 0, 0);
+        
+        const twinRenderer = new THREE.WebGLRenderer({ canvas: canvas3D, alpha: false, antialias: true });
+        // Initial setup for sizing
+        setTimeout(() => {
+            if(twinContainer.clientWidth > 0){
+                twinRenderer.setSize(twinContainer.clientWidth, twinContainer.clientHeight);
+                twinCamera.aspect = twinContainer.clientWidth / twinContainer.clientHeight;
+                twinCamera.updateProjectionMatrix();
+            }
+        }, 100);
+        
+        twinRenderer.setPixelRatio(window.devicePixelRatio);
+        twinRenderer.toneMapping = THREE.ReinhardToneMapping;
+        twinRenderer.toneMappingExposure = 1.2;
+        
+        // Post Processing Bloom
+        const renderScene = new RenderPass(twinScene, twinCamera);
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.2, 0.3, 0.85);
+        bloomPass.threshold = 0.1;
+        bloomPass.strength = 0.8;
+        bloomPass.radius = 0.5;
+        const effectComposer = new EffectComposer(twinRenderer);
+        effectComposer.addPass(renderScene);
+        effectComposer.addPass(bloomPass);
+        
+        // Controls
+        const twinControls = new OrbitControls(twinCamera, twinRenderer.domElement);
+        twinControls.enableDamping = true;
+        twinControls.dampingFactor = 0.05;
+        twinControls.autoRotate = true;
+        twinControls.autoRotateSpeed = 1.2;
+        twinControls.enableZoom = true;
+        twinControls.enablePan = false;
+        twinControls.target.set(0, 0, 0);
+        
+        // --- Lights ---
+        twinScene.add(new THREE.AmbientLight(0x111122));
+        const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+        mainLight.position.set(2, 5, 3);
+        twinScene.add(mainLight);
+        const fillLight = new THREE.PointLight(0x226622, 0.5);
+        fillLight.position.set(-2, 1, 4);
+        twinScene.add(fillLight);
+        const backLight = new THREE.PointLight(0x1fc762, 0.4);
+        backLight.position.set(0, 2, -5);
+        twinScene.add(backLight);
+        
+        function createGlowMesh(color, size = 0.8) {
+            const geometry = new THREE.SphereGeometry(size, 32, 32);
+            const material = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.15, side: THREE.BackSide });
+            return new THREE.Mesh(geometry, material);
+        }
+        
+        // --- Central Core Node ---
+        const coreGeo = new THREE.IcosahedronGeometry(0.9, 0);
+        const coreMat = new THREE.MeshStandardMaterial({ color: 0x2ecc71, emissive: 0x1a8442, emissiveIntensity: 0.8, metalness: 0.7, roughness: 0.2, flatShading: false });
+        const coreNode = new THREE.Mesh(coreGeo, coreMat);
+        twinScene.add(coreNode);
+        
+        const ringGeo = new THREE.TorusGeometry(1.15, 0.04, 64, 200);
+        const ringMat = new THREE.MeshStandardMaterial({ color: 0x4ade80, emissive: 0x2ecc71, emissiveIntensity: 0.5 });
+        const ringX = new THREE.Mesh(ringGeo, ringMat); ringX.rotation.x = Math.PI / 2; twinScene.add(ringX);
+        const ringY = new THREE.Mesh(ringGeo, ringMat); ringY.rotation.z = Math.PI / 2; twinScene.add(ringY);
+        const ringZ = new THREE.Mesh(ringGeo, ringMat); ringZ.rotation.x = Math.PI / 3; ringZ.rotation.z = Math.PI / 3; twinScene.add(ringZ);
+        
+        // --- Satellite Nodes ---
+        const nodesData = [
+            { id: 'it', name: 'IT', pos: new THREE.Vector3(2.2, 0.8, 1.8), color: 0x4ade80, emissive: 0x2ecc71, risk: 0 },
+            { id: 'hr', name: 'LOG', pos: new THREE.Vector3(1.2, 1.2, -2.4), color: 0x4ade80, emissive: 0x2ecc71, risk: 0 },
+            { id: 'iot', name: 'IoT', pos: new THREE.Vector3(-2.4, 0.2, 1.5), color: 0x4ade80, emissive: 0x2ecc71, risk: 0 },
+            { id: 'fin', name: 'FIN', pos: new THREE.Vector3(-1.3, -0.9, -2.0), color: 0x4ade80, emissive: 0x2ecc71, risk: 0 }
+        ];
+        
+        const twinSatellites = [];
+        nodesData.forEach((node) => {
+            const geo = new THREE.SphereGeometry(0.55, 48, 48);
+            const mat = new THREE.MeshStandardMaterial({ color: node.color, emissive: node.emissive, emissiveIntensity: 0.4, metalness: 0.6, roughness: 0.3 });
+            const sphere = new THREE.Mesh(geo, mat);
+            sphere.position.copy(node.pos);
+            twinScene.add(sphere);
+            
+            const glow = createGlowMesh(node.color, 0.85);
+            glow.position.copy(node.pos);
+            twinScene.add(glow);
+            
+             twinSatellites.push({ mesh: sphere, glow, data: node, baseColor: node.color, baseEmissive: node.emissive });
+            
+            const canvas = document.createElement('canvas'); canvas.width = 128; canvas.height = 64;
+            const ctx = canvas.getContext('2d'); ctx.fillStyle = '#fff'; ctx.font = 'Bold 24px "Plus Jakarta Sans"'; ctx.fillText(node.name, 10, 40);
+            const texture = new THREE.CanvasTexture(canvas);
+            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true }));
+            sprite.scale.set(0.8, 0.4, 0.8);
+            sprite.position.copy(node.pos.clone().add(new THREE.Vector3(0, 0.85, 0)));
+            twinScene.add(sprite);
+        });
+        
+        // --- Connection Lines ---
+        nodesData.forEach(node => {
+            const start = new THREE.Vector3(0, 0, 0); const end = node.pos;
+            const mid = start.clone().lerp(end, 0.5); mid.y += 1.2;
+            const curve = new THREE.CubicBezierCurve3(start, mid, mid, end);
+            const points = curve.getPoints(50);
+            twinScene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({ color: 0x4ade80 })));
+            
+            for (let i = 0; i < 8; i++) {
+                const particle = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 8), new THREE.MeshStandardMaterial({ color: 0x4ade80, emissive: 0x22ff88 }));
+                particle.userData = { curve, t: i / 8, baseSpeed: 0.005 + Math.random() * 0.008, targetId: node.id };
+                twinScene.add(particle);
+            }
+        });
+        
+        const dataStreamParticles = [];
+        for (let i = 0; i < 200; i++) {
+            const particle = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 6), new THREE.MeshStandardMaterial({ color: 0x4ade80, emissive: 0x88ff88 }));
+            particle.userData = { vel: new THREE.Vector3((Math.random() - 0.5) * 0.01, (Math.random() - 0.5) * 0.01, (Math.random() - 0.5) * 0.01), pos: new THREE.Vector3((Math.random() - 0.5) * 6, (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 5) };
+            particle.position.copy(particle.userData.pos);
+            twinScene.add(particle);
+            dataStreamParticles.push(particle);
+        }
+        
+        const gridHelper = new THREE.GridHelper(14, 28, 0x2ecc71, 0x22aa55);
+        gridHelper.position.y = -1.6; gridHelper.material.transparent = true; gridHelper.material.opacity = 0.35;
+        twinScene.add(gridHelper);
+        
+        const ringPlane = new THREE.Mesh(new THREE.RingGeometry(2.2, 3.2, 32), new THREE.MeshStandardMaterial({ color: 0x1fc762, emissive: 0x0a5a2a, side: THREE.DoubleSide, transparent: true, opacity: 0.2 }));
+        ringPlane.rotation.x = -Math.PI / 2; ringPlane.position.y = -1.5; twinScene.add(ringPlane);
+        
+        function updateNodeRiskVisuals() {
+            twinSatellites.forEach(sat => {
+                const riskVal = sat.data.risk || 0;
+                const isAnomaly = sat.data.isAnomaly || false;
+                
+                // Adjusted dynamic thresholds for Graph Attention Weights vs normal load
+                const critThresh = isAnomaly ? 24 : 75;
+                const warnThresh = isAnomaly ? 20 : 45;
+
+                let colorHex = sat.baseColor;
+                if (riskVal > critThresh) {
+                    colorHex = 0xef4444; sat.mesh.material.emissiveIntensity = 0.7 + Math.sin(Date.now() * 0.008) * 0.3;
+                    sat.glow.material.color.setHex(0xff3333); sat.glow.material.opacity = 0.5;
+                } else if (riskVal > warnThresh) {
+                    colorHex = 0xfacc15; sat.mesh.material.emissiveIntensity = 0.4 + Math.sin(Date.now() * 0.005) * 0.2;
+                    sat.glow.material.color.setHex(0xffaa33);
+                } else {
+                    sat.mesh.material.emissiveIntensity = 0.3; sat.glow.material.color.setHex(sat.baseColor); sat.glow.material.opacity = 0.2;
+                }
+                sat.mesh.material.color.setHex(colorHex);
+            });
+        }
+        
+        let twinTime = 0;
+        function animateTwin() {
+            requestAnimationFrame(animateTwin);
+            twinTime += 0.016 * twinGlobalConfig.speedMul;
+            coreNode.rotation.y += 0.008 * twinGlobalConfig.speedMul; 
+            coreNode.rotation.x = Math.sin(twinTime * 0.5) * 0.1;
+            const s = 1 + Math.sin(twinTime * 3) * 0.03; ringX.scale.set(s, s, s); ringY.scale.set(s, s, s); ringZ.scale.set(s, s, s);
+            
+            twinScene.children.forEach(child => {
+                if (child.isMesh && child.userData.curve) {
+                    const dynamicSpeed = child.userData.baseSpeed * (twinGlobalConfig.deptSpeeds[child.userData.targetId] || 1.0);
+                    child.userData.t += dynamicSpeed;
+                    if (child.userData.t > 1) child.userData.t = 0;
+                    child.position.copy(child.userData.curve.getPoint(child.userData.t));
+                }
+            });
+            dataStreamParticles.forEach(p => {
+                p.userData.pos.add(p.userData.vel.clone().multiplyScalar(twinGlobalConfig.speedMul));
+                if (Math.abs(p.userData.pos.x) > 5) p.userData.vel.x *= -1;
+                if (Math.abs(p.userData.pos.y) > 3.5) p.userData.vel.y *= -1;
+                if (Math.abs(p.userData.pos.z) > 5) p.userData.vel.z *= -1;
+                p.position.copy(p.userData.pos);
+            });
+            updateNodeRiskVisuals();
+            twinControls.update();
+            
+            // Only render effectComposer if canvas is visible/sized
+            if (twinContainer.clientWidth > 0) {
+                effectComposer.render();
+            }
+        }
+        
+        animateTwin();
+
+        // Load Twin Canvas into Dashboard tab immediately on init
+        setTimeout(() => {
+            const placeholder = document.getElementById('twin-container-placeholder');
+            if (placeholder) {
+                placeholder.appendChild(twinContainer);
+                
+                // resize handler
+                const resizeObserver = new ResizeObserver(() => {
+                    if (twinContainer.clientWidth > 0) {
+                        twinCamera.aspect = twinContainer.clientWidth / twinContainer.clientHeight;
+                        twinCamera.updateProjectionMatrix();
+                        twinRenderer.setSize(twinContainer.clientWidth, twinContainer.clientHeight);
+                        effectComposer.setSize(twinContainer.clientWidth, twinContainer.clientHeight);
+                    }
+                });
+                resizeObserver.observe(twinContainer);
+            }
+        }, 100);
 
         // Data stream particles
         function createDataStream() {
@@ -1820,27 +2006,33 @@
                     const risk = d.risk_scores || {};
                     const isGlobalAnomaly = d.anomaly === 1;
 
-                    function updateNode(id, score, isAnomaly) {
-                        const el = document.getElementById(id);
-                        if (!el) return;
-                        
-                        // Adjusted thresholds for GAT attention weights (avg ~33.3)
-                        // Using lower thresholds to ensure satellite nodes turn red during anomalies
-                        const critThresh = isAnomaly ? 24 : 75;
-                        const warnThresh = isAnomaly ? 20 : 45;
+                    // Link Live API directly to Twin Animation Speed Config
+                    if (d.anomaly_score !== undefined) {
+                        const targetMul = 1.0 + Math.max(0, (d.anomaly_score * 3.0));
+                        // Smooth interpolation for global speed
+                        twinGlobalConfig.speedMul = twinGlobalConfig.speedMul + (targetMul - twinGlobalConfig.speedMul) * 0.1;
+                    }
 
-                        if (score > critThresh) { // Critical
-                            el.style.background = 'radial-gradient(circle at 30% 30%, #ef4444, #b91c1c)';
-                            el.style.boxShadow = '0 0 40px rgba(239, 68, 68, 0.8)';
-                            el.classList.add('animate-pulse');
-                        } else if (score > warnThresh) { // Warning
-                            el.style.background = 'radial-gradient(circle at 30% 30%, #facc15, #ca8a04)';
-                            el.style.boxShadow = '0 0 30px rgba(250, 204, 21, 0.5)';
-                            el.classList.remove('animate-pulse');
-                        } else { // Stable
-                            el.style.background = 'radial-gradient(circle at 30% 30%, #4ade80, #16a34a)';
-                            el.style.boxShadow = '0 0 30px rgba(74, 222, 128, 0.3)';
-                            el.classList.remove('animate-pulse');
+                    function updateNode(id, score, isAnomaly) {
+                        // Artık DOM Manipülasyonu yerine 3D Digital Twin Satellite verisi güncellenecek
+                        const nodeMap = {
+                            'node-it': 'it',
+                            'node-hr': 'hr',
+                            'node-iot': 'iot',
+                            'node-fin': 'fin'
+                        };
+                        const twinId = nodeMap[id];
+                        if (!twinId) return;
+
+                        const sat = twinSatellites.find(s => s.data.id === twinId);
+                        if(sat) {
+                            sat.data.risk = score;
+                            sat.data.isAnomaly = isAnomaly;
+                        }
+                        
+                        // Tie risk linearly to curve particle speed (1x to 4x base)
+                        if (score !== undefined) {
+                            twinGlobalConfig.deptSpeeds[twinId] = 1.0 + (score / 100) * 3.0;
                         }
                     }
 
@@ -1849,16 +2041,16 @@
                     updateNode('node-iot', risk.IoT, isGlobalAnomaly);
                     updateNode('node-fin', risk.Finans, isGlobalAnomaly);
 
-                    // Update Central Node
-                    const centralNode = document.getElementById('central-node');
-                    if (centralNode) {
-                        if (isGlobalAnomaly) {
-                            centralNode.className = 'node node-core core-critical';
-                        } else if (risk.IT > 45 || risk.HR > 45 || risk.IoT > 45 || risk.Finans > 45) {
-                            centralNode.className = 'node node-core core-warning';
-                        } else {
-                            centralNode.className = 'node node-core core-stable';
-                        }
+                    // Update Central Core Node Color
+                    if (isGlobalAnomaly) {
+                        coreNode.material.color.setHex(0xef4444);
+                        coreNode.material.emissive.setHex(0xb91c1c);
+                    } else if (risk.IT > 45 || risk.HR > 45 || risk.IoT > 45 || risk.Finans > 45) {
+                        coreNode.material.color.setHex(0xfacc15);
+                        coreNode.material.emissive.setHex(0xca8a04);
+                    } else {
+                        coreNode.material.color.setHex(0x2ecc71);
+                        coreNode.material.emissive.setHex(0x1a8442);
                     }
 
                     // Update Indicators dynamically — Map correctly to API fields
