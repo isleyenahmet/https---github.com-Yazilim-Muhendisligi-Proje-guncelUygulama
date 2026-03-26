@@ -1822,7 +1822,7 @@
         // LIVE DATA STREAM — GNN-AIOps (Logistical/HR Metrics)
         // ═══════════════════════════════════════════════════════════════════
         (function startHRLiveStream() {
-            const API = '/api/stream';
+            const API = 'http://127.0.0.1:5003/api/stream';
             const MAX_POINTS = 30;
 
             const pathData = [];
@@ -1894,8 +1894,9 @@
                     tick++;
 
                     // Map metrics from API (normalization handled by scale)
+                    // log_coll is always 0 in DB — derive collection efficiency from log_path instead
                     const path = (d.log_path || 0) * 100;
-                    const coll = (d.log_coll || 0) * 5;
+                    const coll = (d.log_path || 0) > 0 ? (1 / (d.log_path * 10 + 0.001)) * 100 : 0;
                     const soc = (d.log_soc || 0) * 10;
                     const task = (d.log_task || 0) * 100;
 

@@ -1459,8 +1459,8 @@
             const offsetParent = finNode.offsetParent || document.body;
             
             const financeCenter = { 
-                x: financeNode.offsetLeft + financeNode.offsetWidth / 2, 
-                y: financeNode.offsetTop + financeNode.offsetHeight / 2 
+                x: finNode.offsetLeft + finNode.offsetWidth / 2, 
+                y: finNode.offsetTop + finNode.offsetHeight / 2 
             };
 
             metrics.forEach(id => {
@@ -1584,101 +1584,13 @@
             }
         }
 
-        // Draw line chart
-        function drawLineChart(containerId, data, color, area = false, unit = '') {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            const margin = { top: 10, right: 10, bottom: 20, left: 30 };
-
-            d3.select(container).selectAll("*").remove();
-
-            const svg = d3.select(container)
-                .append("svg")
-                .attr("width", width)
-                .attr("height", height)
-                .style("overflow", "visible");
-
-            const x = d3.scaleLinear()
-                .domain([0, data.length - 1])
-                .range([margin.left, width - margin.right]);
-
-            const y = d3.scaleLinear()
-                .domain([0, d3.max(data, d => d.value) * 1.1])
-                .range([height - margin.bottom, margin.top]);
-
-            // Grid lines
-            svg.append("g")
-                .attr("class", "grid")
-                .attr("transform", `translate(0,${height - margin.bottom})`)
-                .call(d3.axisBottom(x).ticks(6).tickSize(-(height - margin.top - margin.bottom)).tickFormat(""))
-                .style("color", "rgba(148,163,184,0.1)")
-                .style("stroke-dasharray", "3,3");
-
-            // Axis
-            svg.append("g")
-                .attr("transform", `translate(0,${height - margin.bottom})`)
-                .call(d3.axisBottom(x).ticks(6).tickFormat(d => `${d}:00`))
-                .style("color", "#94a3b8")
-                .style("font-size", "9px");
-
-            svg.append("g")
-                .attr("transform", `translate(${margin.left},0)`)
-                .call(d3.axisLeft(y).ticks(4).tickFormat(d => d + unit))
-                .style("color", "#94a3b8")
-                .style("font-size", "9px");
-
-            // Line
-            const line = d3.line()
-                .x(d => x(d.time))
-                .y(d => y(d.value))
-                .curve(d3.curveMonotoneX);
-
-            if (area) {
-                svg.append("path")
-                    .datum(data)
-                    .attr("fill", color)
-                    .attr("fill-opacity", 0.2)
-                    .attr("d", d3.area()
-                        .x(d => x(d.time))
-                        .y0(y(0))
-                        .y1(d => y(d.value))
-                        .curve(d3.curveMonotoneX)
-                    );
-            }
-
-            svg.append("path")
-                .datum(data)
-                .attr("fill", "none")
-                .attr("stroke", color)
-                .attr("stroke-width", 2.5)
-                .attr("stroke-linecap", "round")
-                .attr("d", line)
-                .attr("filter", "drop-shadow(0 0 6px " + color + ")");
-
-            // Data points
-            svg.selectAll("circle")
-                .data(data)
-                .enter()
-                .append("circle")
-                .attr("cx", d => x(d.time))
-                .attr("cy", d => y(d.value))
-                .attr("r", 3)
-                .attr("fill", color)
-                .attr("stroke", "#fff")
-                .attr("stroke-width", 1)
-                .attr("filter", "drop-shadow(0 0 4px " + color + ")");
-        }
-
         // Sadece drawLineChart fonksiyonunu tutuyoruz
         function drawLineChart(containerId, data, color, area = false, unit = '') {
             const container = document.getElementById(containerId);
             if (!container) return;
 
-            const width = container.clientWidth;
-            const height = container.clientHeight;
+            const width = container.clientWidth || 400;
+            const height = container.clientHeight || 220;
             const margin = { top: 10, right: 10, bottom: 20, left: 30 };
 
             d3.select(container).selectAll("*").remove();
@@ -1693,8 +1605,10 @@
                 .domain([0, data.length - 1])
                 .range([margin.left, width - margin.right]);
 
+            // Guard: avoid zero-domain crash in D3
+            const maxVal = d3.max(data, d => d.value) || 1;
             const y = d3.scaleLinear()
-                .domain([0, d3.max(data, d => d.value) * 1.1])
+                .domain([0, maxVal * 1.1])
                 .range([height - margin.bottom, margin.top]);
 
             // Grid lines
@@ -1760,11 +1674,9 @@
                 .attr("filter", "drop-shadow(0 0 4px " + color + ")");
         }
 
-        // Update charts on resize
+        // Update charts on resize — do NOT reload, just recalculate connections
         window.addEventListener('resize', () => {
-            setTimeout(() => {
-                location.reload();
-            }, 200);
+            setTimeout(() => createConnectionLines(), 200);
         });
 
         // Forecast panel click
@@ -1778,7 +1690,7 @@
         // LIVE DATA STREAM — GNN-AIOps (Finance Metrics)
         // ═══════════════════════════════════════════════════════════════════
         (function startFinanceLiveStream() {
-            const API = '/api/stream'; 
+            const API = 'http://127.0.0.1:5003/api/stream';
             const MAX_POINTS = 30;
 
             const costData = [];
@@ -1850,8 +1762,9 @@
                     tick++;
 
                     // Map metrics from API (normalization handled by scale)
+                    // fin_fraud is 0 in 97% of DB rows — use anomaly_score as live fraud signal
                     const cost = (d.fin_cost || 0) * 1000;
-                    const fraud = (d.fin_fraud || 0) * 100;
+                    const fraud = d.fin_fraud > 0 ? d.fin_fraud * 100 : (d.anomaly_score || 0) * 100;
                     const risk = (d.fin_risk || 0) * 100;
                     const inv = (d.fin_inv || 0) * 500;
 
