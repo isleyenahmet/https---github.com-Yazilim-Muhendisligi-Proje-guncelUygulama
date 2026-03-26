@@ -1659,11 +1659,9 @@
 
         }, 200);
 
-        // Update charts on resize
+        // Update charts on resize — do NOT reload, just recalculate connections
         window.addEventListener('resize', () => {
-            setTimeout(() => {
-                location.reload();
-            }, 200);
+            setTimeout(() => createConnectionLines(), 200);
         });
 
         // Forecast panel click
@@ -1679,22 +1677,28 @@
         (function startITLiveStream() {
             const API = '/api/stream'; // FastAPI'den gelen ağ verileri
             const MAX_POINTS = 30;
+            const SS_KEY = 'nexus_it_stream';
 
-            // rolling data buffers for 4 network metrics
-            const latencyData = [];
-            const throughputData = [];
-            const packetLossData = [];
-            const securityData = [];
-
-            // Initialize buffers with empty data
-            for(let i=0; i<MAX_POINTS; i++) {
-                latencyData.push({time: i, value: 0});
-                throughputData.push({time: i, value: 0});
-                packetLossData.push({time: i, value: 0});
-                securityData.push({time: i, value: 0});
+            function loadFromStorage() {
+                try {
+                    const saved = sessionStorage.getItem(SS_KEY);
+                    if (saved) return JSON.parse(saved);
+                } catch(e) {}
+                return null;
             }
 
-            let tick = MAX_POINTS;
+            function saveToStorage() {
+                try {
+                    sessionStorage.setItem(SS_KEY, JSON.stringify({ latencyData, throughputData, packetLossData, securityData, tick }));
+                } catch(e) {}
+            }
+
+            const saved = loadFromStorage();
+            const latencyData    = saved ? saved.latencyData    : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
+            const throughputData = saved ? saved.throughputData : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
+            const packetLossData = saved ? saved.packetLossData : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
+            const securityData   = saved ? saved.securityData   : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
+            let tick = saved ? saved.tick : MAX_POINTS;
             let anomalyActive = false;
 
             function pushValue(arr, value) {
@@ -1751,6 +1755,8 @@
                     pushValue(throughputData, thr);
                     pushValue(packetLossData, loss);
                     pushValue(securityData, sec);
+                    tick++;
+                    saveToStorage();
 
                     const isAnomaly = d.anomaly === 1;
                     const anomalyColor = isAnomaly ? '#ef4444' : null;

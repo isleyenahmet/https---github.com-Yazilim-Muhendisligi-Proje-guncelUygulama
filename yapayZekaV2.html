@@ -1958,6 +1958,24 @@
 
         // Create charts for each department
         let chartIT_instance, chartIoT_instance, chartFinance_instance, chartHR_instance;
+
+        // sessionStorage helpers for yapayZekaV2 chart persistence
+        const VZ_SS_KEY = 'nexus_vz_charts';
+        function loadVZStorage() {
+            try { const s = sessionStorage.getItem(VZ_SS_KEY); if (s) return JSON.parse(s); } catch(e) {}
+            return null;
+        }
+        function saveVZStorage() {
+            try {
+                const snap = {
+                    it:      chartIT_instance      ? chartIT_instance.data.datasets[0].data.filter(x => x !== null).slice(-30) : null,
+                    iot:     chartIoT_instance     ? chartIoT_instance.data.datasets[0].data.filter(x => x !== null).slice(-30) : null,
+                    finance: chartFinance_instance ? chartFinance_instance.data.datasets[0].data.filter(x => x !== null).slice(-30) : null,
+                    hr:      chartHR_instance      ? chartHR_instance.data.datasets[0].data.filter(x => x !== null).slice(-30) : null,
+                };
+                sessionStorage.setItem(VZ_SS_KEY, JSON.stringify(snap));
+            } catch(e) {}
+        }
         
         function createDepartmentCharts() {
             const labels = generateWindowLabels();
@@ -1965,9 +1983,12 @@
             const configPointRadius = 0;
             const configHitRadius = 10;
 
-            // IT Chart
+            const vzSaved = loadVZStorage();
+
+            // IT Chart — restore from sessionStorage if available
             const ctxIT = document.getElementById('chartIT').getContext('2d');
-            const itHistoric = [68, 72, 75, 78, 82, 79, 85, 87, 84, 82, 79, 76, 74, 72, 75, 78, 82, 85, 87, 84, 82, 79, 76, 74, 76, 79, 82, 84, 86, 87];
+            const itHistoric = (vzSaved && vzSaved.it && vzSaved.it.length === 30) ? vzSaved.it
+                : [68, 72, 75, 78, 82, 79, 85, 87, 84, 82, 79, 76, 74, 72, 75, 78, 82, 85, 87, 84, 82, 79, 76, 74, 76, 79, 82, 84, 86, 87];
             const itForecast = generateForecastData(itHistoric[29], 0.2, 30);
             
             chartIT_instance = new Chart(ctxIT, {

@@ -1804,11 +1804,9 @@
 
         }, 200);
 
-        // Update charts on resize
+        // Update charts on resize — do NOT reload, just recalculate connections
         window.addEventListener('resize', () => {
-            setTimeout(() => {
-                location.reload();
-            }, 200);
+            setTimeout(() => createConnectionLines(), 200);
         });
 
         // Forecast panel click
@@ -1824,20 +1822,28 @@
         (function startHRLiveStream() {
             const API = 'http://127.0.0.1:5003/api/stream';
             const MAX_POINTS = 30;
+            const SS_KEY = 'nexus_hr_stream';
 
-            const pathData = [];
-            const collData = [];
-            const socData = [];
-            const taskData = [];
-
-            for(let i=0; i<MAX_POINTS; i++) {
-                pathData.push({time: i, value: 0});
-                collData.push({time: i, value: 0});
-                socData.push({time: i, value: 0});
-                taskData.push({time: i, value: 0});
+            function loadFromStorage() {
+                try {
+                    const saved = sessionStorage.getItem(SS_KEY);
+                    if (saved) return JSON.parse(saved);
+                } catch(e) {}
+                return null;
             }
 
-            let tick = MAX_POINTS;
+            function saveToStorage() {
+                try {
+                    sessionStorage.setItem(SS_KEY, JSON.stringify({ pathData, collData, socData, taskData, tick }));
+                } catch(e) {}
+            }
+
+            const saved = loadFromStorage();
+            const pathData = saved ? saved.pathData : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
+            const collData = saved ? saved.collData : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
+            const socData  = saved ? saved.socData  : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
+            const taskData = saved ? saved.taskData : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
+            let tick = saved ? saved.tick : MAX_POINTS;
 
             function pushValue(arr, value) {
                 arr.push({ time: tick, value: value });
@@ -1904,6 +1910,8 @@
                     pushValue(collData, coll);
                     pushValue(socData, soc);
                     pushValue(taskData, task);
+                    tick++;
+                    saveToStorage();
 
                     const isAnomaly = d.anomaly === 1;
                     const anomalyColor = isAnomaly ? '#ef4444' : null;

@@ -1692,20 +1692,29 @@
         (function startFinanceLiveStream() {
             const API = 'http://127.0.0.1:5003/api/stream';
             const MAX_POINTS = 30;
+            const SS_KEY = 'nexus_finans_stream';
 
-            const costData = [];
-            const fraudData = [];
-            const riskData = [];
-            const invData = [];
-
-            for(let i=0; i<MAX_POINTS; i++) {
-                costData.push({time: i, value: 0});
-                fraudData.push({time: i, value: 0});
-                riskData.push({time: i, value: 0});
-                invData.push({time: i, value: 0});
+            // Restore from sessionStorage or start fresh
+            function loadFromStorage() {
+                try {
+                    const saved = sessionStorage.getItem(SS_KEY);
+                    if (saved) return JSON.parse(saved);
+                } catch(e) {}
+                return null;
             }
 
-            let tick = MAX_POINTS;
+            function saveToStorage() {
+                try {
+                    sessionStorage.setItem(SS_KEY, JSON.stringify({ costData, fraudData, riskData, invData, tick }));
+                } catch(e) {}
+            }
+
+            const saved = loadFromStorage();
+            const costData   = saved ? saved.costData   : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
+            const fraudData  = saved ? saved.fraudData  : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
+            const riskData   = saved ? saved.riskData   : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
+            const invData    = saved ? saved.invData    : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
+            let tick = saved ? saved.tick : MAX_POINTS;
 
             function pushValue(arr, value) {
                 arr.push({ time: tick, value: value });
@@ -1772,6 +1781,8 @@
                     pushValue(fraudData, fraud);
                     pushValue(riskData, risk);
                     pushValue(invData, inv);
+                    tick++;
+                    saveToStorage();
 
                     const isAnomaly = d.anomaly === 1;
                     const anomalyColor = isAnomaly ? '#ef4444' : null;
