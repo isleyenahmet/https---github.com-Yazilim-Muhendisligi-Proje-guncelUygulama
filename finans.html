@@ -595,6 +595,48 @@
             z-index: 1;
         }
 
+        /* Flow Dashboard Styles */
+        @keyframes dashFlow {
+            to { stroke-dashoffset: -30; }
+        }
+        .flow-anim {
+            animation: dashFlow 1s linear infinite;
+        }
+        .flow-anim.critical {
+            stroke: #ef4444 !important;
+            stroke-width: 4 !important;
+            animation: dashFlow 0.2s linear infinite;
+            filter: drop-shadow(0 0 10px #ef4444);
+        }
+        .flow-anim.warning {
+            stroke: #facc15 !important;
+            stroke-width: 3 !important;
+            animation: dashFlow 0.5s linear infinite;
+            filter: drop-shadow(0 0 8px #facc15);
+        }
+        
+        .ai-log-entry {
+            border-left: 2px solid;
+            padding-left: 8px;
+            animation: fadeInLog 0.3s ease-out;
+            margin-bottom: 6px;
+        }
+        @keyframes fadeInLog {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        #ai-terminal-output::-webkit-scrollbar {
+            width: 4px;
+        }
+        #ai-terminal-output::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.5);
+        }
+        #ai-terminal-output::-webkit-scrollbar-thumb {
+            background: #22c55e;
+            border-radius: 4px;
+        }
+
         /* Main container with scroll */
         .main-container {
             height: 100vh;
@@ -1193,72 +1235,81 @@
                     </div>
                 </div>
 
-                <!-- Row 2: 2 Wide Charts - Korelasyon Analizi -->
-                <div class="charts-grid-wide">
-                    <!-- Volume vs Error Correlation -->
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            <i class="fas fa-chart-scatter text-purple-400"></i>
-                            Volume vs Error Rate Correlation
+                <!-- FINANS TOPOLOJİSİ & AI TERMINAL -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                    <!-- Sankey / Flow Map (sol 2 kolon) -->
+                    <div class="lg:col-span-2 chart-card flex flex-col relative overflow-hidden" style="min-height: 400px; padding:0;">
+                        <div class="p-6 pb-2 z-30 relative pointer-events-none">
+                            <div class="chart-title text-xl">
+                                <i class="fas fa-project-diagram text-[#FFD700]"></i>
+                                Finansal Akış Topolojisi
+                            </div>
+                            <div class="chart-subtitle border-0 mb-0">Merkez Havuzdan Departmanlara Likidite ve Kaynak Akışı</div>
                         </div>
-                        <div class="chart-subtitle">Last 24 hours · Korelasyon katsayısı: 0.67</div>
-                        <div id="chart-correlation" style="width: 100%; height: 220px;"></div>
+                        
+                        <!-- Flow Container -->
+                        <div class="flex-1 relative w-full h-full flex items-center justify-center -mt-8">
+                            <!-- Background Grid -->
+                            <div class="absolute inset-0 opacity-20 z-0" style="background-image: linear-gradient(rgba(255, 215, 0, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 215, 0, 0.2) 1px, transparent 1px); background-size: 20px 20px;"></div>
+                            
+                            <!-- Static SVG Structure for Flow -->
+                            <svg class="w-full h-full absolute inset-0 z-10" preserveAspectRatio="xMidYMid meet" viewBox="0 0 800 300">
+                                <!-- Base Paths -->
+                                <path d="M 150 150 C 300 150, 400 50, 650 50" fill="none" stroke="rgba(59, 130, 246, 0.1)" stroke-width="6" />
+                                <path d="M 150 150 C 350 150, 450 150, 650 150" fill="none" stroke="rgba(34, 197, 94, 0.1)" stroke-width="6" />
+                                <path d="M 150 150 C 300 150, 400 250, 650 250" fill="none" stroke="rgba(168, 85, 247, 0.1)" stroke-width="6" />
+                                
+                                <!-- Animated Flow Lines -->
+                                <path id="flow-it" d="M 150 150 C 300 150, 400 50, 650 50" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="8 12" class="flow-anim" />
+                                <path id="flow-iot" d="M 150 150 C 350 150, 450 150, 650 150" fill="none" stroke="#22c55e" stroke-width="2" stroke-dasharray="8 12" class="flow-anim" />
+                                <path id="flow-hr" d="M 150 150 C 300 150, 400 250, 650 250" fill="none" stroke="#a855f7" stroke-width="2" stroke-dasharray="8 12" class="flow-anim" />
+                            </svg>
+
+                            <!-- Nodes -->
+                            <div class="absolute left-[15%] top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
+                                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] border-4 border-[#FFD700] shadow-[0_0_40px_rgba(255,215,0,0.5)] flex items-center justify-center animate-pulse">
+                                    <i class="fas fa-university text-[#FFD700] text-2xl"></i>
+                                </div>
+                                <span class="text-xs font-bold mt-3 text-[#FFD700] tracking-widest bg-black/50 px-3 py-1 rounded-full border border-[#FFD700]/30 shadow-lg backdrop-blur">ANA KASA</span>
+                            </div>
+
+                            <!-- Destination Nodes -->
+                            <div class="absolute left-[85%] top-[16.6%] -translate-y-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
+                                <div id="node-it" class="w-14 h-14 rounded-xl bg-[#0a1526] border-2 border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.3)] flex items-center justify-center backdrop-blur transition-all duration-300">
+                                    <i class="fas fa-server text-blue-400 text-xl"></i>
+                                </div>
+                                <span class="text-[11px] uppercase font-bold mt-2 text-blue-300 bg-black/40 px-2 py-0.5 rounded backdrop-blur">IT Altyapı</span>
+                            </div>
+
+                            <div class="absolute left-[85%] top-[50%] -translate-y-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
+                                <div id="node-iot" class="w-14 h-14 rounded-xl bg-[#0a1a0f] border-2 border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.3)] flex items-center justify-center backdrop-blur transition-all duration-300">
+                                    <i class="fas fa-microchip text-green-400 text-xl"></i>
+                                </div>
+                                <span class="text-[11px] uppercase font-bold mt-2 text-green-300 bg-black/40 px-2 py-0.5 rounded backdrop-blur">IoT Sensör</span>
+                            </div>
+
+                            <div class="absolute left-[85%] top-[83.3%] -translate-y-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
+                                <div id="node-hr" class="w-14 h-14 rounded-xl bg-[#160a26] border-2 border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.3)] flex items-center justify-center backdrop-blur transition-all duration-300">
+                                    <i class="fas fa-users text-purple-400 text-xl"></i>
+                                </div>
+                                <span class="text-[11px] uppercase font-bold mt-2 text-purple-300 bg-black/40 px-2 py-0.5 rounded backdrop-blur">Otonom Loj.</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Financial Health Heatmap -->
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            <i class="fas fa-th text-orange-400"></i>
-                            Financial Health Heatmap
+                    <!-- AI Terminal (sağ kolon) -->
+                    <div class="chart-card flex flex-col overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.8)]" style="min-height: 400px; padding: 0; background: #050505;">
+                        <div class="flex items-center justify-between p-4 border-b border-green-500/20 bg-[#0a1005]">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></div>
+                                <span class="font-mono font-bold text-xs text-green-400 tracking-wider">AIOPS_DEFENDER_TERM</span>
+                            </div>
+                            <i class="fas fa-microchip text-green-500/50"></i>
                         </div>
-                        <div class="chart-subtitle">Hourly metrics status · Last 7 days</div>
-                        <div id="chart-heatmap" style="width: 100%; height: 220px;"></div>
-                    </div>
-                </div>
-
-                <!-- Row 3: 2 Wide Charts - Distribution & Forecast -->
-                <div class="charts-grid-wide mt-6">
-                    <!-- Transaction Distribution (Donut) -->
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            <i class="fas fa-chart-pie text-pink-400"></i>
-                            Payment Method Distribution
+                        <div id="ai-terminal-output" class="flex-1 p-5 font-mono text-[11px] overflow-y-auto w-full text-green-400/90 flex flex-col gap-2">
+                            <div class="opacity-50 break-words mb-2">> System initialized. Connecting to Gigafactory Live Node [127.0.0.1:5003]...</div>
+                            <div class="opacity-50 break-words mb-4">> Analyzing liquidity flow algorithms. Quantum secure channel active.</div>
                         </div>
-                        <div class="chart-subtitle">Credit Card 54% · Digital Wallet 32% · Other 14%</div>
-                        <div id="chart-distribution" style="width: 100%; height: 200px;"></div>
-                    </div>
-
-                    <!-- Forecast Chart -->
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            <i class="fas fa-chart-line text-cyan-400"></i>
-                            Transaction Forecast
-                        </div>
-                        <div class="chart-subtitle">Next 2 hours prediction · +2h forecast</div>
-                        <div id="chart-forecast" style="width: 100%; height: 200px;"></div>
-                    </div>
-                </div>
-
-                <!-- Row 4: 2 Wide Charts - Detaylı Analiz -->
-                <div class="charts-grid-wide mt-6">
-                    <!-- Hourly Transaction Pattern -->
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            <i class="fas fa-chart-bar text-indigo-400"></i>
-                            Hourly Transaction Pattern
-                        </div>
-                        <div class="chart-subtitle">Peak hours: 14:00-16:00 · Low: 03:00-05:00</div>
-                        <div id="chart-hourly" style="width: 100%; height: 200px;"></div>
-                    </div>
-
-                    <!-- Error Types Distribution -->
-                    <div class="chart-card">
-                        <div class="chart-title">
-                            <i class="fas fa-chart-pie text-amber-400"></i>
-                            Error Types Breakdown
-                        </div>
-                        <div class="chart-subtitle">Auth 45% · Timeout 30% · Other 25%</div>
-                        <div id="chart-errors" style="width: 100%; height: 200px;"></div>
                     </div>
                 </div>
 
@@ -1465,16 +1516,72 @@
             window.location.href = 'dashboard.html';
         });
 
-        // Generate sample data for charts
-        function generateTimeSeriesData(points = 24, min = 20, max = 80, volatility = 0.3) {
-            const data = [];
-            let value = (min + max) / 2;
-            for (let i = 0; i < points; i++) {
-                value += (Math.random() - 0.5) * volatility * (max - min);
-                value = Math.max(min, Math.min(max, value));
-                data.push({ time: i, value: Math.round(value * 10) / 10 });
+        // ── AI Terminal & Flow Logic ─────────────────────────────────────────
+        function addTerminalLog(message, isWarning = false, isError = false) {
+            const term = document.getElementById('ai-terminal-output');
+            if(!term) return;
+            const entry = document.createElement('div');
+            
+            let borderColor = '#22c55e';
+            let textColor = 'text-green-400';
+            
+            if(isError) {
+                borderColor = '#ef4444';
+                textColor = 'text-red-400';
+            } else if(isWarning) {
+                borderColor = '#facc15';
+                textColor = 'text-yellow-400';
             }
-            return data;
+            
+            entry.className = `ai-log-entry ${textColor} font-mono text-[11px] mb-2`;
+            entry.style.borderColor = borderColor;
+            
+            const time = new Date().toLocaleTimeString('tr-TR');
+            entry.innerHTML = `<span class="opacity-50">[${time}]</span> ${message}`;
+            
+            term.appendChild(entry);
+            term.scrollTop = term.scrollHeight;
+            
+            // Keep buffer at 50 nodes
+            if(term.children.length > 50) {
+                term.removeChild(term.children[0]);
+            }
+        }
+
+        // Set node mapping for Finans -> Departmen flow
+        const flowMap = {
+            IT: { flowId: 'flow-it', nodeId: 'node-it' },
+            IoT: { flowId: 'flow-iot', nodeId: 'node-iot' },
+            HR: { flowId: 'flow-hr', nodeId: 'node-hr' }
+        };
+
+        function updateFlowTopology(riskScores, isAnomaly) {
+            for(const [dept, ids] of Object.entries(flowMap)) {
+                const flow = document.getElementById(ids.flowId);
+                const node = document.getElementById(ids.nodeId);
+                if(!flow || !node) continue;
+                
+                // Simulate individual risk influence from backend if available, 
+                // else use logic based on global anomaly state
+                let score = riskScores[dept] || 0;
+                
+                flow.className.baseVal = 'flow-anim';
+                node.style.borderColor = '';
+                node.style.boxShadow = '';
+                
+                if (score > 80 || (isAnomaly && Math.random() > 0.5)) {
+                    flow.className.baseVal = 'flow-anim critical';
+                    node.style.borderColor = '#ef4444';
+                    node.style.boxShadow = '0 0 20px rgba(239, 68, 68, 0.6)';
+                    if(Math.random() < 0.2) {
+                        addTerminalLog(`CRITICAL STOP: ${dept} nakit akışı veya işlem onayı bloklandı.`, false, true);
+                    }
+                } else if (score > 40) {
+                    flow.className.baseVal = 'flow-anim warning';
+                    node.style.borderColor = '#facc15';
+                    node.style.boxShadow = '0 0 15px rgba(250, 204, 21, 0.4)';
+                }
+            }
         }
 
         // Draw line chart
@@ -1565,154 +1672,8 @@
                 .attr("filter", "drop-shadow(0 0 4px " + color + ")");
         }
 
-        // Draw donut chart
-        function drawDonutChart(containerId, data, colors) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            const radius = Math.min(width, height) / 2.5;
-
-            d3.select(container).selectAll("*").remove();
-
-            const svg = d3.select(container)
-                .append("svg")
-                .attr("width", width)
-                .attr("height", height)
-                .append("g")
-                .attr("transform", `translate(${width / 2},${height / 2})`);
-
-            const pie = d3.pie().value(d => d.value);
-            const arc = d3.arc().innerRadius(radius * 0.6).outerRadius(radius);
-
-            const arcs = svg.selectAll("arc")
-                .data(pie(data))
-                .enter()
-                .append("g");
-
-            arcs.append("path")
-                .attr("d", arc)
-                .attr("fill", d => colors[d.index])
-                .attr("stroke", "rgba(255,255,255,0.2)")
-                .attr("stroke-width", 1)
-                .attr("filter", "drop-shadow(0 0 8px currentColor)")
-                .style("transition", "all 0.3s")
-                .on("mouseenter", function () { d3.select(this).attr("transform", "scale(1.02)"); })
-                .on("mouseleave", function () { d3.select(this).attr("transform", "scale(1)"); });
-        }
-
-        // Draw heatmap
-        function drawHeatmap(containerId) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            const cellSize = 20;
-
-            d3.select(container).selectAll("*").remove();
-
-            const svg = d3.select(container)
-                .append("svg")
-                .attr("width", width)
-                .attr("height", height);
-
-            for (let i = 0; i < 3; i++) { // 3 metrics
-                for (let j = 0; j < 24; j++) { // 24 hours
-                    const value = Math.random();
-                    let color;
-                    if (i === 0) color = d3.interpolateRgb("#22c55e", "#facc15")(value); // volume
-                    else if (i === 1) color = d3.interpolateRgb("#ef4444", "#facc15")(value); // error
-                    else color = d3.interpolateRgb("#3b82f6", "#22c55e")(value); // cart
-
-                    svg.append("rect")
-                        .attr("x", j * cellSize + 40)
-                        .attr("y", i * cellSize + 20)
-                        .attr("width", cellSize - 2)
-                        .attr("height", cellSize - 2)
-                        .attr("fill", color)
-                        .attr("rx", 4)
-                        .attr("ry", 4)
-                        .attr("opacity", 0.7)
-                        .attr("filter", "drop-shadow(0 0 4px " + color + ")");
-                }
-            }
-
-            // Metric labels
-            const metrics = ["Volume", "Error", "Cart"];
-            metrics.forEach((metric, i) => {
-                svg.append("text")
-                    .attr("x", 5)
-                    .attr("y", i * cellSize + 32)
-                    .style("fill", "#94a3b8")
-                    .style("font-size", "8px")
-                    .text(metric);
-            });
-        }
-
-        // Draw scatter plot for correlation
-        function drawScatterPlot(containerId) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            const margin = { top: 20, right: 20, bottom: 30, left: 30 };
-
-            d3.select(container).selectAll("*").remove();
-
-            const svg = d3.select(container)
-                .append("svg")
-                .attr("width", width)
-                .attr("height", height);
-
-            // Generate random correlation data
-            const data = [];
-            for (let i = 0; i < 50; i++) {
-                const volume = 0.8 + Math.random() * 0.8;
-                const error = 1.5 + volume * 1.5 + (Math.random() - 0.5) * 1;
-                data.push({ volume: volume * 1_000_000, error });
-            }
-
-            const x = d3.scaleLinear()
-                .domain([600000, 1600000])
-                .range([margin.left, width - margin.right]);
-
-            const y = d3.scaleLinear()
-                .domain([1, 4])
-                .range([height - margin.bottom, margin.top]);
-
-            // Axis
-            svg.append("g")
-                .attr("transform", `translate(0,${height - margin.bottom})`)
-                .call(d3.axisBottom(x).ticks(5).tickFormat(d => (d / 1000000) + 'M'))
-                .style("color", "#94a3b8")
-                .style("font-size", "8px");
-
-            svg.append("g")
-                .attr("transform", `translate(${margin.left},0)`)
-                .call(d3.axisLeft(y).ticks(5).tickFormat(d => d + '%'))
-                .style("color", "#94a3b8")
-                .style("font-size", "8px");
-
-            // Scatter points
-            svg.selectAll("circle")
-                .data(data)
-                .enter()
-                .append("circle")
-                .attr("cx", d => x(d.volume))
-                .attr("cy", d => y(d.error))
-                .attr("r", 4)
-                .attr("fill", "#FFD700")
-                .attr("opacity", 0.7)
-                .attr("stroke", "white")
-                .attr("stroke-width", 1)
-                .attr("filter", "drop-shadow(0 0 4px #FFD700)");
-        }
-
-        // Draw bar chart for hourly pattern
-        function drawBarChart(containerId) {
+        // Sadece drawLineChart fonksiyonunu tutuyoruz
+        function drawLineChart(containerId, data, color, area = false, unit = '') {
             const container = document.getElementById(containerId);
             if (!container) return;
 
@@ -1725,82 +1686,79 @@
             const svg = d3.select(container)
                 .append("svg")
                 .attr("width", width)
-                .attr("height", height);
+                .attr("height", height)
+                .style("overflow", "visible");
 
-            const data = [65, 72, 78, 85, 92, 98, 105, 110, 118, 125, 132, 128, 122, 115, 108, 102, 98, 95, 92, 88, 82, 76, 70, 64];
-
-            const x = d3.scaleBand()
-                .domain(d3.range(24))
-                .range([margin.left, width - margin.right])
-                .padding(0.1);
+            const x = d3.scaleLinear()
+                .domain([0, data.length - 1])
+                .range([margin.left, width - margin.right]);
 
             const y = d3.scaleLinear()
-                .domain([0, 150])
+                .domain([0, d3.max(data, d => d.value) * 1.1])
                 .range([height - margin.bottom, margin.top]);
 
-            // Bars
-            svg.selectAll("rect")
-                .data(data)
-                .enter()
-                .append("rect")
-                .attr("x", (d, i) => x(i))
-                .attr("y", d => y(d))
-                .attr("width", x.bandwidth())
-                .attr("height", d => height - margin.bottom - y(d))
-                .attr("fill", "#FFD700")
-                .attr("opacity", 0.7)
-                .attr("rx", 2)
-                .attr("filter", "drop-shadow(0 0 4px #FFD700)");
+            // Grid lines
+            svg.append("g")
+                .attr("class", "grid")
+                .attr("transform", `translate(0,${height - margin.bottom})`)
+                .call(d3.axisBottom(x).ticks(6).tickSize(-(height - margin.top - margin.bottom)).tickFormat(""))
+                .style("color", "rgba(148,163,184,0.1)")
+                .style("stroke-dasharray", "3,3");
 
             // Axis
             svg.append("g")
                 .attr("transform", `translate(0,${height - margin.bottom})`)
-                .call(d3.axisBottom(x).ticks(6).tickFormat(d => d + 'h'))
+                .call(d3.axisBottom(x).ticks(6).tickFormat(d => `${d}:00`))
                 .style("color", "#94a3b8")
-                .style("font-size", "8px");
+                .style("font-size", "9px");
+
+            svg.append("g")
+                .attr("transform", `translate(${margin.left},0)`)
+                .call(d3.axisLeft(y).ticks(4).tickFormat(d => d + unit))
+                .style("color", "#94a3b8")
+                .style("font-size", "9px");
+
+            // Line
+            const line = d3.line()
+                .x(d => x(d.time))
+                .y(d => y(d.value))
+                .curve(d3.curveMonotoneX);
+
+            if (area) {
+                svg.append("path")
+                    .datum(data)
+                    .attr("fill", color)
+                    .attr("fill-opacity", 0.2)
+                    .attr("d", d3.area()
+                        .x(d => x(d.time))
+                        .y0(y(0))
+                        .y1(d => y(d.value))
+                        .curve(d3.curveMonotoneX)
+                    );
+            }
+
+            svg.append("path")
+                .datum(data)
+                .attr("fill", "none")
+                .attr("stroke", color)
+                .attr("stroke-width", 2.5)
+                .attr("stroke-linecap", "round")
+                .attr("d", line)
+                .attr("filter", "drop-shadow(0 0 6px " + color + ")");
+
+            // Data points
+            svg.selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("cx", d => x(d.time))
+                .attr("cy", d => y(d.value))
+                .attr("r", 3)
+                .attr("fill", color)
+                .attr("stroke", "#fff")
+                .attr("stroke-width", 1)
+                .attr("filter", "drop-shadow(0 0 4px " + color + ")");
         }
-
-        // Initialize all charts
-        setTimeout(() => {
-            // Amount Chart (green)
-            drawLineChart('chart-amount', generateTimeSeriesData(24, 0.9, 1.3, 0.1), '#22c55e', true, 'M');
-
-            // Old Balance Chart (blue)
-            drawLineChart('chart-oldbal', generateTimeSeriesData(24, 1.8, 3.2, 0.15), '#3b82f6', true, 'M');
-
-            // New Balance Chart (orange)
-            drawLineChart('chart-newbal', generateTimeSeriesData(24, 235, 248, 0.05), '#f97316', true, 'M');
-            
-            // Dest Balance Chart (purple)
-            drawLineChart('chart-destbal', generateTimeSeriesData(24, 235, 248, 0.05), '#a855f7', true, 'M');
-
-            // Correlation Chart
-            drawScatterPlot('chart-correlation');
-
-            // Heatmap
-            drawHeatmap('chart-heatmap');
-
-            // Payment Distribution Donut
-            drawDonutChart('chart-distribution', [
-                { label: 'Credit Card', value: 54 },
-                { label: 'Digital Wallet', value: 32 },
-                { label: 'Other', value: 14 }
-            ], ['#22c55e', '#3b82f6', '#a855f7']);
-
-            // Forecast Chart
-            drawLineChart('chart-forecast', generateTimeSeriesData(8, 1.0, 1.25, 0.08), '#06b6d4', true, 'M');
-
-            // Hourly Pattern
-            drawBarChart('chart-hourly');
-
-            // Error Types Donut
-            drawDonutChart('chart-errors', [
-                { label: 'Auth', value: 45 },
-                { label: 'Timeout', value: 30 },
-                { label: 'Other', value: 25 }
-            ], ['#ef4444', '#f97316', '#facc15']);
-
-        }, 200);
 
         // Update charts on resize
         window.addEventListener('resize', () => {
@@ -1917,12 +1875,25 @@
                     updateUIState('risk', risk, isAnomaly, 'card-risk', 'label-risk', '%');
                     updateUIState('inv', inv, isAnomaly, 'card-inv', 'label-inv', '');
 
+                    // Update Top Topology Flows
+                    updateFlowTopology(d.risk_scores || {}, isAnomaly);
+
+                    // Randomize minor logs for realism when not anomaly
+                    if(!isAnomaly && Math.random() < 0.1) {
+                        addTerminalLog("Standart finansal validasyon tamamlandı. Aktarım OK.");
+                    } else if (!isAnomaly && Math.random() < 0.05) {
+                        addTerminalLog("AI Cost-saving algoritması 2.4% verimlilik raporladı.");
+                    }
+
                     // Overall Anomaly logic for the primary node
-                    const finNode = document.getElementById('finance-primary');
+                    const finNode = document.getElementById('node-main-vault') || document.getElementById('finance-primary');
                     if (isAnomaly) {
                         if (finNode) {
                             finNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
                             finNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';
+                        }
+                        if(Math.random() < 0.3) {
+                            addTerminalLog(`[RISK ALERT] Global fraud score artışı: ${d.anomaly_score.toFixed(3)}`, true, false);
                         }
                     } else {
                         if (finNode) {
