@@ -3,6 +3,20 @@
  * Tüm HTML sayfalarına dahil edilir.
  */
 
+// Sayfa içeriği yüklenmeden (flash efekti olmadan) yönlendirme
+(function() {
+    const TOKEN_KEY = 'nexus_token';
+    const path = window.location.pathname;
+    const currentPage = path.split('/').pop();
+    
+    // login.html'de veya kök dizinde (RedirectResponse zaten yolluyor) döngüye girmemesi için
+    if (currentPage === 'login.html' || currentPage === '' || path === '/') return;
+
+    if (!localStorage.getItem(TOKEN_KEY)) {
+        window.location.href = 'login.html';
+    }
+})();
+
 const AUTH_API = 'http://127.0.0.1:5003';
 const TOKEN_KEY = 'nexus_token';
 
