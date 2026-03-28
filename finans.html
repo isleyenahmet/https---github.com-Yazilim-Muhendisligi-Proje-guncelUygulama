@@ -435,17 +435,19 @@
         }
 
         @keyframes errorPulse {
+            0%, 100% { box-shadow: 0 0 50px rgba(239, 68, 68, 0.6); transform: scale(1); }
+            50% { box-shadow: 0 0 80px rgba(239, 68, 68, 0.9); transform: scale(1.02); }
+        }
 
-            0%,
-            100% {
-                box-shadow: 0 0 50px rgba(239, 68, 68, 0.6);
-                transform: scale(1);
-            }
+        /* Standardized Theme Glow - Gold */
+        .metric-node.theme-glow {
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.6), 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+            animation: themePulse 3s ease-in-out infinite;
+        }
 
-            50% {
-                box-shadow: 0 0 80px rgba(239, 68, 68, 0.9);
-                transform: scale(1.02);
-            }
+        @keyframes themePulse {
+            0%, 100% { box-shadow: 0 0 50px rgba(255, 215, 0, 0.6); }
+            50% { box-shadow: 0 0 80px rgba(255, 215, 0, 0.9); }
         }
 
         /* Connection lines - altın rengi */
@@ -1068,7 +1070,7 @@
                 </div>
 
                 <!-- Cost (fin_cost) - Top Left -->
-                <div class="metric-node" id="metric-cost"
+                <div class="metric-node theme-glow" id="metric-cost"
                     style="left: calc(50% - 60px - 141px); top: calc(50% - 60px - 141px);">
                     <i class="fas fa-coins text-2xl text-yellow-400 mb-1"></i>
                     <span class="text-sm font-bold text-white text-center">İŞLETME<br>MALİYETİ</span>
@@ -1090,7 +1092,7 @@
                 </div>
 
                 <!-- Fraud (fin_fraud) - Top Right -->
-                <div class="metric-node" id="metric-fraud"
+                <div class="metric-node theme-glow" id="metric-fraud"
                     style="left: calc(50% - 60px + 141px); top: calc(50% - 60px - 141px);">
                     <i class="fas fa-user-shield text-2xl text-red-400 mb-1"></i>
                     <span class="text-sm font-bold text-white text-center">SAHTEKARLIK<br>ANALİZİ</span>
@@ -1112,7 +1114,7 @@
                 </div>
 
                 <!-- Risk (fin_risk) - Bottom Left -->
-                <div class="metric-node" id="metric-risk"
+                <div class="metric-node theme-glow" id="metric-risk"
                     style="left: calc(50% - 60px - 141px); top: calc(50% - 60px + 141px);">
                     <i class="fas fa-exclamation-triangle text-2xl text-orange-400 mb-1"></i>
                     <span class="text-sm font-bold text-white text-center">RİSK<br>SKORU</span>
@@ -1134,7 +1136,7 @@
                 </div>
 
                 <!-- Inventory (fin_inv) - Bottom Right -->
-                <div class="metric-node" id="metric-inv"
+                <div class="metric-node theme-glow" id="metric-inv"
                     style="left: calc(50% - 60px + 141px); top: calc(50% - 60px + 141px);">
                     <i class="fas fa-boxes text-2xl text-blue-400 mb-1"></i>
                     <span class="text-sm font-bold text-white text-center">ENVANTER<br>DURUMU</span>

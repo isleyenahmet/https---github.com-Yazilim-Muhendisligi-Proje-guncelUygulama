@@ -422,17 +422,19 @@
         }
 
         @keyframes helpdeskPulse {
+            0%, 100% { box-shadow: 0 0 50px rgba(239, 68, 68, 0.6); transform: scale(1); }
+            50% { box-shadow: 0 0 80px rgba(239, 68, 68, 0.9); transform: scale(1.02); }
+        }
 
-            0%,
-            100% {
-                box-shadow: 0 0 50px rgba(239, 68, 68, 0.6);
-                transform: scale(1);
-            }
+        /* Standardized Theme Glow - HR Purple */
+        .metric-node.theme-glow {
+            box-shadow: 0 0 50px rgba(168, 85, 247, 0.6), 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+            animation: themePulse 3s ease-in-out infinite;
+        }
 
-            50% {
-                box-shadow: 0 0 80px rgba(239, 68, 68, 0.9);
-                transform: scale(1.02);
-            }
+        @keyframes themePulse {
+            0%, 100% { box-shadow: 0 0 50px rgba(168, 85, 247, 0.6); }
+            50% { box-shadow: 0 0 80px rgba(168, 85, 247, 0.9); }
         }
 
         /* Connection lines - mor renk */
@@ -1013,7 +1015,7 @@
 
                 <!-- HR Metric Nodes - Standardized X Pattern -->
                 <!-- log_path - Top Left -->
-                <div class="metric-node" id="metric-path"
+                <div class="metric-node theme-glow" id="metric-path"
                     style="left: calc(50% - 60px - 141px); top: calc(50% - 60px - 141px);">
                     <i class="fas fa-route text-2xl text-blue-400 mb-1"></i>
                     <span class="text-sm font-bold text-white uppercase text-center">Rota<br/>Planlama</span>
@@ -1035,7 +1037,7 @@
                 </div>
 
                 <!-- log_coll - Top Right -->
-                <div class="metric-node" id="metric-coll"
+                <div class="metric-node theme-glow" id="metric-coll"
                     style="left: calc(50% - 60px + 141px); top: calc(50% - 60px - 141px);">
                     <i class="fas fa-boxes text-2xl text-green-400 mb-1"></i>
                     <span class="text-sm font-bold text-white uppercase text-center">Toplama<br/>Verimliliği</span>
@@ -1057,7 +1059,7 @@
                 </div>
 
                 <!-- log_soc - Bottom Left -->
-                <div class="metric-node" id="metric-soc"
+                <div class="metric-node theme-glow" id="metric-soc"
                     style="left: calc(50% - 60px - 141px); top: calc(50% - 60px + 141px);">
                     <i class="fas fa-shield-alt text-2xl text-orange-400 mb-1"></i>
                     <span class="text-sm font-bold text-white uppercase text-center">Güvenlik<br/>Status</span>
@@ -1079,7 +1081,7 @@
                 </div>
 
                 <!-- log_task - Bottom Right -->
-                <div class="metric-node" id="metric-task"
+                <div class="metric-node theme-glow" id="metric-task"
                     style="left: calc(50% - 60px + 141px); top: calc(50% - 60px + 141px);">
                     <i class="fas fa-tasks text-2xl text-purple-400 mb-1"></i>
                     <span class="text-sm font-bold text-white uppercase text-center">Görev<br/>Başarımı</span>

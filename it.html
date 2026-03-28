@@ -1132,7 +1132,7 @@
                 </div>
 
                 <!-- Connection lines container -->
-                <div id="connection-lines"></div>
+                <div id="connection-lines" class="absolute inset-0 pointer-events-none" style="z-index: 20;"></div>
                 <div id="particle-container" class="absolute inset-0 pointer-events-none" style="z-index: 25;"></div>
 
                 <!-- Scroll Indicator -->
@@ -1343,24 +1343,36 @@
             }, 300);
         });
 
-        // Connection lines
+        // Connection lines - Enhanced positioning and visibility
         function createConnectionLines() {
             const container = document.getElementById('connection-lines');
             if (!container) return;
             container.innerHTML = '';
 
             const itNode = document.getElementById('it-primary');
-            const metrics = ['metric-cpu', 'metric-ram', 'metric-packet', 'metric-users', 'metric-bandwidth'];
+            const metrics = ['metric-latency', 'metric-throughput', 'metric-packetloss', 'metric-security'];
 
+            if (!itNode) return;
+
+            // Use getBoundingClientRect for absolute precision relative to viewport
+            // Then convert to relative coordinates for the absolute container
+            const containerRect = container.getBoundingClientRect();
             const itRect = itNode.getBoundingClientRect();
-            const itCenter = { x: itRect.left + itRect.width / 2, y: itRect.top + itRect.height / 2 };
+            
+            const itCenter = {
+                x: itRect.left - containerRect.left + itRect.width / 2,
+                y: itRect.top - containerRect.top + itRect.height / 2
+            };
 
             metrics.forEach(id => {
                 const metric = document.getElementById(id);
                 if (!metric) return;
 
                 const metricRect = metric.getBoundingClientRect();
-                const metricCenter = { x: metricRect.left + metricRect.width / 2, y: metricRect.top + metricRect.height / 2 };
+                const metricCenter = {
+                    x: metricRect.left - containerRect.left + metricRect.width / 2,
+                    y: metricRect.top - containerRect.top + metricRect.height / 2
+                };
 
                 const line = document.createElement('div');
                 line.className = 'connection-line';
@@ -1374,6 +1386,9 @@
                 line.style.left = itCenter.x + 'px';
                 line.style.top = itCenter.y + 'px';
                 line.style.transform = `rotate(${angle}deg)`;
+                
+                // Ensure it's visible with a higher z-index inside the container
+                line.style.zIndex = '1';
 
                 container.appendChild(line);
             });

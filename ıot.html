@@ -440,15 +440,19 @@
         }
 
         @keyframes vibrationPulse {
+            0%, 100% { box-shadow: 0 0 50px rgba(168, 85, 247, 0.6); }
+            50% { box-shadow: 0 0 80px rgba(168, 85, 247, 0.9); }
+        }
 
-            0%,
-            100% {
-                box-shadow: 0 0 50px rgba(168, 85, 247, 0.6);
-            }
+        /* Standardized Theme Glow - IoT Blue */
+        .metric-node.theme-glow {
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.6), 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+            animation: themePulse 3s ease-in-out infinite;
+        }
 
-            50% {
-                box-shadow: 0 0 80px rgba(168, 85, 247, 0.9);
-            }
+        @keyframes themePulse {
+            0%, 100% { box-shadow: 0 0 50px rgba(56, 189, 248, 0.6); }
+            50% { box-shadow: 0 0 80px rgba(56, 189, 248, 0.9); }
         }
 
         /* Connection lines - kırmızı rengi */
@@ -1030,7 +1034,7 @@
 
                 <!-- Sensor Metric Nodes - Standardized X Pattern -->
                 <!-- iot_temp (Top-Right) -->
-                <div class="metric-node sensor-temp" id="metric-temp"
+                <div class="metric-node theme-glow" id="metric-temp"
                     style="left: calc(50% - 60px + 141px); top: calc(50% - 60px - 141px);">
                     <i class="fas fa-temperature-high text-2xl text-red-400 mb-1"></i>
                     <span class="text-[10px] font-bold text-white uppercase text-center">Sıcaklık<br/>(iot_temp)</span>
@@ -1052,7 +1056,7 @@
                 </div>
 
                 <!-- iot_vib (Top-Left) -->
-                <div class="metric-node pressure" id="metric-vib"
+                <div class="metric-node theme-glow" id="metric-vib"
                     style="left: calc(50% - 60px - 141px); top: calc(50% - 60px - 141px);">
                     <i class="fas fa-wave-square text-2xl text-blue-400 mb-1"></i>
                     <span class="text-[10px] font-bold text-white uppercase text-center">Titreşim<br/>(iot_vib)</span>
@@ -1074,7 +1078,7 @@
                 </div>
 
                 <!-- iot_cycle (Bottom-Left) -->
-                <div class="metric-node humidity" id="metric-cycle"
+                <div class="metric-node theme-glow" id="metric-cycle"
                     style="left: calc(50% - 60px - 141px); top: calc(50% - 60px + 141px);">
                     <i class="fas fa-redo text-2xl text-green-400 mb-1"></i>
                     <span class="text-[10px] font-bold text-white uppercase text-center">Döngü<br/>(iot_cycle)</span>
@@ -1096,7 +1100,7 @@
                 </div>
 
                 <!-- iot_torque (315°) -->
-                <div class="metric-node vibration" id="metric-torque"
+                <div class="metric-node theme-glow" id="metric-torque"
                     style="left: calc(50% - 60px + 141px); top: calc(50% - 60px + 141px);">
                     <i class="fas fa-tools text-2xl text-purple-400 mb-1"></i>
                     <span class="text-[10px] font-bold text-white uppercase text-center">Tork<br/>(iot_torq)</span>
