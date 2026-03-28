@@ -556,40 +556,6 @@
             }
         }
 
-        /* Data particles - kırmızı rengi */
-        .data-particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #38bdf8;
-            border-radius: 50%;
-            filter: blur(1.5px);
-            animation: flowParticle 5s linear infinite;
-            pointer-events: none;
-            z-index: 12;
-            box-shadow: 0 0 15px #38bdf8;
-        }
-
-        @keyframes flowParticle {
-            0% {
-                opacity: 0;
-                transform: translate(0, 0) scale(1);
-            }
-
-            10% {
-                opacity: 1;
-                transform: translate(40px, 40px) scale(2);
-            }
-
-            90% {
-                opacity: 1;
-            }
-
-            100% {
-                opacity: 0;
-                transform: translate(150px, 150px) scale(0.8);
-            }
-        }
 
         /* Canvas for particles */
         #particle-canvas {
@@ -1123,7 +1089,6 @@
 
                 <!-- Connection lines container -->
                 <div id="connection-lines"></div>
-                <div id="particle-container" class="absolute inset-0 pointer-events-none" style="z-index: 25;"></div>
 
                 <!-- Scroll Indicator -->
                 <div class="scroll-indicator"
@@ -1375,25 +1340,6 @@
         window.addEventListener('resize', () => setTimeout(createConnectionLines, 100));
         setTimeout(createConnectionLines, 500);
 
-        // Data particles
-        function createDataParticles() {
-            const container = document.getElementById('particle-container');
-            if (!container) return;
-
-            setInterval(() => {
-                for (let i = 0; i < 10; i++) {
-                    setTimeout(() => {
-                        const particle = document.createElement('div');
-                        particle.className = 'data-particle';
-                        particle.style.left = (45 + Math.random() * 10) + '%';
-                        particle.style.top = (45 + Math.random() * 10) + '%';
-                        container.appendChild(particle);
-                        setTimeout(() => particle.remove(), 5000);
-                    }, i * 100);
-                }
-            }, 1500);
-        }
-        createDataParticles();
 
         // Back button
         document.getElementById('backBtn')?.addEventListener('click', () => {
