@@ -370,8 +370,8 @@
         /* Metric nodes */
         .metric-node {
             position: absolute;
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             display: flex;
             flex-direction: column;
@@ -1100,35 +1100,32 @@
                         <div class="text-sm font-extrabold text-white tracking-wider mb-1">IT NETWORK</div>
                         <div class="text-xs font-medium text-white/70">PRIMARY HUB</div>
                     </div>
-                    <div
-                        class="absolute -top-3 -right-3 w-5 h-5 bg-green-400 rounded-full border-2 border-white/40 animate-pulse">
-                    </div>
                 </div>
 
-                <!-- Metric Nodes - 90° açı ile 4 düğüm -->
+                <!-- Metric Nodes - Standardized X Pattern -->
                 <div class="metric-node normal" id="metric-latency"
-                    style="left: calc(50% - 50px + 220px * 0); top: calc(50% - 50px + 220px * -1);">
+                    style="left: calc(50% - 60px - 141px); top: calc(50% - 60px - 141px);">
                     <i class="fas fa-clock text-2xl text-blue-400 mb-1"></i>
                     <span class="text-sm font-bold text-white">LATENCY</span>
                     <span class="text-xs text-blue-400" id="val-net_lat">-- ms</span>
                 </div>
 
                 <div class="metric-node normal" id="metric-throughput"
-                    style="left: calc(50% - 50px + 220px * 1); top: calc(50% - 50px + 220px * 0);">
+                    style="left: calc(50% - 60px + 141px); top: calc(50% - 60px - 141px);">
                     <i class="fas fa-chart-line text-2xl text-green-400 mb-1"></i>
                     <span class="text-sm font-bold text-white">THRPT</span>
                     <span class="text-xs text-green-400" id="val-net_thr">-- Mbps</span>
                 </div>
 
                 <div class="metric-node normal" id="metric-packetloss"
-                    style="left: calc(50% - 50px + 220px * 0); top: calc(50% - 50px + 220px * 1);">
+                    style="left: calc(50% - 60px - 141px); top: calc(50% - 60px + 141px);">
                     <i class="fas fa-times-circle text-2xl text-red-400 mb-1"></i>
                     <span class="text-sm font-bold text-white">LOSS</span>
                     <span class="text-xs text-red-400" id="val-net_p_loss">-- %</span>
                 </div>
 
                 <div class="metric-node normal" id="metric-security"
-                    style="left: calc(50% - 50px + 220px * -1); top: calc(50% - 50px + 220px * 0);">
+                    style="left: calc(50% - 60px + 141px); top: calc(50% - 60px + 141px);">
                     <i class="fas fa-shield-alt text-2xl text-purple-400 mb-1"></i>
                     <span class="text-sm font-bold text-white">SECURITY</span>
                     <span class="text-xs text-purple-400" id="val-net_sec">--</span>

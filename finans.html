@@ -383,8 +383,8 @@
         /* Metric nodes - finans metrikleri */
         .metric-node {
             position: absolute;
-            width: 130px;
-            height: 130px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             display: flex;
             flex-direction: column;
@@ -1065,14 +1065,11 @@
                         <div class="text-sm font-extrabold text-white tracking-wider mb-1">FINANCE ERP</div>
                         <div class="text-xs font-medium text-white/70">MERKEZİ YÖNETİM</div>
                     </div>
-                    <div
-                        class="absolute -top-3 -right-3 w-5 h-5 bg-[#FFD700] rounded-full border-2 border-white/40 animate-pulse">
-                    </div>
                 </div>
 
-                <!-- Cost (fin_cost) - Top Left (-45°) -->
+                <!-- Cost (fin_cost) - Top Left -->
                 <div class="metric-node" id="metric-cost"
-                    style="left: calc(50% - 65px - 180px); top: calc(50% - 65px - 180px);">
+                    style="left: calc(50% - 60px - 141px); top: calc(50% - 60px - 141px);">
                     <i class="fas fa-coins text-2xl text-yellow-400 mb-1"></i>
                     <span class="text-sm font-bold text-white text-center">İŞLETME<br>MALİYETİ</span>
                     <span class="text-xs text-yellow-400 font-bold" id="val-cost">0.0</span>
@@ -1092,9 +1089,9 @@
                     </div>
                 </div>
 
-                <!-- Fraud (fin_fraud) - Top Right (45°) -->
+                <!-- Fraud (fin_fraud) - Top Right -->
                 <div class="metric-node" id="metric-fraud"
-                    style="left: calc(50% - 65px + 180px); top: calc(50% - 65px - 180px);">
+                    style="left: calc(50% - 60px + 141px); top: calc(50% - 60px - 141px);">
                     <i class="fas fa-user-shield text-2xl text-red-400 mb-1"></i>
                     <span class="text-sm font-bold text-white text-center">SAHTEKARLIK<br>ANALİZİ</span>
                     <span class="text-xs text-red-400 font-bold" id="val-fraud">0.0</span>
@@ -1114,9 +1111,9 @@
                     </div>
                 </div>
 
-                <!-- Risk (fin_risk) - Bottom Left (-135°) -->
+                <!-- Risk (fin_risk) - Bottom Left -->
                 <div class="metric-node" id="metric-risk"
-                    style="left: calc(50% - 65px - 180px); top: calc(50% - 65px + 180px);">
+                    style="left: calc(50% - 60px - 141px); top: calc(50% - 60px + 141px);">
                     <i class="fas fa-exclamation-triangle text-2xl text-orange-400 mb-1"></i>
                     <span class="text-sm font-bold text-white text-center">RİSK<br>SKORU</span>
                     <span class="text-xs text-orange-400 font-bold" id="val-risk">0.0</span>
@@ -1136,9 +1133,9 @@
                     </div>
                 </div>
 
-                <!-- Inventory (fin_inv) - Bottom Right (135°) -->
+                <!-- Inventory (fin_inv) - Bottom Right -->
                 <div class="metric-node" id="metric-inv"
-                    style="left: calc(50% - 65px + 180px); top: calc(50% - 65px + 180px);">
+                    style="left: calc(50% - 60px + 141px); top: calc(50% - 60px + 141px);">
                     <i class="fas fa-boxes text-2xl text-blue-400 mb-1"></i>
                     <span class="text-sm font-bold text-white text-center">ENVANTER<br>DURUMU</span>
                     <span class="text-xs text-blue-400 font-bold" id="val-inv">0.0</span>

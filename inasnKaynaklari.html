@@ -370,8 +370,8 @@
         /* Metric nodes - HR metrikleri */
         .metric-node {
             position: absolute;
-            width: 130px;
-            height: 130px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             display: flex;
             flex-direction: column;
@@ -1009,15 +1009,12 @@
                         <div class="text-sm font-extrabold text-white tracking-wider mb-1">OTONOM LOJİSTİK</div>
                         <div class="text-xs font-medium text-white/70">MERKEZİ YÖNETİM</div>
                     </div>
-                    <div
-                        class="absolute -top-3 -right-3 w-5 h-5 bg-[#a855f7] rounded-full border-2 border-white/40 animate-pulse">
-                    </div>
                 </div>
 
-                <!-- HR Metric Nodes - 90° açı ile tam simetrik (4 metrik) -->
-                <!-- log_path - Top Left (-45°) -->
+                <!-- HR Metric Nodes - Standardized X Pattern -->
+                <!-- log_path - Top Left -->
                 <div class="metric-node" id="metric-path"
-                    style="left: calc(50% - 65px - 180px); top: calc(50% - 65px - 180px);">
+                    style="left: calc(50% - 60px - 141px); top: calc(50% - 60px - 141px);">
                     <i class="fas fa-route text-2xl text-blue-400 mb-1"></i>
                     <span class="text-sm font-bold text-white uppercase text-center">Rota<br/>Planlama</span>
                     <span class="text-xs text-blue-400 font-bold mt-1" id="val-path">0.0</span>
@@ -1037,9 +1034,9 @@
                     </div>
                 </div>
 
-                <!-- log_coll - Top Right (45°) -->
+                <!-- log_coll - Top Right -->
                 <div class="metric-node" id="metric-coll"
-                    style="left: calc(50% - 65px + 180px); top: calc(50% - 65px - 180px);">
+                    style="left: calc(50% - 60px + 141px); top: calc(50% - 60px - 141px);">
                     <i class="fas fa-boxes text-2xl text-green-400 mb-1"></i>
                     <span class="text-sm font-bold text-white uppercase text-center">Toplama<br/>Verimliliği</span>
                     <span class="text-xs text-green-400 font-bold mt-1" id="val-coll">0.0</span>
@@ -1059,9 +1056,9 @@
                     </div>
                 </div>
 
-                <!-- log_soc - Bottom Left (-135°) -->
+                <!-- log_soc - Bottom Left -->
                 <div class="metric-node" id="metric-soc"
-                    style="left: calc(50% - 65px - 180px); top: calc(50% - 65px + 180px);">
+                    style="left: calc(50% - 60px - 141px); top: calc(50% - 60px + 141px);">
                     <i class="fas fa-shield-alt text-2xl text-orange-400 mb-1"></i>
                     <span class="text-sm font-bold text-white uppercase text-center">Güvenlik<br/>Status</span>
                     <span class="text-xs text-orange-400 font-bold mt-1" id="val-soc">0.0</span>
@@ -1081,9 +1078,9 @@
                     </div>
                 </div>
 
-                <!-- log_task - Bottom Right (135°) -->
+                <!-- log_task - Bottom Right -->
                 <div class="metric-node" id="metric-task"
-                    style="left: calc(50% - 65px + 180px); top: calc(50% - 65px + 180px);">
+                    style="left: calc(50% - 60px + 141px); top: calc(50% - 60px + 141px);">
                     <i class="fas fa-tasks text-2xl text-purple-400 mb-1"></i>
                     <span class="text-sm font-bold text-white uppercase text-center">Görev<br/>Başarımı</span>
                     <span class="text-xs text-purple-400 font-bold mt-1" id="val-task">0.0</span>
