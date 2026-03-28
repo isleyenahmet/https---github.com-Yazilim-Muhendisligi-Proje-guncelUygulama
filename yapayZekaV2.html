@@ -1699,21 +1699,12 @@
 
     <!-- Quick Actions (Right Sidebar) -->
     <div class="quick-actions">
-        <div class="quick-action-btn">
-            <i class="fas fa-search"></i>
-        </div>
         <div class="quick-action-btn" id="notifBtn">
             <i class="fas fa-bell"></i>
             <span class="badge" id="notifBadge" style="display:none;">0</span>
         </div>
-        <div class="quick-action-btn">
-            <i class="fas fa-cog"></i>
-        </div>
         <div class="quick-action-btn" id="reportBtn" title="PDF Raporu Oluştur">
             <i class="fas fa-file-pdf"></i>
-        </div>
-        <div class="quick-action-btn">
-            <i class="fas fa-chart-line"></i>
         </div>
     </div>
 
@@ -1776,12 +1767,17 @@
                         <i class="fas fa-users text-purple-400"></i>
                         <span class="text-sm">HR Department</span>
                     </div>
+            <div class="option-group" id="userSelectionGroup" style="display: none;">
+                <label class="option-label">Alıcıları Seçin</label>
+                <div class="chart-selector-list max-h-48 overflow-y-auto pr-2 custom-scrollbar" id="userListContainer">
+                    <div class="text-xs text-slate-500 text-center py-4">Kullanıcılar yükleniyor...</div>
                 </div>
             </div>
 
             <div class="modal-footer">
                 <div class="btn-premium btn-secondary" id="closeReportModal">İptal</div>
                 <div class="btn-premium btn-primary" id="generateReportBtn">Raporu İndir</div>
+                <div class="btn-premium btn-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);" id="mailReportBtn">Mail Gönder</div>
             </div>
         </div>
     </div>
@@ -2651,6 +2647,111 @@
                     reportModalOverlay.classList.remove('active');
                 }
             });
+        }
+
+        // ── Mail Rapor Sistemi ────────────────────────────────────────────────
+        const mailReportBtn = document.getElementById('mailReportBtn');
+        const userSelectionGroup = document.getElementById('userSelectionGroup');
+        const userListContainer = document.getElementById('userListContainer');
+        let usersLoaded = false;
+
+        if (mailReportBtn) {
+            mailReportBtn.addEventListener('click', async () => {
+                // Eğer kullanıcı listesi henüz gösterilmemişse (yani ilk tıklama)
+                if (userSelectionGroup.style.display === 'none') {
+                    userSelectionGroup.style.display = 'block';
+                    mailReportBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> Raporu Gönder';
+                    mailReportBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)'; // Yeşil renk
+                    
+                    if (!usersLoaded) {
+                        await loadUsersForSelection();
+                    }
+                } else {
+                    // İkinci tıklama - Gönderme işlemi
+                    await sendReportByEmail();
+                }
+            });
+        }
+
+        async function loadUsersForSelection() {
+            try {
+                const token = sessionStorage.getItem('nexus_token');
+                const response = await fetch('http://127.0.0.1:5003/api/users', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!response.ok) throw new Error('Kullanıcılar yüklenemedi');
+                
+                const users = await response.json();
+                userListContainer.innerHTML = '';
+                
+                if (users.length === 0) {
+                    userListContainer.innerHTML = '<div class="text-xs text-slate-500 text-center py-4">Kullanıcı bulunamadı.</div>';
+                    return;
+                }
+
+                users.forEach(user => {
+                    const item = document.createElement('div');
+                    item.className = 'chart-selector-item';
+                    item.dataset.email = user.email;
+                    item.innerHTML = `
+                        <div class="checkbox-custom"><i class="fas fa-check"></i></div>
+                        <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-[10px] font-bold text-purple-400">
+                            ${user.initials}
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-sm font-medium">${user.name}</div>
+                            <div class="text-[10px] text-slate-500">${user.email}</div>
+                        </div>
+                    `;
+                    
+                    item.addEventListener('click', function() {
+                        this.classList.toggle('active');
+                    });
+                    
+                    userListContainer.appendChild(item);
+                });
+                
+                usersLoaded = true;
+            } catch (error) {
+                console.error("User load error:", error);
+                userListContainer.innerHTML = '<div class="text-xs text-red-400 text-center py-4">Hata: Kullanıcılar yüklenemedi.</div>';
+            }
+        }
+
+        async function sendReportByEmail() {
+            const selectedInterval = document.querySelector('#timeIntervals .selection-item.active')?.dataset.value || '1m';
+            const selectedDepts = Array.from(document.querySelectorAll('#deptSelectors .chart-selector-item.active')).map(i => i.dataset.dept);
+            const selectedEmails = Array.from(document.querySelectorAll('#userListContainer .chart-selector-item.active')).map(i => i.dataset.email);
+            
+            if (selectedDepts.length === 0) {
+                alert("Lütfen en az bir departman seçiniz.");
+                return;
+            }
+            
+            if (selectedEmails.length === 0) {
+                alert("Lütfen en az bir alıcı seçiniz.");
+                return;
+            }
+
+            mailReportBtn.textContent = "Gönderiliyor...";
+            mailReportBtn.classList.add('opacity-50', 'pointer-events-none');
+
+            // --- MOCKED EMAIL SENDING ---
+            // User requested to skip backend sending and just show success.
+            setTimeout(() => {
+                showAIToast("Rapor Gönderildi", "Rapor seçilen kullanıcılara başarıyla e-posta olarak gönderildi.", "Tamam", "stable");
+                
+                // Close modal and reset UI after a short delay
+                setTimeout(() => {
+                    reportModalOverlay.classList.remove('active');
+                    // Reset UI
+                    userSelectionGroup.style.display = 'none';
+                    mailReportBtn.innerHTML = 'Mail Gönder';
+                    mailReportBtn.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+                    mailReportBtn.classList.remove('opacity-50', 'pointer-events-none');
+                }, 1500);
+            }, 1000);
         }
     </script>
 </body>

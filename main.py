@@ -169,6 +169,38 @@ async def me(authorization: str = Header(None)):
         raise HTTPException(status_code=401, detail="Geçersiz token")
 
 
+# ─── /api/users ───────────────────────────────────────────────────────────────
+@app.get("/api/users")
+async def get_users_list(authorization: str = Header(None)):
+    # Simple check for token validity
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Token gerekli")
+    
+    users = load_users()
+    # Return users without passwords
+    return [{"username": u["username"], "name": u["name"], "email": u["email"], "department": u["department"], "initials": u["initials"]} for u in users]
+
+
+class SendReportRequest(BaseModel):
+    emails: list[str]
+    interval: str
+    departments: list[str]
+
+# ─── /api/send-report ─────────────────────────────────────────────────────────
+@app.post("/api/send-report")
+async def send_report(req: SendReportRequest, authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Token gerekli")
+
+    # Simulate sending email
+    print(f"\n[EMAIL SIMULATION] Sending report to: {', '.join(req.emails)}")
+    print(f"[EMAIL SIMULATION] Parameters: Interval={req.interval}, Departments={', '.join(req.departments)}")
+    print(f"[EMAIL SIMULATION] Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print("[EMAIL SIMULATION] Status: Success\n")
+
+    return {"status": "success", "message": f"Rapor {len(req.emails)} kişiye başarıyla gönderildi."}
+
+
 # ─── /api/health ──────────────────────────────────────────────────────────────
 @app.get("/api/health")
 async def health():

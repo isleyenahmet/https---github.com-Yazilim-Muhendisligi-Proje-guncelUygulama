@@ -1175,22 +1175,6 @@
         </div>
     </div>
 
-    <!-- Quick Actions (Right Sidebar) -->
-    <div class="quick-actions">
-        <div class="quick-action-btn">
-            <i class="fas fa-search"></i>
-        </div>
-        <div class="quick-action-btn">
-            <i class="fas fa-bell"></i>
-            <span class="badge">3</span>
-        </div>
-        <div class="quick-action-btn">
-            <i class="fas fa-cog"></i>
-        </div>
-        <div class="quick-action-btn">
-            <i class="fas fa-chart-line"></i>
-        </div>
-    </div>
 
     <!-- Forecast Panel (Dashboard ile aynı) -->
     <div class="forecast-panel" id="forecastPanel" title="Tahmin: Sıcaklık önümüzdeki 2 saat içinde 72°C'ye yükselecek">
@@ -1627,9 +1611,7 @@
 
         // Update charts on resize
         window.addEventListener('resize', () => {
-            setTimeout(() => {
-                location.reload();
-            }, 200);
+            // No reload needed, layout is responsive
         });
 
         // Forecast panel click
