@@ -1773,12 +1773,18 @@
         
         // --- Central Core Node ---
         const coreGeo = new THREE.IcosahedronGeometry(0.9, 0);
-        const coreMat = new THREE.MeshStandardMaterial({ color: 0x2ecc71, emissive: 0x1a8442, emissiveIntensity: 0.8, metalness: 0.7, roughness: 0.2, flatShading: false });
+        const coreMat = new THREE.MeshStandardMaterial({ color: 0x022c22, emissive: 0x011a13, emissiveIntensity: 0.8, metalness: 0.7, roughness: 0.2, flatShading: false });
         const coreNode = new THREE.Mesh(coreGeo, coreMat);
+        
+        // --- Core Contour Light ---
+        const coreEdges = new THREE.EdgesGeometry(coreGeo);
+        const coreContour = new THREE.LineSegments(coreEdges, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 }));
+        coreNode.add(coreContour);
+        
         twinScene.add(coreNode);
         
         const ringGeo = new THREE.TorusGeometry(1.15, 0.04, 64, 200);
-        const ringMat = new THREE.MeshStandardMaterial({ color: 0x4ade80, emissive: 0x2ecc71, emissiveIntensity: 0.5 });
+        const ringMat = new THREE.MeshStandardMaterial({ color: 0x064e3b, emissive: 0x022c22, emissiveIntensity: 0.5 });
         const ringX = new THREE.Mesh(ringGeo, ringMat); ringX.rotation.x = Math.PI / 2; twinScene.add(ringX);
         const ringY = new THREE.Mesh(ringGeo, ringMat); ringY.rotation.z = Math.PI / 2; twinScene.add(ringY);
         const ringZ = new THREE.Mesh(ringGeo, ringMat); ringZ.rotation.x = Math.PI / 3; ringZ.rotation.z = Math.PI / 3; twinScene.add(ringZ);
@@ -2028,8 +2034,8 @@
                         coreNode.material.color.setHex(0xfacc15);
                         coreNode.material.emissive.setHex(0xca8a04);
                     } else {
-                        coreNode.material.color.setHex(0x2ecc71);
-                        coreNode.material.emissive.setHex(0x1a8442);
+                        coreNode.material.color.setHex(0x022c22);
+                        coreNode.material.emissive.setHex(0x011a13);
                     }
 
                     // Update Indicators dynamically — Map correctly to API fields
