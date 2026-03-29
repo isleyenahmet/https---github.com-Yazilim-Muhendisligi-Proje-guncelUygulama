@@ -466,8 +466,17 @@
         }
 
         @keyframes helpdeskPulse {
-            0%, 100% { box-shadow: 0 0 50px rgba(239, 68, 68, 0.6); transform: scale(1); }
-            50% { box-shadow: 0 0 80px rgba(239, 68, 68, 0.9); transform: scale(1.02); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 50px rgba(239, 68, 68, 0.6);
+                transform: scale(1);
+            }
+
+            50% {
+                box-shadow: 0 0 80px rgba(239, 68, 68, 0.9);
+                transform: scale(1.02);
+            }
         }
 
         /* Standardized Theme Glow - HR Purple */
@@ -477,8 +486,15 @@
         }
 
         @keyframes themePulse {
-            0%, 100% { box-shadow: 0 0 50px rgba(168, 85, 247, 0.6); }
-            50% { box-shadow: 0 0 80px rgba(168, 85, 247, 0.9); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 50px rgba(168, 85, 247, 0.6);
+            }
+
+            50% {
+                box-shadow: 0 0 80px rgba(168, 85, 247, 0.9);
+            }
         }
 
         /* Connection lines - mor renk */
@@ -643,7 +659,7 @@
             font-weight: 500;
             z-index: 100;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             white-space: nowrap;
         }
 
@@ -1034,7 +1050,8 @@
                 <div class="h-4 w-px bg-white/10"></div>
                 <div class="flex items-center gap-3">
                     <div class="text-right">
-                        <span class="text-lg font-bold text-white">88<span class="text-[10px] text-[#a855f7] ml-0.5">%</span></span>
+                        <span class="text-lg font-bold text-white">88<span
+                                class="text-[10px] text-[#a855f7] ml-0.5">%</span></span>
                     </div>
                     <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
                         <div class="w-4 h-4 rounded-full bg-purple-400 animate-pulse shadow-[0_0_10px_#a855f7]"></div>
@@ -1054,8 +1071,8 @@
             <!-- Redesigned Top Navigation -->
             <div class="top-nav" id="topNav">
                 <div class="header-content">
-                    <h1 id="pageTitle">İNSAN KAYNAKLARI ANALİZİ</h1>
-                    <p id="pageSubtitle">Personel ve Verimlilik Yönetimi</p>
+                    <h1 id="pageTitle">OTONOM LOJİSTİK ANALİZİ</h1>
+                    <p id="pageSubtitle">Verimlilik Yönetimi</p>
                 </div>
             </div>
 
@@ -1080,7 +1097,7 @@
                 <div class="metric-node theme-glow" id="metric-path"
                     style="left: calc(50% - 60px - 141px); top: calc(50% - 60px - 141px);">
                     <i class="fas fa-route text-2xl text-blue-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white uppercase text-center">Rota<br/>Planlama</span>
+                    <span class="text-sm font-bold text-white uppercase text-center">Rota<br />Planlama</span>
                     <span class="text-xs text-blue-400 font-bold mt-1" id="val-path">0.0</span>
 
                     <!-- Tooltip -->
@@ -1102,7 +1119,7 @@
                 <div class="metric-node theme-glow" id="metric-coll"
                     style="left: calc(50% - 60px + 141px); top: calc(50% - 60px - 141px);">
                     <i class="fas fa-boxes text-2xl text-green-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white uppercase text-center">Toplama<br/>Verimliliği</span>
+                    <span class="text-sm font-bold text-white uppercase text-center">Toplama<br />Verimliliği</span>
                     <span class="text-xs text-green-400 font-bold mt-1" id="val-coll">0.0</span>
 
                     <!-- Tooltip -->
@@ -1124,7 +1141,7 @@
                 <div class="metric-node theme-glow" id="metric-soc"
                     style="left: calc(50% - 60px - 141px); top: calc(50% - 60px + 141px);">
                     <i class="fas fa-shield-alt text-2xl text-orange-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white uppercase text-center">Güvenlik<br/>Status</span>
+                    <span class="text-sm font-bold text-white uppercase text-center">Güvenlik<br />Status</span>
                     <span class="text-xs text-orange-400 font-bold mt-1" id="val-soc">0.0</span>
 
                     <!-- Tooltip -->
@@ -1146,7 +1163,7 @@
                 <div class="metric-node theme-glow" id="metric-task"
                     style="left: calc(50% - 60px + 141px); top: calc(50% - 60px + 141px);">
                     <i class="fas fa-tasks text-2xl text-purple-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white uppercase text-center">Görev<br/>Başarımı</span>
+                    <span class="text-sm font-bold text-white uppercase text-center">Görev<br />Başarımı</span>
                     <span class="text-xs text-purple-400 font-bold mt-1" id="val-task">0.0</span>
 
                     <!-- Tooltip -->
@@ -1182,8 +1199,6 @@
                 <div class="flex items-center gap-4 mb-8">
                     <div class="w-1 h-12 bg-[#a855f7] rounded-full"></div>
                     <div>
-                        <h1 class="text-3xl font-bold text-white">HR Analytics Dashboard</h1>
-                        <p class="text-sm text-slate-400 mt-1">Real-time employee metrics · Last 24 hours</p>
                         <h1 class="text-3xl font-bold text-white">Otonom Lojistik Dashboard</h1>
                         <p class="text-sm text-slate-400 mt-1">Sistem Lojistik Metrikleri · Canlı Takip</p>
                     </div>
@@ -1196,7 +1211,8 @@
                         <div class="chart-title">
                             <i class="fas fa-route text-blue-400"></i>
                             Rota Planlama Verimliliği (log_path)
-                            <span id="label-path" class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full ml-auto">Optimal</span>
+                            <span id="label-path"
+                                class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full ml-auto">Optimal</span>
                         </div>
                         <div class="chart-subtitle">Anlık lojistik veri · ms</div>
                         <div id="chart-path" style="width: 100%; height: 220px;"></div>
@@ -1207,7 +1223,8 @@
                         <div class="chart-title">
                             <i class="fas fa-boxes text-green-400"></i>
                             Toplama Verimliliği (log_coll)
-                            <span id="label-coll" class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full ml-auto">Stable</span>
+                            <span id="label-coll"
+                                class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full ml-auto">Stable</span>
                         </div>
                         <div class="chart-subtitle">Anlık toplama verisi · Score</div>
                         <div id="chart-coll" style="width: 100%; height: 220px;"></div>
@@ -1218,7 +1235,8 @@
                         <div class="chart-title">
                             <i class="fas fa-shield-alt text-orange-400"></i>
                             Sistem Güvenlik Durumu (log_soc)
-                            <span id="label-soc" class="text-xs bg-orange-500/20 text-orange-300 px-2 py-1 rounded-full ml-auto">Secure</span>
+                            <span id="label-soc"
+                                class="text-xs bg-orange-500/20 text-orange-300 px-2 py-1 rounded-full ml-auto">Secure</span>
                         </div>
                         <div class="chart-subtitle">Anlık güvenlik analizi · Level</div>
                         <div id="chart-soc" style="width: 100%; height: 220px;"></div>
@@ -1229,7 +1247,8 @@
                         <div class="chart-title">
                             <i class="fas fa-check-circle text-purple-400"></i>
                             Genel Görev Başarımı (log_task)
-                            <span id="label-task" class="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full ml-auto">Success</span>
+                            <span id="label-task"
+                                class="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full ml-auto">Success</span>
                         </div>
                         <div class="chart-subtitle">Anlık operasyonel veri · %</div>
                         <div id="chart-task" style="width: 100%; height: 220px;"></div>
@@ -1853,21 +1872,21 @@
                 try {
                     const saved = sessionStorage.getItem(SS_KEY);
                     if (saved) return JSON.parse(saved);
-                } catch(e) {}
+                } catch (e) { }
                 return null;
             }
 
             function saveToStorage() {
                 try {
                     sessionStorage.setItem(SS_KEY, JSON.stringify({ pathData, collData, socData, taskData, tick }));
-                } catch(e) {}
+                } catch (e) { }
             }
 
             const saved = loadFromStorage();
-            const pathData = saved ? saved.pathData : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
-            const collData = saved ? saved.collData : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
-            const socData  = saved ? saved.socData  : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
-            const taskData = saved ? saved.taskData : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
+            const pathData = saved ? saved.pathData : Array.from({ length: MAX_POINTS }, (_, i) => ({ time: i, value: 0 }));
+            const collData = saved ? saved.collData : Array.from({ length: MAX_POINTS }, (_, i) => ({ time: i, value: 0 }));
+            const socData = saved ? saved.socData : Array.from({ length: MAX_POINTS }, (_, i) => ({ time: i, value: 0 }));
+            const taskData = saved ? saved.taskData : Array.from({ length: MAX_POINTS }, (_, i) => ({ time: i, value: 0 }));
             let tick = saved ? saved.tick : MAX_POINTS;
 
             function pushValue(arr, value) {
@@ -1881,7 +1900,7 @@
                 const label = document.getElementById(labelId);
                 const nodeVal = document.getElementById(`val-${metricName}`);
                 const tooltipVal = document.getElementById(`tooltip-${metricName}`);
-                
+
                 if (nodeVal) {
                     nodeVal.textContent = value.toFixed(2) + (unit ? " " + unit : "");
                 }
