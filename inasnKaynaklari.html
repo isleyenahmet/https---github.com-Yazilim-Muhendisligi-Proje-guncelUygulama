@@ -291,17 +291,61 @@
             margin-left: 80px;
         }
 
-        /* Top navigation adjustment */
+        /* Redesigned Minimalist Top Nav - Embedded (Scrolling) */
         .top-nav {
-            position: fixed;
-            top: 24px;
-            left: 310px;
-            right: 24px;
-            z-index: 90;
-            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            padding-top: 40px;
+            padding-bottom: 20px;
+            z-index: 100;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            background: none;
+            border: none;
+            box-shadow: none;
+            backdrop-filter: none;
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            pointer-events: auto;
+        }
+
+        #pageTitle {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.3));
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        #pageSubtitle {
+            font-size: 10px;
+            letter-spacing: 0.5em;
+            color: #a855f7 !important;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+
+        /* Health Metrics Positioned Top-Right */
+        .system-health-mini {
+            position: fixed;
+            top: 20px;
+            right: 24px;
+            z-index: 1100;
+            pointer-events: auto;
         }
 
         .top-nav.sidebar-collapsed {
@@ -657,21 +701,31 @@
         /* Back button */
         .back-button {
             position: fixed;
-            top: 24px;
+            top: 20px;
             left: 310px;
-            z-index: 1000;
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: rgba(10, 20, 35, 0.6);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(168, 85, 247, 0.4);
+            z-index: 1100;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(10, 20, 35, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(168, 85, 247, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: scale(1.1) translateX(-5px);
+            background: rgba(168, 85, 247, 0.1);
+            border-color: #a855f7;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+        }
+
+        .back-button.sidebar-collapsed {
+            left: 110px;
         }
 
         .back-button:hover {
@@ -914,42 +968,20 @@
     <!-- Main Content Wrapper -->
     <div class="main-wrapper" id="mainWrapper">
 
-        <!-- Top Navigation -->
-        <div class="top-nav" id="topNav">
-            <div class="glass-premium px-6 py-3">
-                <div class="flex items-center gap-3">
-                    <div
-                        class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center">
-                        <i class="fas fa-users text-white text-sm"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-lg font-bold tracking-tight text-white" id="pageTitle">HR DEEP DIVE</h1>
-                        <p class="text-[10px] text-[#a855f7] uppercase tracking-[0.2em] font-medium" id="pageSubtitle">
-                            Çalışan Metrikleri</p>
-                    </div>
+        <!-- System Health Mini -->
+        <div class="system-health-mini">
+            <div class="glass-premium px-4 py-2 flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                    <span class="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Live</span>
                 </div>
-            </div>
-
-            <div class="glass-premium px-6 py-3 flex items-center gap-6">
-                <div class="flex items-center gap-3">
-                    <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-                        <span class="text-xs font-medium text-slate-300">Live</span>
-                    </div>
-                    <div class="h-4 w-px bg-white/10"></div>
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-shield-alt text-[#a855f7] text-xs"></i>
-                        <span class="text-xs font-medium text-slate-300">HR Shield</span>
-                    </div>
-                </div>
+                <div class="h-4 w-px bg-white/10"></div>
                 <div class="flex items-center gap-3">
                     <div class="text-right">
-                        <span class="text-2xl font-bold text-white">85<span
-                                class="text-sm text-[#a855f7] ml-1">%</span></span>
-                        <p class="text-[10px] text-slate-400">System Health</p>
+                        <span class="text-lg font-bold text-white">88<span class="text-[10px] text-[#a855f7] ml-0.5">%</span></span>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
-                        <div class="w-6 h-6 rounded-full bg-purple-400 animate-pulse"></div>
+                    <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                        <div class="w-4 h-4 rounded-full bg-purple-400 animate-pulse shadow-[0_0_10px_#a855f7]"></div>
                     </div>
                 </div>
             </div>
@@ -962,6 +994,14 @@
 
         <!-- Main scrollable container -->
         <div class="main-container" id="main-container">
+
+            <!-- Redesigned Top Navigation -->
+            <div class="top-nav" id="topNav">
+                <div class="header-content">
+                    <h1 id="pageTitle">İNSAN KAYNAKLARI ANALİZİ</h1>
+                    <p id="pageSubtitle">Personel ve Verimlilik Yönetimi</p>
+                </div>
+            </div>
 
             <!-- TOP SECTION: Network Graph -->
             <div class="top-section" id="top-section">
