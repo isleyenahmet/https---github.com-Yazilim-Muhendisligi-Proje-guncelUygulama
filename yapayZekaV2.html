@@ -1582,7 +1582,7 @@
             </div>
 
             <!-- XAI Section -->
-            <div class="xai-section">
+            <div class="xai-section" id="xai-section">
                 <div class="section-header">
                     <div class="section-title">
                         <i class="fas fa-chart-bar"></i>
@@ -1592,7 +1592,7 @@
 
                 <div class="xai-grid">
                     <!-- SHAP Analysis -->
-                    <div class="xai-card">
+                    <div class="xai-card" id="shap-analysis-card">
                         <div class="xai-header">
                             <div class="xai-icon">
                                 <i class="fas fa-chart-bar"></i>
@@ -1639,7 +1639,7 @@
                     </div>
 
                     <!-- LIME Analysis -->
-                    <div class="xai-card">
+                    <div class="xai-card" id="lime-analysis-card">
                         <div class="xai-header">
                             <div class="xai-icon">
                                 <i class="fas fa-chart-line"></i>
@@ -2526,6 +2526,31 @@
             const em = document.getElementById('user-email');
             if (nm) nm.textContent = user.name || 'Admin User';
             if (em) em.textContent = user.email || 'admin@nexus.ai';
+
+            // XAI Visibility Sync
+            const shapVisible = localStorage.getItem('asgard_xai_shap') !== 'false';
+            const limeVisible = localStorage.getItem('asgard_xai_lime') !== 'false';
+            
+            const shapCard = document.getElementById('shap-analysis-card');
+            const limeCard = document.getElementById('lime-analysis-card');
+            const xaiSection = document.getElementById('xai-section');
+
+            if (shapCard) shapCard.style.display = shapVisible ? 'block' : 'none';
+            if (limeCard) limeCard.style.display = limeVisible ? 'block' : 'none';
+            
+            // If only one is visible, make it take full width
+            const xaiGrid = document.querySelector('.xai-grid');
+            if (xaiGrid) {
+                if (shapVisible !== limeVisible) {
+                    xaiGrid.style.gridTemplateColumns = '1fr';
+                } else {
+                    xaiGrid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+                }
+            }
+
+            if (xaiSection && !shapVisible && !limeVisible) {
+                xaiSection.style.display = 'none';
+            }
         })();
 
         // ── PDF Rapor Sistemi ────────────────────────────────────────────────

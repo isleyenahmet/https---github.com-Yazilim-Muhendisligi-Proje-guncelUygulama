@@ -998,25 +998,6 @@
                     Sistem Tercihleri
                 </div>
                 <div class="settings-grid">
-                    <!-- Bildirimler -->
-                    <div class="settings-card">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="settings-card-icon">
-                                    <i class="fas fa-bell"></i>
-                                </div>
-                                <div>
-                                    <div class="settings-card-title">Bildirimler</div>
-                                    <div class="settings-card-desc">Sistem uyarıları ve bildirimler</div>
-                                </div>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="toggle-notifications" checked>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-
                     <!-- Otomatik Güncelleme -->
                     <div class="settings-card">
                         <div class="flex items-center justify-between">
@@ -1031,25 +1012,6 @@
                             </div>
                             <label class="toggle-switch">
                                 <input type="checkbox" checked>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Karanlık Mod -->
-                    <div class="settings-card">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="settings-card-icon">
-                                    <i class="fas fa-moon"></i>
-                                </div>
-                                <div>
-                                    <div class="settings-card-title">Karanlık Mod</div>
-                                    <div class="settings-card-desc">Varsayılan tema (her zaman açık)</div>
-                                </div>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" checked disabled>
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
@@ -1340,7 +1302,6 @@
         // ── localStorage Anahtarları ──────────────────────────────────────
         const KEYS = {
             REFRESH:   'asgard_refresh_rate',
-            NOTIFS:    'asgard_notifications',
             SOUND:     'asgard_sound_alerts',
             SHAP:      'asgard_xai_shap',
             LIME:      'asgard_xai_lime',
@@ -1350,7 +1311,6 @@
         // ── Ayarları Yükle ────────────────────────────────────────────────
         function loadSettings() {
             const rate      = localStorage.getItem(KEYS.REFRESH) || '1';
-            const notifs    = localStorage.getItem(KEYS.NOTIFS) !== 'false'; // default true
             const sound     = localStorage.getItem(KEYS.SOUND) === 'true';   // default false
             const retention = localStorage.getItem(KEYS.RETENTION) || '30';  // default 30
             
@@ -1369,11 +1329,9 @@
             if (retentionSelect) retentionSelect.value = retention;
 
             // Toggle'lar
-            const toggleNotifs = document.getElementById('toggle-notifications');
             const toggleSound  = document.getElementById('toggle-sound');
             const toggleShap   = document.getElementById('toggle-shap');
             const toggleLime   = document.getElementById('toggle-lime');
-            if (toggleNotifs) toggleNotifs.checked = notifs;
             if (toggleSound)  toggleSound.checked  = sound;
             
             // XAI default true
@@ -1397,7 +1355,6 @@
         // ── Ayarları Kaydet ───────────────────────────────────────────────
         function saveSettings() {
             const rate      = document.querySelector('input[name="refresh-rate"]:checked')?.value || '1';
-            const notifs    = document.getElementById('toggle-notifications')?.checked ?? true;
             const sound     = document.getElementById('toggle-sound')?.checked ?? false;
             const shap      = document.getElementById('toggle-shap')?.checked ?? true;
             const lime      = document.getElementById('toggle-lime')?.checked ?? true;
@@ -1435,11 +1392,9 @@
             const retentionSelect = document.getElementById('data-retention');
             if (retentionSelect) retentionSelect.value = '30';
 
-            const toggleNotifs = document.getElementById('toggle-notifications');
             const toggleSound  = document.getElementById('toggle-sound');
             const toggleShap   = document.getElementById('toggle-shap');
             const toggleLime   = document.getElementById('toggle-lime');
-            if (toggleNotifs) toggleNotifs.checked = true;
             if (toggleSound)  toggleSound.checked  = false;
             if (toggleShap)   toggleShap.checked   = true;
             if (toggleLime)   toggleLime.checked   = true;
