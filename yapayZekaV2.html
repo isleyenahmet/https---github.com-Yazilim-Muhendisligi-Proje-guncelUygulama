@@ -2512,7 +2512,9 @@
                 } catch(e) { /* ignore network drop */ }
             }
             // Poll fast for realistic fast-paced UI streaming look
-            setInterval(fetchAndUpdateLive, 1000);
+            const savedRate = localStorage.getItem('asgard_refresh_rate') || '1';
+            const intervalMs = parseInt(savedRate) * 1000;
+            setInterval(fetchAndUpdateLive, intervalMs);
             setTimeout(fetchAndUpdateLive, 100);
         })();
 

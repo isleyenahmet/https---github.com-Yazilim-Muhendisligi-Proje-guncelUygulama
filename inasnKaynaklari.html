@@ -1993,7 +1993,9 @@
 
             // Start loop
             setTimeout(() => {
-                setInterval(fetchAndUpdate, 1000);
+                const savedRate = localStorage.getItem('asgard_refresh_rate') || '1';
+                const intervalMs = parseInt(savedRate) * 1000;
+                setInterval(fetchAndUpdate, intervalMs);
                 fetchAndUpdate();
             }, 600);
         })();
