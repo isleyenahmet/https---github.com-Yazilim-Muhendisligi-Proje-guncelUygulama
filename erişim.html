@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS · Erişim Belirleme · Yetki Yönetimi</title>
+    <title>ASGARD · Erişim Belirleme · Yetki Yönetimi</title>
 
     <!-- Fonts & Icons -->
     <link
@@ -288,62 +288,17 @@
             margin-left: 80px;
         }
 
-        /* Redesigned Minimalist Top Nav - Embedded Style */
+        /* Top navigation adjustment */
         .top-nav {
-            position: absolute;
-            top: 30px;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            background: none;
-            border: none;
-            box-shadow: none;
-            backdrop-filter: none;
-        }
-
-        .header-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            pointer-events: auto;
-        }
-
-        #pageTitle {
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            background: linear-gradient(to bottom, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(45, 212, 191, 0.3));
-            margin: 0;
-            line-height: 1.2;
-        }
-
-        #pageSubtitle {
-            font-size: 10px;
-            letter-spacing: 0.5em;
-            color: #2dd4bf !important;
-            text-transform: uppercase;
-            font-weight: 700;
-            margin-top: 4px;
-            opacity: 0.9;
-        }
-
-        /* Health Metrics Positioned Top-Right */
-        .system-health-mini {
             position: fixed;
-            top: 20px;
+            top: 24px;
+            left: 310px;
             right: 24px;
-            z-index: 1100;
-            pointer-events: auto;
+            z-index: 90;
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .top-nav.sidebar-collapsed {
@@ -353,31 +308,27 @@
         /* Back button */
         .back-button {
             position: fixed;
-            top: 20px;
+            top: 24px;
             left: 310px;
-            z-index: 1100;
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: rgba(10, 20, 35, 0.4);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(45, 212, 191, 0.2);
+            z-index: 1000;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(10, 20, 30, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(20, 184, 166, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(20, 184, 166, 0.2);
         }
 
         .back-button:hover {
-            transform: scale(1.1) translateX(-5px);
-            background: rgba(45, 212, 191, 0.1);
-            border-color: #2dd4bf;
-            box-shadow: 0 0 30px rgba(45, 212, 191, 0.3);
-        }
-
-        .back-button.sidebar-collapsed {
-            left: 110px;
+            transform: scale(1.15);
+            border-color: rgba(20, 184, 166, 1);
+            box-shadow: 0 0 40px rgba(20, 184, 166, 0.5);
         }
 
         .back-button.sidebar-collapsed {
@@ -768,66 +719,87 @@
             border: 1px solid rgba(20, 184, 166, 0.3);
         }
 
-        .matrix-grid {
-            display: grid;
-            grid-template-columns: 200px repeat(6, 1fr);
-            gap: 10px;
+        .matrix-container {
+            width: 100%;
             overflow-x: auto;
+            border-radius: 20px;
+            background: rgba(20, 184, 166, 0.02);
+            border: 1px solid rgba(20, 184, 166, 0.1);
         }
 
-        .matrix-header-cell {
-            padding: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.7);
-            text-align: center;
+        .matrix-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 800px;
+        }
+
+        .matrix-table th {
+            padding: 16px;
             background: rgba(20, 184, 166, 0.05);
-            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            border-bottom: 1px solid rgba(20, 184, 166, 0.15);
         }
 
-        .matrix-row {
-            display: contents;
+        .matrix-table th:first-child {
+            text-align: left;
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            background: rgba(8, 20, 30, 0.95);
         }
 
-        .matrix-user-cell {
-            padding: 12px;
-            font-size: 13px;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .matrix-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            text-align: center;
+            vertical-align: middle;
         }
 
-        .matrix-permission-cell {
-            padding: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .matrix-table td:first-child {
+            text-align: left;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            background: rgba(8, 20, 30, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .matrix-table tr:hover td {
+            background: rgba(20, 184, 166, 0.05);
         }
 
         .permission-toggle {
-            width: 40px;
-            height: 24px;
+            width: 36px;
+            height: 20px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 30px;
             position: relative;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin: 0 auto;
         }
 
         .permission-toggle.allowed {
             background: #14b8a6;
+            box-shadow: 0 0 10px rgba(20, 184, 166, 0.3);
         }
 
         .permission-toggle.denied {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(211, 47, 47, 0.15);
+            border: 1px solid rgba(211, 47, 47, 0.2);
         }
 
         .permission-toggle::after {
             content: '';
             position: absolute;
-            width: 18px;
-            height: 18px;
+            width: 14px;
+            height: 14px;
             background: white;
             border-radius: 50%;
             top: 3px;
@@ -1090,8 +1062,6 @@
         .permission-allowed {
             color: #14b8a6;
         }
-
-
     </style>
 
     <!-- Auth -->
@@ -1113,7 +1083,7 @@
                 <div class="logo-icon">
                     <i class="fas fa-brain text-white text-xl"></i>
                 </div>
-                <span class="logo-text">NEXUS·AI</span>
+                <span class="logo-text">ASGARD·AI</span>
             </div>
             <div class="collapse-btn" id="collapseBtn">
                 <i class="fas fa-chevron-left" id="collapseIcon"></i>
@@ -1207,7 +1177,7 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-white truncate">Admin User</p>
-                    <p class="text-xs text-slate-400 truncate">admin@nexus.ai</p>
+                    <p class="text-xs text-slate-400 truncate">admin@asgard.ai</p>
                 </div>
                 <i class="fas fa-ellipsis-v text-slate-400 text-xs"></i>
             </div>
@@ -1217,35 +1187,49 @@
     <!-- Main Content Wrapper -->
     <div class="main-wrapper" id="mainWrapper">
 
-        <!-- Redesigned Top Navigation -->
+        <!-- Top Navigation -->
         <div class="top-nav" id="topNav">
-            <div class="header-content">
-                <h1 id="pageTitle">ERİŞİM KONTROL & GÜVENLİK</h1>
-                <p id="pageSubtitle">Merkezi Yetkilendirme Sistemi</p>
-            </div>
-        </div>
-
-        <!-- System Health Mini -->
-        <div class="system-health-mini">
-            <div class="glass-premium px-4 py-2 flex items-center gap-4">
-                <div class="flex items-center gap-2">
-                    <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-                    <span class="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Live</span>
+            <div class="glass-premium px-6 py-3">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center">
+                        <i class="fas fa-shield-alt text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold tracking-tight text-white" id="pageTitle">Erişim Belirleme</h1>
+                        <p class="text-[10px] text-[#14b8a6] uppercase tracking-[0.2em] font-medium" id="pageSubtitle">
+                            Yetki Yönetim Paneli</p>
+                    </div>
                 </div>
-                <div class="h-4 w-px bg-white/10"></div>
+            </div>
+
+            <div class="glass-premium px-6 py-3 flex items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                        <span class="text-xs font-medium text-slate-300">Live</span>
+                    </div>
+                    <div class="h-4 w-px bg-white/10"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-shield-alt text-[#14b8a6] text-xs"></i>
+                        <span class="text-xs font-medium text-slate-300">Admin Mode</span>
+                    </div>
+                </div>
                 <div class="flex items-center gap-3">
                     <div class="text-right">
-                        <span class="text-lg font-bold text-white">100<span class="text-[10px] text-[#2dd4bf] ml-0.5">%</span></span>
+                        <span class="text-2xl font-bold text-white">100<span
+                                class="text-sm text-[#14b8a6] ml-1">%</span></span>
+                        <p class="text-[10px] text-slate-400">Authority</p>
                     </div>
-                    <div class="w-8 h-8 rounded-full bg-teal-500/20 flex items-center justify-center">
-                        <div class="w-4 h-4 rounded-full bg-teal-400 animate-pulse shadow-[0_0_10px_#2dd4bf]"></div>
+                    <div class="w-10 h-10 rounded-full bg-teal-500/20 flex items-center justify-center">
+                        <div class="w-6 h-6 rounded-full bg-teal-400 animate-pulse"></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Back Button -->
-        <div class="back-button" onclick="window.location.href='#'" id="backBtn">
+        <div class="back-button" onclick="window.location.href='dashboard.html'" id="backBtn">
             <i class="fas fa-arrow-left text-[#14b8a6] text-2xl"></i>
         </div>
 
@@ -1297,22 +1281,22 @@
                     <input type="text" class="search-input" placeholder="Kullanıcı ara...">
                 </div>
                 <div class="filter-buttons">
-                    <div class="filter-btn active">
+                    <div class="filter-btn active" data-dept="all">
                         <i class="fas fa-user"></i> Tümü
                     </div>
-                    <div class="filter-btn">
-                        <i class="fas fa-crown"></i> Admin
+                    <div class="filter-btn" data-dept="management">
+                        <i class="fas fa-crown"></i> Yönetim
                     </div>
-                    <div class="filter-btn">
+                    <div class="filter-btn" data-dept="finance">
                         <i class="fas fa-chart-line"></i> Finans
                     </div>
-                    <div class="filter-btn">
+                    <div class="filter-btn" data-dept="iot">
                         <i class="fas fa-wifi"></i> IoT
                     </div>
-                    <div class="filter-btn">
+                    <div class="filter-btn" data-dept="it">
                         <i class="fas fa-microchip"></i> IT
                     </div>
-                    <div class="filter-btn">
+                    <div class="filter-btn" data-dept="hr">
                         <i class="fas fa-users"></i> İK
                     </div>
                 </div>
@@ -1353,7 +1337,7 @@
                                     <div class="user-avatar">AY</div>
                                     <div>
                                         <div class="user-name">Ahmet Yılmaz</div>
-                                        <div class="user-email">ahmet.yilmaz@nexus.ai</div>
+                                        <div class="user-email">ahmet.yilmaz@asgard.ai</div>
                                     </div>
                                 </div>
                             </td>
@@ -1379,7 +1363,7 @@
                                     <div class="user-avatar">AD</div>
                                     <div>
                                         <div class="user-name">Ayşe Demir</div>
-                                        <div class="user-email">ayse.demir@nexus.ai</div>
+                                        <div class="user-email">ayse.demir@asgard.ai</div>
                                     </div>
                                 </div>
                             </td>
@@ -1393,10 +1377,12 @@
                             <td><i class="fas fa-times-circle permission-denied"></i></td>
                             <td><i class="fas fa-times-circle permission-denied"></i></td>
                             <td>
-    <div class="action-buttons">
-        <!-- Actions disabled for simulation -->
-    </div>
-</td>
+                                <div class="action-buttons">
+                                    <div class="action-btn"><i class="fas fa-edit"></i></div>
+                                    <div class="action-btn"><i class="fas fa-copy"></i></div>
+                                    <div class="action-btn"><i class="fas fa-ban"></i></div>
+                                </div>
+                            </td>
                         </tr>
                         <tr>
                             <td>
@@ -1404,7 +1390,7 @@
                                     <div class="user-avatar">MK</div>
                                     <div>
                                         <div class="user-name">Mehmet Kaya</div>
-                                        <div class="user-email">mehmet.kaya@nexus.ai</div>
+                                        <div class="user-email">mehmet.kaya@asgard.ai</div>
                                     </div>
                                 </div>
                             </td>
@@ -1417,10 +1403,12 @@
                             <td><i class="fas fa-times-circle permission-denied"></i></td>
                             <td><i class="fas fa-times-circle permission-denied"></i></td>
                             <td>
-    <div class="action-buttons">
-        <!-- Actions disabled for simulation -->
-    </div>
-</td>
+                                <div class="action-buttons">
+                                    <div class="action-btn"><i class="fas fa-edit"></i></div>
+                                    <div class="action-btn"><i class="fas fa-copy"></i></div>
+                                    <div class="action-btn"><i class="fas fa-ban"></i></div>
+                                </div>
+                            </td>
                         </tr>
                         <tr>
                             <td>
@@ -1428,7 +1416,7 @@
                                     <div class="user-avatar">ZY</div>
                                     <div>
                                         <div class="user-name">Zeynep Yıldız</div>
-                                        <div class="user-email">zeynep.yildiz@nexus.ai</div>
+                                        <div class="user-email">zeynep.yildiz@asgard.ai</div>
                                     </div>
                                 </div>
                             </td>
@@ -1441,10 +1429,12 @@
                             <td><i class="fas fa-times-circle permission-denied"></i></td>
                             <td><i class="fas fa-times-circle permission-denied"></i></td>
                             <td>
-    <div class="action-buttons">
-        <!-- Actions disabled for simulation -->
-    </div>
-</td>
+                                <div class="action-buttons">
+                                    <div class="action-btn"><i class="fas fa-edit"></i></div>
+                                    <div class="action-btn"><i class="fas fa-copy"></i></div>
+                                    <div class="action-btn"><i class="fas fa-ban"></i></div>
+                                </div>
+                            </td>
                         </tr>
                         <tr>
                             <td>
@@ -1452,7 +1442,7 @@
                                     <div class="user-avatar">CA</div>
                                     <div>
                                         <div class="user-name">Can Aksoy</div>
-                                        <div class="user-email">can.aksoy@nexus.ai</div>
+                                        <div class="user-email">can.aksoy@asgard.ai</div>
                                     </div>
                                 </div>
                             </td>
@@ -1465,10 +1455,12 @@
                             <td><i class="fas fa-times-circle permission-denied"></i></td>
                             <td><i class="fas fa-times-circle permission-denied"></i></td>
                             <td>
-    <div class="action-buttons">
-        <!-- Actions disabled for simulation -->
-    </div>
-</td>
+                                <div class="action-buttons">
+                                    <div class="action-btn"><i class="fas fa-edit"></i></div>
+                                    <div class="action-btn"><i class="fas fa-copy"></i></div>
+                                    <div class="action-btn"><i class="fas fa-ban"></i></div>
+                                </div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -1490,134 +1482,24 @@
                     </div>
                 </div>
 
-                <div class="matrix-grid">
-                    <div class="matrix-header-cell">Kullanıcı / Modül</div>
-                    <div class="matrix-header-cell">Finans</div>
-                    <div class="matrix-header-cell">IoT</div>
-                    <div class="matrix-header-cell">IT</div>
-                    <div class="matrix-header-cell">İK</div>
-                    <div class="matrix-header-cell">AI</div>
-                    <div class="matrix-header-cell">Sistem</div>
-
-                    <!-- Ahmet Yılmaz -->
-                    <div class="matrix-user-cell">
-                        <div class="user-avatar" style="width: 30px; height: 30px; font-size: 12px;">AY</div>
-                        <span>Ahmet Y.</span>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle allowed"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle allowed"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle allowed"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle allowed"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle allowed"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle allowed"></div>
-                    </div>
-
-                    <!-- Ayşe Demir -->
-                    <div class="matrix-user-cell">
-                        <div class="user-avatar" style="width: 30px; height: 30px; font-size: 12px;">AD</div>
-                        <span>Ayşe D.</span>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle allowed"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-
-                    <!-- Mehmet Kaya -->
-                    <div class="matrix-user-cell">
-                        <div class="user-avatar" style="width: 30px; height: 30px; font-size: 12px;">MK</div>
-                        <span>Mehmet K.</span>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle allowed"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-
-                    <!-- Zeynep Yıldız -->
-                    <div class="matrix-user-cell">
-                        <div class="user-avatar" style="width: 30px; height: 30px; font-size: 12px;">ZY</div>
-                        <span>Zeynep Y.</span>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle allowed"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-
-                    <!-- Can Aksoy -->
-                    <div class="matrix-user-cell">
-                        <div class="user-avatar" style="width: 30px; height: 30px; font-size: 12px;">CA</div>
-                        <span>Can A.</span>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle allowed"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
-                    <div class="matrix-permission-cell">
-                        <div class="permission-toggle denied"></div>
-                    </div>
+                <div class="matrix-container">
+                    <table class="matrix-table">
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı / Modül</th>
+                                <th>Finans</th>
+                                <th>IoT</th>
+                                <th>IT</th>
+                                <th>İK</th>
+                                <th>AI</th>
+                                <th>Erişim</th>
+                                <th>Sistem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matrixBody">
+                            <!-- JS ile dolacak -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -1628,50 +1510,38 @@
                     Rol Şablonları
                 </div>
                 <div class="templates-grid">
-                    <div class="template-card">
-                        <div class="template-icon">
-                            <i class="fas fa-crown"></i>
-                        </div>
+                    <div class="template-card" onclick="useTemplate('admin', 'management')">
+                        <div class="template-icon"><i class="fas fa-crown"></i></div>
                         <div class="template-name">Admin</div>
                         <div class="template-desc">Tam yetkili yönetici</div>
                         <span class="template-badge">Tüm modüller</span>
                     </div>
-                    <div class="template-card">
-                        <div class="template-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
+                    <div class="template-card" onclick="useTemplate('finance', 'finance')">
+                        <div class="template-icon"><i class="fas fa-chart-line"></i></div>
                         <div class="template-name">Finans Müdürü</div>
                         <div class="template-desc">Finans modülüne tam erişim</div>
                         <span class="template-badge">Finans</span>
                     </div>
-                    <div class="template-card">
-                        <div class="template-icon">
-                            <i class="fas fa-wifi"></i>
-                        </div>
+                    <div class="template-card" onclick="useTemplate('iot', 'iot')">
+                        <div class="template-icon"><i class="fas fa-wifi"></i></div>
                         <div class="template-name">IoT Müdürü</div>
                         <div class="template-desc">IoT modülüne tam erişim</div>
                         <span class="template-badge">IoT</span>
                     </div>
-                    <div class="template-card">
-                        <div class="template-icon">
-                            <i class="fas fa-microchip"></i>
-                        </div>
+                    <div class="template-card" onclick="useTemplate('it', 'it')">
+                        <div class="template-icon"><i class="fas fa-microchip"></i></div>
                         <div class="template-name">IT Müdürü</div>
                         <div class="template-desc">IT modülüne tam erişim</div>
                         <span class="template-badge">IT</span>
                     </div>
-                    <div class="template-card">
-                        <div class="template-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
+                    <div class="template-card" onclick="useTemplate('hr', 'hr')">
+                        <div class="template-icon"><i class="fas fa-users"></i></div>
                         <div class="template-name">İK Müdürü</div>
                         <div class="template-desc">İK modülüne tam erişim</div>
                         <span class="template-badge">İK</span>
                     </div>
-                    <div class="template-card">
-                        <div class="template-icon">
-                            <i class="fas fa-user-tie"></i>
-                        </div>
+                    <div class="template-card" onclick="useTemplate('employee', 'it')">
+                        <div class="template-icon"><i class="fas fa-user-tie"></i></div>
                         <div class="template-name">Departman Çalışanı</div>
                         <div class="template-desc">Sadece okuma yetkisi</div>
                         <span class="template-badge">Kısıtlı</span>
@@ -1690,6 +1560,22 @@
         </div>
     </div>
 
+    <!-- Quick Actions (Right Sidebar) -->
+    <div class="quick-actions">
+        <div class="quick-action-btn" title="Arama" onclick="document.querySelector('.search-input').focus()">
+            <i class="fas fa-search"></i>
+        </div>
+        <div class="quick-action-btn" title="Bildirimler">
+            <i class="fas fa-bell"></i>
+            <span class="badge">3</span>
+        </div>
+        <div class="quick-action-btn" title="Ayarlar" onclick="window.location.href='ayarlar.html'">
+            <i class="fas fa-cog"></i>
+        </div>
+        <div class="quick-action-btn" title="Analiz" onclick="window.location.href='yapayZekaV2.html'">
+            <i class="fas fa-chart-line"></i>
+        </div>
+    </div>
 
     <!-- Add User Modal -->
     <div class="modal" id="addUserModal">
@@ -1707,7 +1593,7 @@
                 </div>
                 <div style="margin-bottom: 15px;">
                     <label style="color: white; font-size: 14px; margin-bottom: 5px; display: block;">E-posta</label>
-                    <input type="email" class="search-input" style="border-radius: 12px;" placeholder="ornek@nexus.ai">
+                    <input type="email" class="search-input" style="border-radius: 12px;" placeholder="ornek@asgard.ai">
                 </div>
                 <div style="margin-bottom: 15px;">
                     <label style="color: white; font-size: 14px; margin-bottom: 5px; display: block;">Rol</label>
@@ -1739,82 +1625,312 @@
     </div>
 
     <script type="module">
-        // Three.js Particle System - AZALTILDI: daha az partikül, daha küçük
         import * as THREE from 'three';
 
-        const canvas = document.getElementById('particle-canvas');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        // ─── THREE.JS PARTICLE SYSTEM ─────────────────────────────────────────
+        try {
+            const canvas = document.getElementById('particle-canvas');
+            if (canvas) {
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
 
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
-        // Partikül sayısı azaltıldı: 2000 → 500
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 500;
-        const posArray = new Float32Array(particlesCount * 3);
-        const colorArray = new Float32Array(particlesCount * 3);
+                const particlesGeometry = new THREE.BufferGeometry();
+                const particlesCount = 500;
+                const posArray = new Float32Array(particlesCount * 3);
+                const colorArray = new Float32Array(particlesCount * 3);
 
-        for (let i = 0; i < particlesCount * 3; i += 3) {
-            // Daha küçük alana yayılmış partiküller
-            const radius = 15 + Math.random() * 8;
-            const theta = Math.random() * Math.PI * 2;
-            const phi = Math.acos((Math.random() * 2) - 1);
+                for (let i = 0; i < particlesCount * 3; i += 3) {
+                    const radius = 15 + Math.random() * 8;
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.acos((Math.random() * 2) - 1);
+                    posArray[i] = radius * Math.sin(phi) * Math.cos(theta);
+                    posArray[i + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.3;
+                    posArray[i + 2] = radius * Math.cos(phi);
+                    colorArray[i] = 0.0;
+                    colorArray[i + 1] = 0.7 + Math.random() * 0.3;
+                    colorArray[i + 2] = 0.6 + Math.random() * 0.2;
+                }
 
-            posArray[i] = radius * Math.sin(phi) * Math.cos(theta);
-            posArray[i + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.3;
-            posArray[i + 2] = radius * Math.cos(phi);
+                particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+                particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
 
-            // Turkuaz/petrol tonları
-            colorArray[i] = 0.0;
-            colorArray[i + 1] = 0.7 + Math.random() * 0.3;
-            colorArray[i + 2] = 0.6 + Math.random() * 0.2;
+                const particlesMaterial = new THREE.PointsMaterial({
+                    size: 0.06, vertexColors: true, transparent: true, opacity: 0.2, blending: THREE.AdditiveBlending
+                });
+
+                const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+                scene.add(particlesMesh);
+                camera.position.z = 20; camera.position.y = 2; camera.lookAt(0, 0, 0);
+
+                let mouseX = 0, mouseY = 0;
+                document.addEventListener('mousemove', (e) => {
+                    mouseX = (e.clientX / window.innerWidth - 0.5) * 1.5;
+                    mouseY = (e.clientY / window.innerHeight - 0.5) * 1.5;
+                });
+
+                function animate() {
+                    requestAnimationFrame(animate);
+                    particlesMesh.rotation.y += 0.0002 + (mouseX * 0.0002);
+                    particlesMesh.rotation.x += 0.00005 + (mouseY * 0.0001);
+                    renderer.render(scene, camera);
+                }
+                animate();
+
+                window.addEventListener('resize', () => {
+                    camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+            }
+        } catch (threeErr) {
+            console.error("Three.js initialization failed, but continuing with logic:", threeErr);
         }
 
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+        // ─── USER MANAGEMENT LOGIC ──────────────────────────────────────────
+        let allUsers = [];
+        let stats = {};
+        const MODULES = ["finance", "iot", "it", "hr", "ai", "access", "settings"];
+        const MODULE_LABELS = {
+            "finance": "Finans", "iot": "IoT", "it": "IT", 
+            "hr": "İK", "ai": "AI", "access": "Erişim", "settings": "Ayarlar"
+        };
 
-        // Partikül boyutu küçültüldü: 0.1 → 0.06
-        const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.06,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.2,
-            blending: THREE.AdditiveBlending
-        });
-
-        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particlesMesh);
-
-        camera.position.z = 20;
-        camera.position.y = 2;
-        camera.lookAt(0, 0, 0);
-
-        let mouseX = 0, mouseY = 0;
-        document.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX / window.innerWidth - 0.5) * 1.5;
-            mouseY = (event.clientY / window.innerHeight - 0.5) * 1.5;
-        });
-
-        function animate() {
-            requestAnimationFrame(animate);
-            // Daha yavaş dönüş
-            particlesMesh.rotation.y += 0.0002;
-            particlesMesh.rotation.x += 0.00005;
-            particlesMesh.rotation.y += mouseX * 0.0002;
-            particlesMesh.rotation.x += mouseY * 0.0001;
-            renderer.render(scene, camera);
+        async function checkAdmin() {
+            console.log("[Auth] Checking admin status...");
+            const user = await initAuth();
+            if (user) {
+                console.log("[Auth] User logged in:", user.username, "Role:", user.role);
+                if (user.role !== 'admin') {
+                    showToast('Bu sayfaya erişim yetkiniz yok!', 'error');
+                    setTimeout(() => window.location.href = 'dashboard.html', 1500);
+                }
+            } else {
+                console.warn("[Auth] No active user session found.");
+            }
         }
-        animate();
 
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+        async function fetchAllData() {
+            const token = localStorage.getItem('asgard_token');
+            console.log("[API] Fetching all user data... Token exists:", !!token);
+            const headers = { 'Authorization': `Bearer ${token}` };
+            try {
+                const resUsers = await fetch('/api/users', { headers });
+                console.log("[API] /api/users response status:", resUsers.status);
+                if (resUsers.ok) {
+                    allUsers = await resUsers.json();
+                    console.log("[API] Loaded users count:", allUsers.length);
+                } else {
+                    const err = await resUsers.text();
+                    console.error("[API] Failed to fetch users:", err);
+                }
 
-        // Sidebar functionality
+                const resStats = await fetch('/api/stats/access', { headers });
+                console.log("[API] /api/stats/access response status:", resStats.status);
+                if (resStats.ok) {
+                    stats = await resStats.json();
+                }
+
+                renderAll();
+            } catch (e) {
+                console.error("[API] Critical fetch error:", e);
+                showToast('Veriler yüklenirken bağlantı hatası oluştu', 'error');
+            }
+        }
+
+        // ─── FILTER LOGIC ────────────────────────────────────────────────
+        let currentDept = 'all';
+        let currentTerm = '';
+
+        function renderAll() {
+            let filtered = allUsers;
+            if (currentDept !== 'all') filtered = filtered.filter(u => u.department === currentDept || (currentDept === 'management' && u.role === 'Admin'));
+            if (currentTerm) filtered = filtered.filter(u => u.name.toLowerCase().includes(currentTerm) || u.username.toLowerCase().includes(currentTerm));
+
+            renderStats();
+            renderUserTable(filtered);
+            renderMatrix(filtered);
+            console.log(`[UI] Rendered ${filtered.length} users with Dept: ${currentDept}, Term: ${currentTerm}`);
+        }
+
+        function renderStats() {
+            const containers = document.querySelectorAll('.stat-value');
+            if (containers.length >= 4) {
+                containers[0].textContent = allUsers.length;
+                containers[1].textContent = [...new Set(allUsers.map(u => u.role))].length;
+                containers[2].textContent = allUsers.reduce((acc, u) => acc + u.pages.length, 0);
+                containers[3].textContent = stats.last_update ? new Date(stats.last_update).toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}) : '—';
+            }
+        }
+
+        function renderUserTable(users) {
+            const tbody = document.querySelector('.users-table tbody');
+            if (!tbody) return;
+            tbody.innerHTML = users.map(user => `
+                <tr data-username="${user.username}">
+                    <td>
+                        <div class="user-info">
+                            <div class="user-avatar">${user.initials}</div>
+                            <div><div class="user-name">${user.name}</div><div class="user-email">${user.email}</div></div>
+                        </div>
+                    </td>
+                    <td><span class="role-badge role-${user.role.toLowerCase()}"><i class="fas fa-user-tag"></i> ${user.role}</span></td>
+                    <td>${user.department}</td>
+                    ${MODULES.slice(0, 5).map(m => `<td><i class="fas fa-${user.pages.includes(m) ? 'check-circle permission-allowed' : 'times-circle text-slate-700'}"></i></td>`).join('')}
+                    <td><i class="fas fa-${user.pages.includes('settings') ? 'check-circle permission-allowed' : 'times-circle text-slate-700'}"></i></td>
+                    <td>
+                        <div class="action-buttons">
+                            <div class="action-btn" title="Düzenle" onclick="openEditModal('${user.username}')"><i class="fas fa-edit"></i></div>
+                            <div class="action-btn" title="Sil" onclick="deleteUser('${user.username}')"><i class="fas fa-trash-alt"></i></div>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderMatrix(users) {
+            const tbody = document.getElementById('matrixBody');
+            if (!tbody) return;
+            const table = tbody.closest('.matrix-table');
+            const thead = table.querySelector('thead tr');
+            
+            // Header'ı modül etiketlerine göre güncelle
+            thead.innerHTML = `<th>Kullanıcı / Modül</th>` + MODULES.map(m => `<th>${MODULE_LABELS[m]}</th>`).join('');
+            
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>
+                        <div class="flex items-center gap-3">
+                            <div class="user-avatar" style="width: 28px; height: 28px; font-size: 10px;">${user.initials}</div>
+                            <span class="font-semibold text-sm">${user.name.split(' ')[0]} ${user.name.split(' ')[1] || ''}</span>
+                        </div>
+                    </td>
+                    ${MODULES.map(m => `
+                        <td>
+                            <div class="permission-toggle ${user.pages.includes(m) ? 'allowed' : 'denied'}" 
+                                 onclick="togglePermission('${user.username}', '${m}', ${!user.pages.includes(m)})"
+                                 title="${MODULE_LABELS[m]} yetkisini değiştir">
+                            </div>
+                        </td>
+                    `).join('')}
+                </tr>
+            `).join('');
+        }
+
+        window.togglePermission = async (username, module, allow) => {
+            const user = allUsers.find(u => u.username === username); if (!user) return;
+            let newPages = allow ? [...new Set([...user.pages, module])] : user.pages.filter(p => p !== module);
+            try {
+                const res = await fetch(`/api/users/update/${username}`, {
+                    method: 'PUT', headers: { 'Authorization': `Bearer ${localStorage.getItem('asgard_token')}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pages: newPages })
+                });
+                if (res.ok) { user.pages = newPages; renderAll(); showToast(`${username} için yetki güncellendi`, 'success'); }
+            } catch (e) { showToast('Yetki güncellenemedi', 'error'); }
+        };
+
+        window.deleteUser = async (username) => {
+            if (username === 'admin') return showToast('Admin silinemez', 'error');
+            if (!confirm(`${username} kullanıcısını silmek istediğinize emin misiniz?`)) return;
+            try {
+                const res = await fetch(`/api/users/delete/${username}`, {
+                    method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('asgard_token')}` }
+                });
+                if (res.ok) { allUsers = allUsers.filter(u => u.username !== username); renderAll(); showToast('Kullanıcı silindi', 'success'); }
+            } catch (e) { showToast('Silme işlemi başarısız', 'error'); }
+        };
+
+        let editMode = false;
+        let targetUser = null;
+
+        window.openEditModal = (username) => {
+            const user = allUsers.find(u => u.username === username);
+            if (!user) return;
+            editMode = true;
+            targetUser = username;
+            
+            const modal = document.getElementById('addUserModal');
+            const title = modal.querySelector('.modal-title');
+            const submitBtn = modal.querySelector('.modal-btn-primary');
+            const inputs = modal.querySelectorAll('input, select');
+            
+            title.textContent = 'Kullanıcıyı Güncelle';
+            submitBtn.textContent = 'Değişiklikleri Kaydet';
+            
+            inputs[0].value = user.name;
+            inputs[1].value = user.email;
+            inputs[1].disabled = true; // Email (username) değiştirilemez
+            inputs[2].value = user.role.toLowerCase();
+            inputs[3].value = user.department.toLowerCase();
+            
+            modal.classList.add('active');
+        };
+
+        window.useTemplate = (role, dept) => {
+            editMode = false;
+            targetUser = null;
+            const modal = document.getElementById('addUserModal');
+            const inputs = modal.querySelectorAll('input, select');
+            const title = modal.querySelector('.modal-title');
+            const submitBtn = modal.querySelector('.modal-btn-primary');
+
+            title.textContent = 'Yeni Kullanıcı Ekle';
+            submitBtn.textContent = 'Kullanıcıyı Ekle';
+            inputs[1].disabled = false;
+            inputs[0].value = "";
+            inputs[1].value = "@asgard.ai";
+            inputs[2].value = role;
+            inputs[3].value = dept;
+            
+            modal.classList.add('active');
+        };
+
+        async function handleUserSubmit() {
+            const modal = document.getElementById('addUserModal');
+            const inputs = modal.querySelectorAll('input, select');
+            const name = inputs[0].value;
+            const email = inputs[1].value;
+            const role = inputs[2].value;
+            const dept = inputs[3].value;
+
+            if (!name || !email) return showToast('Lütfen zorunlu alanları doldurun', 'error');
+
+            if (editMode && targetUser) {
+                // UPDATE logic
+                try {
+                    const res = await fetch(`/api/users/update/${targetUser}`, {
+                        method: 'PUT', headers: { 'Authorization': `Bearer ${localStorage.getItem('asgard_token')}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, role, department: dept })
+                    });
+                    if (res.ok) { 
+                        showToast('Kullanıcı güncellendi', 'success'); 
+                        modal.classList.remove('active'); 
+                        fetchAllData(); 
+                    }
+                } catch (e) { showToast('Güncelleme hatası', 'error'); }
+            } else {
+                // CREATE logic
+                const data = {
+                    username: email.split('@')[0], name, email,
+                    password: 'Asgard@' + Math.floor(Math.random()*900+100), role, department: dept, pages: ["dashboard", "profile"]
+                };
+                try {
+                    const res = await fetch('/api/users/add', {
+                        method: 'POST', headers: { 'Authorization': `Bearer ${localStorage.getItem('asgard_token')}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    if (res.ok) { 
+                        showToast('Kullanıcı eklendi. Şifre: ' + data.password, 'success'); 
+                        modal.classList.remove('active'); 
+                        fetchAllData(); 
+                    }
+                } catch (e) { showToast('Ekleme hatası', 'error'); }
+            }
+        }
+
+        // ─── UI INTERACTION ────────────────────────────────────────────────
         const sidebar = document.getElementById('sidebar');
         const mainWrapper = document.getElementById('mainWrapper');
         const collapseBtn = document.getElementById('collapseBtn');
@@ -1827,70 +1943,62 @@
             if (mainWrapper) mainWrapper.classList.toggle('sidebar-collapsed');
             if (topNav) topNav.classList.toggle('sidebar-collapsed');
             if (backBtn) backBtn.classList.toggle('sidebar-collapsed');
-
-            if (sidebar.classList.contains('collapsed')) {
-                collapseIcon.classList.remove('fa-chevron-left');
-                collapseIcon.classList.add('fa-chevron-right');
-            } else {
-                collapseIcon.classList.remove('fa-chevron-right');
-                collapseIcon.classList.add('fa-chevron-left');
-            }
+            collapseIcon.className = sidebar.classList.contains('collapsed') ? 'fas fa-chevron-right' : 'fas fa-chevron-left';
         });
 
-        // Modal functionality
         const addUserBtn = document.getElementById('addUserBtn');
         const addUserModal = document.getElementById('addUserModal');
         const closeModal = document.getElementById('closeModal');
         const cancelModal = document.getElementById('cancelModal');
 
         addUserBtn.addEventListener('click', () => {
+            editMode = false;
+            targetUser = null;
+            document.querySelector('.modal-title').textContent = 'Yeni Kullanıcı Ekle';
+            document.querySelector('.modal-btn-primary').textContent = 'Kullanıcıyı Ekle';
+            const inputs = addUserModal.querySelectorAll('input, select');
+            inputs[1].disabled = false;
+            inputs[0].value = "";
+            inputs[1].value = "";
             addUserModal.classList.add('active');
         });
+        
+        [closeModal, cancelModal].forEach(b => b.addEventListener('click', () => addUserModal.classList.remove('active')));
+        window.addEventListener('click', (e) => { if (e.target === addUserModal) addUserModal.classList.remove('active'); });
 
-        closeModal.addEventListener('click', () => {
-            addUserModal.classList.remove('active');
-        });
-
-        cancelModal.addEventListener('click', () => {
-            addUserModal.classList.remove('active');
-        });
-
-        window.addEventListener('click', (e) => {
-            if (e.target === addUserModal) {
-                addUserModal.classList.remove('active');
-            }
-        });
-
-        // Filter buttons
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', function () {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-
-        // Matrix tabs
-        const matrixTabs = document.querySelectorAll('.matrix-tab');
-        matrixTabs.forEach(tab => {
-            tab.addEventListener('click', function () {
-                matrixTabs.forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-
-        // Back button
-        if (backBtn) {
-            backBtn.addEventListener('click', () => {
-                window.location.href = 'dashboard.html';
+        const searchInput = document.querySelector('.search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                currentTerm = e.target.value.toLowerCase();
+                renderAll();
             });
         }
 
-        // Menu item clicks handled by auth.js bindNavigation()
+        // Departman Filtreleri
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentDept = btn.dataset.dept;
+                renderAll();
+            });
+        });
 
-        // ── Auth ──────────────────────────────────────────────────────────
+        function showToast(msg, type='success') {
+            const t = document.getElementById('toast-el') || document.createElement('div');
+            t.id = 'toast-el'; t.className = `toast ${type} show`; t.innerHTML = msg;
+            if (!document.body.contains(t)) {
+                Object.assign(t.style, { position:'fixed', bottom:'20px', right:'20px', padding:'10px 20px', background:'#14b8a6', borderRadius:'8px', zIndex:'9999', color:'white' });
+                document.body.appendChild(t);
+            }
+            setTimeout(() => t.className = `toast ${type}`, 3000);
+        }
+
+        // ─── INIT ──────────────────────────────────────────────────────────
         (async () => {
-            await initAuth();
+            await checkAdmin();
+            await fetchAllData();
+            document.querySelector('.modal-btn-primary').onclick = handleUserSubmit;
         })();
     </script>
 </body>

@@ -2316,7 +2316,7 @@
                                 </div>
                             </div>
                             
-                            <form onsubmit="handleUpdateProfile(event)" class="space-y-8" id="editProfileForm">
+                            <form class="space-y-8" id="editProfileForm">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                                     <div class="form-group">
                                         <label class="asgard-label">Tam Ad Soyad</label>
@@ -2382,7 +2382,7 @@
                                     <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-widest">Kuantum Korumalı Şifre Protokolü</p>
                                 </div>
                             </div>
-                            <form onsubmit="handleChangePassword(event)" class="space-y-6" id="securityForm">
+                            <form class="space-y-6" id="securityForm">
                                 <div class="form-group">
                                     <label class="asgard-label">Mevcut Sistem Şifresi</label>
                                     <input type="password" class="asgard-select" placeholder="••••••••" required>
@@ -2905,7 +2905,8 @@
             const forms = {
                 'newUserForm': handleNewUser,
                 'securityForm': handleChangePassword,
-                'emergencyForm': handleEmergencyAuth
+                'emergencyForm': handleEmergencyAuth,
+                'editProfileForm': handleUpdateProfile
             };
 
             for (const [id, handler] of Object.entries(forms)) {

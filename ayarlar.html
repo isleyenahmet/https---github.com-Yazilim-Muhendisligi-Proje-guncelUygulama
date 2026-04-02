@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS · Ayarlar · Sistem Yapılandırması</title>
+    <title>ASGARD · Ayarlar · Sistem Yapılandırması</title>
 
     <!-- Fonts & Icons -->
     <link
@@ -158,10 +158,8 @@
         .collapse-btn {
             width: 32px;
             height: 32px;
-            -webkit-appearance: none;
-            -webkit-appearance: none;
-            appearance: none;
-            background: rgba(255, 255, 255, 0.03);
+            min-width: 32px;
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             display: flex;
@@ -290,62 +288,17 @@
             margin-left: 80px;
         }
 
-        /* Redesigned Minimalist Top Nav - Embedded Style */
+        /* Top navigation adjustment */
         .top-nav {
-            position: absolute;
-            top: 30px;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            background: none;
-            border: none;
-            box-shadow: none;
-            backdrop-filter: none;
-        }
-
-        .header-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            pointer-events: auto;
-        }
-
-        #pageTitle {
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            background: linear-gradient(to bottom, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.3));
-            margin: 0;
-            line-height: 1.2;
-        }
-
-        #pageSubtitle {
-            font-size: 10px;
-            letter-spacing: 0.5em;
-            color: #3b82f6 !important;
-            text-transform: uppercase;
-            font-weight: 700;
-            margin-top: 4px;
-            opacity: 0.9;
-        }
-
-        /* Health Metrics Positioned Top-Right */
-        .system-health-mini {
             position: fixed;
-            top: 20px;
+            top: 24px;
+            left: 310px;
             right: 24px;
-            z-index: 1100;
-            pointer-events: auto;
+            z-index: 90;
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .top-nav.sidebar-collapsed {
@@ -355,31 +308,21 @@
         /* Back button */
         .back-button {
             position: fixed;
-            top: 20px;
+            top: 24px;
             left: 310px;
-            z-index: 1100;
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: rgba(10, 20, 35, 0.4);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            z-index: 1000;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(10, 20, 35, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(59, 130, 246, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .back-button:hover {
-            transform: scale(1.1) translateX(-5px);
-            background: rgba(59, 130, 246, 0.1);
-            border-color: #3b82f6;
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
-        }
-
-        .back-button.sidebar-collapsed {
-            left: 110px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
         }
 
         .back-button:hover {
@@ -771,6 +714,58 @@
             height: 100%;
             pointer-events: none;
         }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            z-index: 9999;
+            padding: 14px 22px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            backdrop-filter: blur(12px);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .toast.success { background: rgba(16, 185, 129, 0.85); border: 1px solid rgba(16,185,129,0.4); box-shadow: 0 8px 30px rgba(16,185,129,0.3); }
+        .toast.error   { background: rgba(239, 68, 68, 0.85);  border: 1px solid rgba(239,68,68,0.4);  box-shadow: 0 8px 30px rgba(239,68,68,0.3); }
+        .toast.info    { background: rgba(59, 130, 246, 0.85); border: 1px solid rgba(59,130,246,0.4); box-shadow: 0 8px 30px rgba(59,130,246,0.3); }
+
+        /* Badge */
+        .soon-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 8px;
+            background: rgba(251,191,36,0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(251,191,36,0.3);
+            margin-left: 8px;
+            letter-spacing: 0.05em;
+        }
+        .active-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 8px;
+            background: rgba(59,130,246,0.15);
+            color: #3b82f6;
+            border: 1px solid rgba(59,130,246,0.3);
+            margin-left: 8px;
+        }
+        .disabled-card { opacity: 0.55; pointer-events: none; }
     </style>
 
     <!-- Auth -->
@@ -792,7 +787,7 @@
                 <div class="logo-icon">
                     <i class="fas fa-brain text-white text-xl"></i>
                 </div>
-                <span class="logo-text">NEXUS·AI</span>
+                <span class="logo-text">ASGARD·AI</span>
             </div>
             <div class="collapse-btn" id="collapseBtn">
                 <i class="fas fa-chevron-left" id="collapseIcon"></i>
@@ -886,7 +881,7 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-white truncate">Admin User</p>
-                    <p class="text-xs text-slate-400 truncate">admin@nexus.ai</p>
+                    <p class="text-xs text-slate-400 truncate">admin@asgard.ai</p>
                 </div>
                 <i class="fas fa-ellipsis-v text-slate-400 text-xs"></i>
             </div>
@@ -896,35 +891,49 @@
     <!-- Main Content Wrapper -->
     <div class="main-wrapper" id="mainWrapper">
 
-        <!-- Redesigned Top Navigation -->
+        <!-- Top Navigation -->
         <div class="top-nav" id="topNav">
-            <div class="header-content">
-                <h1 id="pageTitle">SİSTEM AYARLARI</h1>
-                <p id="pageSubtitle">Konfigürasyon Terminali</p>
-            </div>
-        </div>
-
-        <!-- System Health Mini -->
-        <div class="system-health-mini">
-            <div class="glass-premium px-4 py-2 flex items-center gap-4">
-                <div class="flex items-center gap-2">
-                    <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-                    <span class="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Live</span>
+            <div class="glass-premium px-6 py-3">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+                        <i class="fas fa-cog text-white text-sm"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold tracking-tight text-white" id="pageTitle">Sistem Ayarları</h1>
+                        <p class="text-[10px] text-[#3b82f6] uppercase tracking-[0.2em] font-medium" id="pageSubtitle">
+                            Yapılandırma ve Tercihler</p>
+                    </div>
                 </div>
-                <div class="h-4 w-px bg-white/10"></div>
+            </div>
+
+            <div class="glass-premium px-6 py-3 flex items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                        <span class="text-xs font-medium text-slate-300">Live</span>
+                    </div>
+                    <div class="h-4 w-px bg-white/10"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-shield-alt text-[#3b82f6] text-xs"></i>
+                        <span class="text-xs font-medium text-slate-300">Secure</span>
+                    </div>
+                </div>
                 <div class="flex items-center gap-3">
                     <div class="text-right">
-                        <span class="text-lg font-bold text-white">94<span class="text-[10px] text-[#3b82f6] ml-0.5">%</span></span>
+                        <span class="text-2xl font-bold text-white" id="health-value">—<span
+                                class="text-sm text-[#3b82f6] ml-1">%</span></span>
+                        <p class="text-[10px] text-slate-400">System Health</p>
                     </div>
-                    <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                        <div class="w-4 h-4 rounded-full bg-blue-400 animate-pulse shadow-[0_0_10px_#3b82f6]"></div>
+                    <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                        <div class="w-6 h-6 rounded-full bg-blue-400 animate-pulse" id="health-dot"></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Back Button -->
-        <div class="back-button" onclick="window.location.href='#'" id="backBtn">
+        <div class="back-button" onclick="window.location.href='dashboard.html'" id="backBtn">
             <i class="fas fa-arrow-left text-[#3b82f6] text-2xl"></i>
         </div>
 
@@ -1002,7 +1011,7 @@
                                 </div>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" checked>
+                                <input type="checkbox" id="toggle-notifications" checked>
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
@@ -1059,7 +1068,7 @@
                                 </div>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox">
+                                <input type="checkbox" id="toggle-sound">
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
@@ -1074,48 +1083,29 @@
                     Yapay Zeka Ayarları
                 </div>
                 <div class="settings-grid">
-                    <!-- GNN Model Seçimi -->
-                    <div class="settings-card">
+                    <!-- GNN Model Seçimi - Aktif, /api/model/info'dan doldurulur -->
+                    <div class="settings-card" id="gnn-card">
                         <div class="settings-card-header">
                             <div class="settings-card-icon">
                                 <i class="fas fa-project-diagram"></i>
                             </div>
                             <div>
-                                <div class="settings-card-title">GNN Modeli</div>
-                                <div class="settings-card-desc">Kök neden analizi için kullanılacak model</div>
+                                <div class="settings-card-title">GNN Modeli <span class="active-badge" id="gnn-badge">Aktif: GAT</span></div>
+                                <div class="settings-card-desc" id="gnn-arch">Mevcut model: Graph Attention Network v1</div>
                             </div>
                         </div>
-                        <select class="select-input">
-                            <option value="gcn">Graph Convolutional Network (GCN)</option>
-                            <option value="graphsage" selected>GraphSAGE (Önerilen)</option>
-                            <option value="gat">Graph Attention Network (GAT)</option>
-                            <option value="gin">Graph Isomorphism Network (GIN)</option>
+                        <select class="select-input" disabled>
+                            <option value="gat" selected id="gnn-option">Graph Attention Network (GAT) — Aktif</option>
                         </select>
-                    </div>
-
-                    <!-- Anomali Eşiği -->
-                    <div class="settings-card">
-                        <div class="settings-card-header">
-                            <div class="settings-card-icon">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <div>
-                                <div class="settings-card-title">Anomali Eşiği</div>
-                                <div class="settings-card-desc">Anomali tespit hassasiyeti</div>
-                            </div>
-                        </div>
-                        <div class="slider-container">
-                            <div class="slider-label">
-                                <span>Düşük</span>
-                                <span id="thresholdValue">0.75</span>
-                                <span>Yüksek</span>
-                            </div>
-                            <input type="range" min="0.1" max="0.95" step="0.05" value="0.75" class="slider"
-                                id="thresholdSlider">
+                        <div class="flex gap-6 mt-4" style="font-size:12px;color:rgba(255,255,255,0.5)">
+                            <span>Parametre: <strong class="text-white" id="gnn-params">—</strong></span>
+                            <span>Düğüm: <strong class="text-white" id="gnn-nodes">—</strong></span>
+                            <span>Gizli Boyut: <strong class="text-white" id="gnn-hidden">—</strong></span>
+                            <span>Veri Satırı: <strong class="text-white" id="gnn-rows">—</strong></span>
                         </div>
                     </div>
 
-                    <!-- SHAP Açıklanabilirlik -->
+                    <!-- SHAP Açıklanabilirlik - Aktif -->
                     <div class="settings-card">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3">
@@ -1124,17 +1114,17 @@
                                 </div>
                                 <div>
                                     <div class="settings-card-title">SHAP Analizi</div>
-                                    <div class="settings-card-desc">Model açıklanabilirliği</div>
+                                    <div class="settings-card-desc">Integrated Gradients — Feature önem skorları</div>
                                 </div>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" checked>
+                                <input type="checkbox" id="toggle-shap" checked>
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
                     </div>
 
-                    <!-- LIME Açıklanabilirlik -->
+                    <!-- LIME Açıklanabilirlik - Aktif -->
                     <div class="settings-card">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3">
@@ -1143,11 +1133,11 @@
                                 </div>
                                 <div>
                                     <div class="settings-card-title">LIME Analizi</div>
-                                    <div class="settings-card-desc">Yerel açıklanabilirlik</div>
+                                    <div class="settings-card-desc">Pertürbasyon — Hangi feature kararı etkiler?</div>
                                 </div>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" checked>
+                                <input type="checkbox" id="toggle-lime" checked>
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
@@ -1173,7 +1163,7 @@
                                 <div class="settings-card-desc">Geçmiş verilerin ne kadar süre saklanacağı</div>
                             </div>
                         </div>
-                        <select class="select-input">
+                        <select id="data-retention" class="select-input">
                             <option value="7">7 Gün</option>
                             <option value="30" selected>30 Gün (Önerilen)</option>
                             <option value="90">90 Gün</option>
@@ -1181,20 +1171,20 @@
                         </select>
                     </div>
 
-                    <!-- Veri Sıkıştırma -->
-                    <div class="settings-card">
+                    <!-- Veri Sıkıştırma - Yakında -->
+                    <div class="settings-card disabled-card">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 <div class="settings-card-icon">
                                     <i class="fas fa-compress-alt"></i>
                                 </div>
                                 <div>
-                                    <div class="settings-card-title">Snappy Sıkıştırma</div>
-                                    <div class="settings-card-desc">Parquet formatında sıkıştırma</div>
+                                    <div class="settings-card-title">Snappy Sıkıştırma <span class="soon-badge">Yakında</span></div>
+                                    <div class="settings-card-desc">Parquet formatında sıkıştırma — v2'de gelecek</div>
                                 </div>
                             </div>
                             <label class="toggle-switch">
-                                <input type="checkbox" checked>
+                                <input type="checkbox" disabled>
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
@@ -1218,8 +1208,7 @@
                             <div class="settings-card-desc">Veri akışı için API adresi</div>
                         </div>
                     </div>
-                    <input type="text" class="input-field" value="https://api.nexus.ai/v2/stream"
-                        placeholder="API Endpoint">
+                    <input type="text" class="input-field" id="api-endpoint-field" placeholder="API Endpoint" readonly>
                 </div>
             </div>
 
@@ -1237,15 +1226,33 @@
 
             <!-- Last updated info -->
             <div class="flex justify-between items-center mt-8 text-xs text-slate-500">
-                <span>Son güncelleme: 15:24:07 UTC</span>
+                <span id="last-updated-text">Son güncelleme: —</span>
                 <span class="flex items-center gap-2">
                     <i class="fas fa-circle text-[#3b82f6] text-[6px]"></i>
-                    Yapılandırma aktif
+                    <span id="config-status">Yapılandırma yükleniyor...</span>
                 </span>
             </div>
         </div>
     </div>
 
+    <!-- Quick Actions (Right Sidebar) -->
+    <div class="quick-actions">
+        <div class="quick-action-btn" title="Dashboard" onclick="window.location.href='dashboard.html'" style="cursor:pointer">
+            <i class="fas fa-home"></i>
+        </div>
+        <div class="quick-action-btn" title="Yapay Zeka" onclick="window.location.href='yapayZekaV2.html'" style="cursor:pointer">
+            <i class="fas fa-brain"></i>
+        </div>
+        <div class="quick-action-btn" title="IT Departmanı" onclick="window.location.href='it.html'" style="cursor:pointer">
+            <i class="fas fa-microchip"></i>
+        </div>
+        <div class="quick-action-btn" title="Profil" onclick="window.location.href='profil.html'" style="cursor:pointer">
+            <i class="fas fa-user"></i>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast" id="toast-el"></div>
 
     <script type="module">
         // Three.js Particle System
@@ -1318,90 +1325,217 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // Sidebar functionality
-        const sidebar = document.getElementById('sidebar');
-        const mainWrapper = document.getElementById('mainWrapper');
-        const collapseBtn = document.getElementById('collapseBtn');
-        const collapseIcon = document.getElementById('collapseIcon');
-        const topNav = document.getElementById('topNav');
-        const backBtn = document.getElementById('backBtn');
-
-        collapseBtn.addEventListener('click', () => {
-            if (sidebar) sidebar.classList.toggle('collapsed');
-            if (mainWrapper) mainWrapper.classList.toggle('sidebar-collapsed');
-            if (topNav) topNav.classList.toggle('sidebar-collapsed');
-            if (backBtn) backBtn.classList.toggle('sidebar-collapsed');
-
-            if (sidebar.classList.contains('collapsed')) {
-                collapseIcon.classList.remove('fa-chevron-left');
-                collapseIcon.classList.add('fa-chevron-right');
-            } else {
-                collapseIcon.classList.remove('fa-chevron-right');
-                collapseIcon.classList.add('fa-chevron-left');
-            }
-        });
-
-        // Refresh rate display
-        const radioButtons = document.querySelectorAll('input[name="refresh-rate"]');
-        const selectedRefresh = document.getElementById('selectedRefresh');
-
-        radioButtons.forEach(radio => {
-            radio.addEventListener('change', function () {
-                if (this.checked) {
-                    const value = this.value;
-                    let text = '';
-                    if (value === '1') text = '1 saniye';
-                    else if (value === '3') text = '3 saniye';
-                    else if (value === '5') text = '5 saniye';
-                    else if (value === '10') text = '10 saniye';
-                    selectedRefresh.textContent = text;
-
-                    // Show notification (simulated)
-                    alert(`✅ Veri yenileme hızı ${text} olarak ayarlandı.`);
-                }
-            });
-        });
-
-        // Threshold slider
-        const thresholdSlider = document.getElementById('thresholdSlider');
-        const thresholdValue = document.getElementById('thresholdValue');
-
-        thresholdSlider.addEventListener('input', function () {
-            thresholdValue.textContent = this.value;
-        });
-
-        // Save button
-        document.querySelector('.save-button').addEventListener('click', () => {
-            alert('✅ Ayarlar başarıyla kaydedildi!');
-        });
-
-        // Reset button
-        document.querySelector('.reset-button').addEventListener('click', () => {
-            if (confirm('Tüm ayarları sıfırlamak istediğinize emin misiniz?')) {
-                // Reset refresh rate to default (1 second)
-                document.querySelector('input[name="refresh-rate"][value="1"]').checked = true;
-                selectedRefresh.textContent = '1 saniye';
-
-                // Reset threshold
-                thresholdSlider.value = '0.75';
-                thresholdValue.textContent = '0.75';
-
-                alert('✅ Ayarlar varsayılan değerlere sıfırlandı.');
-            }
-        });
-
-        // Back button
-        if (backBtn) {
-            backBtn.addEventListener('click', () => {
-                window.location.href = 'dashboard.html';
-            });
+        // ── Toast Sistemi ────────────────────────────────────────────────
+        let toastTimer;
+        function showToast(message, type = 'success') {
+            const el = document.getElementById('toast-el');
+            el.className = `toast ${type}`;
+            el.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${message}`;
+            void el.offsetWidth; // reflow
+            el.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
         }
 
-        // Menu item clicks handled by auth.js bindNavigation()
+        // ── localStorage Anahtarları ──────────────────────────────────────
+        const KEYS = {
+            REFRESH:   'asgard_refresh_rate',
+            NOTIFS:    'asgard_notifications',
+            SOUND:     'asgard_sound_alerts',
+            SHAP:      'asgard_xai_shap',
+            LIME:      'asgard_xai_lime',
+            RETENTION: 'asgard_data_retention',
+        };
 
-        // ── Auth ──────────────────────────────────────────────────────────
+        // ── Ayarları Yükle ────────────────────────────────────────────────
+        function loadSettings() {
+            const rate      = localStorage.getItem(KEYS.REFRESH) || '1';
+            const notifs    = localStorage.getItem(KEYS.NOTIFS) !== 'false'; // default true
+            const sound     = localStorage.getItem(KEYS.SOUND) === 'true';   // default false
+            const retention = localStorage.getItem(KEYS.RETENTION) || '30';  // default 30
+            
+            // API Endpoint Dynamic Setup
+            const apiField = document.getElementById('api-endpoint-field');
+            if (apiField) {
+                apiField.value = window.location.origin + '/api/stream';
+            }
+
+            // Refresh rate radio
+            const target = document.querySelector(`input[name="refresh-rate"][value="${rate}"]`);
+            if (target) { target.checked = true; updateRefreshLabel(rate); }
+            
+            // Veri Saklama Süresi
+            const retentionSelect = document.getElementById('data-retention');
+            if (retentionSelect) retentionSelect.value = retention;
+
+            // Toggle'lar
+            const toggleNotifs = document.getElementById('toggle-notifications');
+            const toggleSound  = document.getElementById('toggle-sound');
+            const toggleShap   = document.getElementById('toggle-shap');
+            const toggleLime   = document.getElementById('toggle-lime');
+            if (toggleNotifs) toggleNotifs.checked = notifs;
+            if (toggleSound)  toggleSound.checked  = sound;
+            
+            // XAI default true
+            const shap = localStorage.getItem(KEYS.SHAP) !== 'false';
+            const lime = localStorage.getItem(KEYS.LIME) !== 'false';
+            if (toggleShap) toggleShap.checked = shap;
+            if (toggleLime) toggleLime.checked = lime;
+
+            // Config status
+            const configStatus = document.getElementById('config-status');
+            if (configStatus) configStatus.textContent = 'Yapılandırma aktif';
+
+            // Son güncelleme
+            const lastSavedRaw = localStorage.getItem('asgard_settings_saved');
+            const lastUpdatedEl = document.getElementById('last-updated-text');
+            if (lastUpdatedEl && lastSavedRaw) {
+                lastUpdatedEl.textContent = 'Son güncelleme: ' + lastSavedRaw;
+            }
+        }
+
+        // ── Ayarları Kaydet ───────────────────────────────────────────────
+        function saveSettings() {
+            const rate      = document.querySelector('input[name="refresh-rate"]:checked')?.value || '1';
+            const notifs    = document.getElementById('toggle-notifications')?.checked ?? true;
+            const sound     = document.getElementById('toggle-sound')?.checked ?? false;
+            const shap      = document.getElementById('toggle-shap')?.checked ?? true;
+            const lime      = document.getElementById('toggle-lime')?.checked ?? true;
+            const retention = document.getElementById('data-retention')?.value || '30';
+
+            localStorage.setItem(KEYS.REFRESH, rate);
+            localStorage.setItem(KEYS.NOTIFS,  notifs);
+            localStorage.setItem(KEYS.SOUND,   sound);
+            localStorage.setItem(KEYS.SHAP,    shap);
+            localStorage.setItem(KEYS.LIME,    lime);
+            localStorage.setItem(KEYS.RETENTION, retention);
+
+            // Kayıt zamanını sakla
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) + ' ' + now.toLocaleDateString('tr-TR');
+            localStorage.setItem('asgard_settings_saved', timeStr);
+
+            // UI güncelle
+            const lastUpdatedEl = document.getElementById('last-updated-text');
+            if (lastUpdatedEl) lastUpdatedEl.textContent = 'Son güncelleme: ' + timeStr;
+
+            showToast('✅ Ayarlar başarıyla kaydedildi!', 'success');
+        }
+
+        // ── Ayarları Sıfırla ──────────────────────────────────────────────
+        function resetSettings() {
+            // localStorage temizle
+            Object.values(KEYS).forEach(k => localStorage.removeItem(k));
+            localStorage.removeItem('asgard_settings_saved');
+
+            // UI sıfırla
+            const r1 = document.querySelector('input[name="refresh-rate"][value="1"]');
+            if (r1) { r1.checked = true; updateRefreshLabel('1'); }
+            
+            const retentionSelect = document.getElementById('data-retention');
+            if (retentionSelect) retentionSelect.value = '30';
+
+            const toggleNotifs = document.getElementById('toggle-notifications');
+            const toggleSound  = document.getElementById('toggle-sound');
+            const toggleShap   = document.getElementById('toggle-shap');
+            const toggleLime   = document.getElementById('toggle-lime');
+            if (toggleNotifs) toggleNotifs.checked = true;
+            if (toggleSound)  toggleSound.checked  = false;
+            if (toggleShap)   toggleShap.checked   = true;
+            if (toggleLime)   toggleLime.checked   = true;
+
+            const lastUpdatedEl = document.getElementById('last-updated-text');
+            if (lastUpdatedEl) lastUpdatedEl.textContent = 'Son güncelleme: —';
+
+            showToast('🔄 Ayarlar varsayılan değerlere sıfırlandı', 'info');
+        }
+
+        // ── Refresh Rate Etiket Güncelleyici ──────────────────────────────
+        function updateRefreshLabel(value) {
+            const map = { '1': '1 saniye', '3': '3 saniye', '5': '5 saniye', '10': '10 saniye' };
+            const selectedRefresh = document.getElementById('selectedRefresh');
+            if (selectedRefresh) selectedRefresh.textContent = map[value] || value + ' saniye';
+        }
+
+        // ── Refresh Rate Radio Event ──────────────────────────────────────
+        document.querySelectorAll('input[name="refresh-rate"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                if (this.checked) updateRefreshLabel(this.value);
+            });
+        });
+
+        // ── Buton Event'leri ──────────────────────────────────────────────
+        document.querySelector('.save-button').addEventListener('click', saveSettings);
+        document.querySelector('.reset-button').addEventListener('click', () => {
+            if (confirm('Tüm ayarları sıfırlamak istediğinize emin misiniz?')) resetSettings();
+        });
+
+        // ── System Health — /api/health ────────────────────────────────────
+        async function fetchHealth() {
+            const healthVal = document.getElementById('health-value');
+            const healthDot = document.getElementById('health-dot');
+            try {
+                const res = await fetch('/api/health');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (healthVal) healthVal.childNodes[0].textContent = data.status === 'ok' ? '100' : 'ERR';
+                    if (healthDot) { healthDot.style.background = data.status === 'ok' ? '#10b981' : '#ef4444'; }
+                } else {
+                    if (healthVal) healthVal.childNodes[0].textContent = '—';
+                    if (healthDot) healthDot.style.background = '#ef4444';
+                }
+            } catch {
+                if (healthVal) healthVal.childNodes[0].textContent = '—';
+                if (healthDot) healthDot.style.background = '#6b7280';
+            }
+        }
+        fetchHealth();
+
+        // ── GNN Model Bilgisi ──────────────────────────────────────────────
+        async function fetchModelInfo() {
+            try {
+                const res = await fetch('/api/model/info');
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('gnn-badge').textContent = `Aktif: ${data.short}`;
+                    document.getElementById('gnn-arch').textContent = `Mevcut model: ${data.architecture}`;
+                    document.getElementById('gnn-option').textContent = `${data.name} (${data.short}) — Aktif`;
+                    
+                    document.getElementById('gnn-params').textContent = (data.total_params / 1000).toFixed(1) + 'K';
+                    document.getElementById('gnn-nodes').textContent = data.nodes;
+                    document.getElementById('gnn-hidden').textContent = data.hidden_dim;
+                    document.getElementById('gnn-rows').textContent = (data.total_rows / 1000).toFixed(0) + 'K';
+                }
+            } catch(e) {
+                console.error("GNN modeli bilgisi çekilemedi", e);
+            }
+        }
+        fetchModelInfo();
+
+        // ── Sidebar Collapse ──────────────────────────────────────────────
+        const sidebar    = document.getElementById('sidebar');
+        const mainWrapper= document.getElementById('mainWrapper');
+        const collapseBtn= document.getElementById('collapseBtn');
+        const collapseIcon=document.getElementById('collapseIcon');
+        const topNav     = document.getElementById('topNav');
+        const backBtn    = document.getElementById('backBtn');
+
+        collapseBtn.addEventListener('click', () => {
+            if (sidebar)     sidebar.classList.toggle('collapsed');
+            if (mainWrapper) mainWrapper.classList.toggle('sidebar-collapsed');
+            if (topNav)      topNav.classList.toggle('sidebar-collapsed');
+            if (backBtn)     backBtn.classList.toggle('sidebar-collapsed');
+            if (sidebar.classList.contains('collapsed')) {
+                collapseIcon.classList.replace('fa-chevron-left','fa-chevron-right');
+            } else {
+                collapseIcon.classList.replace('fa-chevron-right','fa-chevron-left');
+            }
+        });
+
+        // ── Auth + Başlatma ────────────────────────────────────────────────
         (async () => {
             await initAuth();
+            loadSettings(); // Auth'dan sonra kayıtlı ayarları yükle
         })();
     </script>
 </body>
