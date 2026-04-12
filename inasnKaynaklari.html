@@ -1864,30 +1864,28 @@
         // LIVE DATA STREAM — GNN-AIOps (Logistical/HR Metrics)
         // ═══════════════════════════════════════════════════════════════════
         (function startHRLiveStream() {
-            const API = 'http://127.0.0.1:5003/api/stream';
             const MAX_POINTS = 30;
-            const SS_KEY = 'nexus_hr_stream';
 
-            function loadFromStorage() {
-                try {
-                    const saved = sessionStorage.getItem(SS_KEY);
-                    if (saved) return JSON.parse(saved);
-                } catch (e) { }
-                return null;
-            }
+            const pathData = [];
+            const collData = [];
+            const socData = [];
+            const taskData = [];
+            let tick = 0;
 
-            function saveToStorage() {
-                try {
-                    sessionStorage.setItem(SS_KEY, JSON.stringify({ pathData, collData, socData, taskData, tick }));
-                } catch (e) { }
-            }
-
-            const saved = loadFromStorage();
-            const pathData = saved ? saved.pathData : Array.from({ length: MAX_POINTS }, (_, i) => ({ time: i, value: 0 }));
-            const collData = saved ? saved.collData : Array.from({ length: MAX_POINTS }, (_, i) => ({ time: i, value: 0 }));
-            const socData = saved ? saved.socData : Array.from({ length: MAX_POINTS }, (_, i) => ({ time: i, value: 0 }));
-            const taskData = saved ? saved.taskData : Array.from({ length: MAX_POINTS }, (_, i) => ({ time: i, value: 0 }));
-            let tick = saved ? saved.tick : MAX_POINTS;
+            // 1. Initial Load from global buffer
+            const buffer = JSON.parse(sessionStorage.getItem('nexus_global_stream_buffer') || '[]');
+            buffer.forEach((d) => {
+                const path = (d.log_path || 0) * 100;
+                const coll = (d.log_path || 0) > 0 ? (1 / ((d.log_path || 0) * 10 + 0.001)) * 100 : 0;
+                const soc = (d.log_soc || 0) * 10;
+                const task = (d.log_task || 0) * 100;
+                
+                pathData.push({ time: tick, value: path });
+                collData.push({ time: tick, value: coll });
+                socData.push({ time: tick, value: soc });
+                taskData.push({ time: tick, value: task });
+                tick++;
+            });
 
             function pushValue(arr, value) {
                 arr.push({ time: tick, value: value });
@@ -1936,26 +1934,20 @@
                 }
             }
 
-            async function fetchAndUpdate() {
+            function processDataUpdate(d, isInitialRender = false) {
                 try {
-                    const response = await fetch(API);
-                    if (!response.ok) return;
-                    const d = await response.json();
-                    tick++;
+                    if (!isInitialRender) {
+                        tick++;
+                        const path = (d.log_path || 0) * 100;
+                        const coll = (d.log_path || 0) > 0 ? (1 / ((d.log_path || 0) * 10 + 0.001)) * 100 : 0;
+                        const soc = (d.log_soc || 0) * 10;
+                        const task = (d.log_task || 0) * 100;
 
-                    // Map metrics from API (normalization handled by scale)
-                    // log_coll is always 0 in DB — derive collection efficiency from log_path instead
-                    const path = (d.log_path || 0) * 100;
-                    const coll = (d.log_path || 0) > 0 ? (1 / (d.log_path * 10 + 0.001)) * 100 : 0;
-                    const soc = (d.log_soc || 0) * 10;
-                    const task = (d.log_task || 0) * 100;
-
-                    pushValue(pathData, path);
-                    pushValue(collData, coll);
-                    pushValue(socData, soc);
-                    pushValue(taskData, task);
-                    tick++;
-                    saveToStorage();
+                        pushValue(pathData, path);
+                        pushValue(collData, coll);
+                        pushValue(socData, soc);
+                        pushValue(taskData, task);
+                    }
 
                     const isAnomaly = d.anomaly === 1;
                     const anomalyColor = isAnomaly ? '#ef4444' : null;
@@ -1966,11 +1958,17 @@
                     drawLineChart('chart-soc', socData, anomalyColor || '#f97316', true, '');
                     drawLineChart('chart-task', taskData, anomalyColor || '#a855f7', true, '%');
 
+                    // Extract logic variables
+                    const pathVal = pathData.length > 0 ? pathData[pathData.length - 1].value : 0;
+                    const collVal = collData.length > 0 ? collData[collData.length - 1].value : 0;
+                    const socVal = socData.length > 0 ? socData[socData.length - 1].value : 0;
+                    const taskVal = taskData.length > 0 ? taskData[taskData.length - 1].value : 0;
+
                     // Update Cards and Nodes
-                    updateUIState('path', path, isAnomaly, 'card-path', 'label-path', 'ms');
-                    updateUIState('coll', coll, isAnomaly, 'card-coll', 'label-coll', '');
-                    updateUIState('soc', soc, isAnomaly, 'card-soc', 'label-soc', '');
-                    updateUIState('task', task, isAnomaly, 'card-task', 'label-task', '%');
+                    updateUIState('path', pathVal, isAnomaly, 'card-path', 'label-path', 'ms');
+                    updateUIState('coll', collVal, isAnomaly, 'card-coll', 'label-coll', '');
+                    updateUIState('soc', socVal, isAnomaly, 'card-soc', 'label-soc', '');
+                    updateUIState('task', taskVal, isAnomaly, 'card-task', 'label-task', '%');
 
                     // Overall Anomaly logic for the primary node
                     const hrNode = document.getElementById('hr-primary');
@@ -1991,13 +1989,15 @@
                 }
             }
 
-            // Start loop
-            setTimeout(() => {
-                const savedRate = localStorage.getItem('asgard_refresh_rate') || '1';
-                const intervalMs = parseInt(savedRate) * 1000;
-                setInterval(fetchAndUpdate, intervalMs);
-                fetchAndUpdate();
-            }, 600);
+            // Perform initial render
+            if (buffer.length > 0) {
+                processDataUpdate(buffer[buffer.length - 1], true);
+            }
+
+            // Listen to global auth.js stream
+            window.addEventListener('nexus_stream_data', (e) => {
+                processDataUpdate(e.detail, false);
+            });
         })();
         // ═══════════════════════════════════════════════════════════════════
 

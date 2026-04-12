@@ -164,5 +164,73 @@ async function initAuth() {
     filterSidebar(user);
     updateSidebarUser(user);
     bindNavigation();
+    
+    // Start global stream seamlessly after login
+    startGlobalBackgroundStream();
+    
     return user;
+}
+
+/* ── Global Background Data Stream ──────────────────────────────── *
+ * Bu modül tüm departmanların anlık verilerini arkada dinler ve   *
+ * geçiş yapıldığında verilerin "sıfırdan" başlamasını engeller.   */
+
+function startGlobalBackgroundStream() {
+    if (window.nexusStreamRunning) return;
+    window.nexusStreamRunning = true;
+
+    const BUFFER_KEY = 'nexus_global_stream_buffer';
+    const MAX_POINTS = 30;
+
+    function seedGlobalBuffer() {
+        let buffer = JSON.parse(sessionStorage.getItem(BUFFER_KEY) || '[]');
+        if (buffer.length < MAX_POINTS) {
+            const needed = MAX_POINTS - buffer.length;
+            const padding = [];
+            for (let i = 0; i < needed; i++) {
+                padding.push({
+                    anomaly_score: 0.1 + Math.random() * 0.1,
+                    fin_cost: 1.8 + Math.random() * 0.1,
+                    fin_fraud: 0,
+                    fin_risk: 0.15 + Math.random() * 0.05,
+                    fin_inv: 0.8 + Math.random() * 0.2,
+                    net_lat: 0.4 + Math.random() * 0.1,
+                    net_thr: 1.0 + Math.random() * 0.2,
+                    net_p_loss: 0.1 * Math.random(),
+                    net_sec: 0.9 + Math.random() * 0.1,
+                    iot_temp: 0.45 + Math.random() * 0.05,
+                    iot_vib: 0.2 + Math.random() * 0.05,
+                    iot_cycle: 0.8 + Math.random() * 0.1,
+                    iot_torq: 0.6 + Math.random() * 0.1,
+                    log_path: 0.5 + Math.random() * 0.1,
+                    log_soc: 0.8 + Math.random() * 0.1,
+                    log_task: 0.7 + Math.random() * 0.1,
+                    it_cpu: 0.7 + Math.random() * 0.1,
+                    iot_pdr: 0.8 + Math.random() * 0.1,
+                    anomaly: 0
+                });
+            }
+            buffer = [...padding, ...buffer];
+            sessionStorage.setItem(BUFFER_KEY, JSON.stringify(buffer));
+        }
+    }
+
+    seedGlobalBuffer();
+
+    setInterval(async () => {
+        try {
+            const res = await fetch('http://127.0.0.1:5003/api/stream');
+            if (!res.ok) return;
+            const d = await res.json();
+            
+            // Append to rolling buffer
+            let buffer = JSON.parse(sessionStorage.getItem(BUFFER_KEY) || '[]');
+            buffer.push(d);
+            if (buffer.length > MAX_POINTS) buffer.shift();
+            sessionStorage.setItem(BUFFER_KEY, JSON.stringify(buffer));
+
+            // Notify active page
+            window.dispatchEvent(new CustomEvent('nexus_stream_data', { detail: d }));
+        } catch(e) {}
+    }, 2000);
 }

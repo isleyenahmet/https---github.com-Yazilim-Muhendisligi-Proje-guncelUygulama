@@ -1713,31 +1713,27 @@
         // LIVE DATA STREAM — GNN-AIOps (Network Metrics)
         // ═══════════════════════════════════════════════════════════════════
         (function startITLiveStream() {
-            const API = '/api/stream'; // FastAPI'den gelen ağ verileri
             const MAX_POINTS = 30;
-            const SS_KEY = 'nexus_it_stream';
 
-            function loadFromStorage() {
-                try {
-                    const saved = sessionStorage.getItem(SS_KEY);
-                    if (saved) return JSON.parse(saved);
-                } catch(e) {}
-                return null;
-            }
+            const latencyData = [];
+            const throughputData = [];
+            const packetLossData = [];
+            const securityData = [];
+            let tick = 0;
 
-            function saveToStorage() {
-                try {
-                    sessionStorage.setItem(SS_KEY, JSON.stringify({ latencyData, throughputData, packetLossData, securityData, tick }));
-                } catch(e) {}
-            }
-
-            const saved = loadFromStorage();
-            const latencyData    = saved ? saved.latencyData    : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
-            const throughputData = saved ? saved.throughputData : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
-            const packetLossData = saved ? saved.packetLossData : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
-            const securityData   = saved ? saved.securityData   : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
-            let tick = saved ? saved.tick : MAX_POINTS;
-            let anomalyActive = false;
+            // 1. Initial Load from global buffer
+            const buffer = JSON.parse(sessionStorage.getItem('nexus_global_stream_buffer') || '[]');
+            buffer.forEach((d) => {
+                const lat = (d.net_lat || 0) * 100;
+                const thr = (d.net_thr || 0) * 1000;
+                const loss = (d.net_p_loss || 0) * 5;
+                const sec = (d.net_sec || 0) * 100;
+                latencyData.push({ time: tick, value: lat });
+                throughputData.push({ time: tick, value: thr });
+                packetLossData.push({ time: tick, value: loss });
+                securityData.push({ time: tick, value: sec });
+                tick++;
+            });
 
             function pushValue(arr, value) {
                 arr.push({ time: tick, value: value });
@@ -1776,25 +1772,20 @@
                 }
             }
 
-            async function fetchAndUpdate() {
+            function processDataUpdate(d, isInitialRender = false) {
                 try {
-                    const response = await fetch(API);
-                    if (!response.ok) return;
-                    const d = await response.json();
-                    tick++;
+                    if (!isInitialRender) {
+                        tick++;
+                        const lat = (d.net_lat || 0) * 100;
+                        const thr = (d.net_thr || 0) * 1000;
+                        const loss = (d.net_p_loss || 0) * 5;
+                        const sec = (d.net_sec || 0) * 100;
 
-                    // Map metrics from API
-                    const lat = d.net_lat * 100; // Simulated ms
-                    const thr = d.net_thr * 1000; // Simulated Mbps
-                    const loss = d.net_p_loss * 5; // Simulated %
-                    const sec = d.net_sec * 100; // Simulated Security Score
-
-                    pushValue(latencyData, lat);
-                    pushValue(throughputData, thr);
-                    pushValue(packetLossData, loss);
-                    pushValue(securityData, sec);
-                    tick++;
-                    saveToStorage();
+                        pushValue(latencyData, lat);
+                        pushValue(throughputData, thr);
+                        pushValue(packetLossData, loss);
+                        pushValue(securityData, sec);
+                    }
 
                     const isAnomaly = d.anomaly === 1;
                     const anomalyColor = isAnomaly ? '#ef4444' : null;
@@ -1805,15 +1796,21 @@
                     drawLineChart('chart-packetloss', packetLossData, anomalyColor || '#ef4444', true);
                     drawLineChart('chart-security', securityData, anomalyColor || '#a855f7', true);
 
+                    // Extract logic variables
+                    const latVal = latencyData.length > 0 ? latencyData[latencyData.length - 1].value : 0;
+                    const thrVal = throughputData.length > 0 ? throughputData[throughputData.length - 1].value : 0;
+                    const lossVal = packetLossData.length > 0 ? packetLossData[packetLossData.length - 1].value : 0;
+                    const secVal = securityData.length > 0 ? securityData[securityData.length - 1].value : 0;
+
                     // Update Cards and Nodes
-                    updateUIState('net_lat', lat, isAnomaly, 'card-latency', 'status-latency', 'ms');
-                    updateUIState('net_thr', thr, isAnomaly, 'card-throughput', 'status-throughput', 'Mbps');
-                    updateUIState('net_p_loss', loss, isAnomaly, 'card-packetloss', 'status-packetloss', '%');
-                    updateUIState('net_sec', sec, isAnomaly, 'card-security', 'status-security', '');
+                    updateUIState('net_lat', latVal, isAnomaly, 'card-latency', 'status-latency', 'ms');
+                    updateUIState('net_thr', thrVal, isAnomaly, 'card-throughput', 'status-throughput', 'Mbps');
+                    updateUIState('net_p_loss', lossVal, isAnomaly, 'card-packetloss', 'status-packetloss', '%');
+                    updateUIState('net_sec', secVal, isAnomaly, 'card-security', 'status-security', '');
 
                     // Update global UI elements
                     const lastUpdate = document.getElementById('lastUpdate');
-                    if (lastUpdate) lastUpdate.textContent = new Date().toLocaleTimeString();
+                    if (lastUpdate && !isInitialRender) lastUpdate.textContent = new Date().toLocaleTimeString();
 
                     // Overall Anomaly logic
                     const itNode = document.getElementById('it-primary');
@@ -1834,13 +1831,15 @@
                 }
             }
 
-            // Start after a delay to allow initial setup
-            setTimeout(() => {
-                const savedRate = localStorage.getItem('asgard_refresh_rate') || '1';
-                const intervalMs = parseInt(savedRate) * 1000;
-                setInterval(fetchAndUpdate, intervalMs);
-                fetchAndUpdate();
-            }, 600);
+            // Perform initial render
+            if (buffer.length > 0) {
+                processDataUpdate(buffer[buffer.length - 1], true);
+            }
+
+            // Listen to global auth.js stream
+            window.addEventListener('nexus_stream_data', (e) => {
+                processDataUpdate(e.detail, false);
+            });
         })();
         // ═══════════════════════════════════════════════════════════════════
 

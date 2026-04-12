@@ -1705,31 +1705,27 @@
         // LIVE DATA STREAM — GNN-AIOps (Finance Metrics)
         // ═══════════════════════════════════════════════════════════════════
         (function startFinanceLiveStream() {
-            const API = 'http://127.0.0.1:5003/api/stream';
             const MAX_POINTS = 30;
-            const SS_KEY = 'nexus_finans_stream';
 
-            // Restore from sessionStorage or start fresh
-            function loadFromStorage() {
-                try {
-                    const saved = sessionStorage.getItem(SS_KEY);
-                    if (saved) return JSON.parse(saved);
-                } catch(e) {}
-                return null;
-            }
+            const costData = [];
+            const fraudData = [];
+            const riskData = [];
+            const invData = [];
+            let tick = 0;
 
-            function saveToStorage() {
-                try {
-                    sessionStorage.setItem(SS_KEY, JSON.stringify({ costData, fraudData, riskData, invData, tick }));
-                } catch(e) {}
-            }
-
-            const saved = loadFromStorage();
-            const costData   = saved ? saved.costData   : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
-            const fraudData  = saved ? saved.fraudData  : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
-            const riskData   = saved ? saved.riskData   : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
-            const invData    = saved ? saved.invData    : Array.from({length: MAX_POINTS}, (_, i) => ({time: i, value: 0}));
-            let tick = saved ? saved.tick : MAX_POINTS;
+            // 1. Initial Load from global buffer
+            const buffer = JSON.parse(sessionStorage.getItem('nexus_global_stream_buffer') || '[]');
+            buffer.forEach((d) => {
+                const cost = (d.fin_cost || 0) * 1000;
+                const fraud = d.fin_fraud > 0 ? d.fin_fraud * 100 : (d.anomaly_score || 0) * 100;
+                const risk = (d.fin_risk || 0) * 100;
+                const inv = (d.fin_inv || 0) * 500;
+                costData.push({ time: tick, value: cost });
+                fraudData.push({ time: tick, value: fraud });
+                riskData.push({ time: tick, value: risk });
+                invData.push({ time: tick, value: inv });
+                tick++;
+            });
 
             function pushValue(arr, value) {
                 arr.push({ time: tick, value: value });
@@ -1778,26 +1774,20 @@
                 }
             }
 
-            async function fetchAndUpdate() {
+            function processDataUpdate(d, isInitialRender = false) {
                 try {
-                    const response = await fetch(API);
-                    if (!response.ok) return;
-                    const d = await response.json();
-                    tick++;
+                    if (!isInitialRender) {
+                        tick++;
+                        const cost = (d.fin_cost || 0) * 1000;
+                        const fraud = d.fin_fraud > 0 ? d.fin_fraud * 100 : (d.anomaly_score || 0) * 100;
+                        const risk = (d.fin_risk || 0) * 100;
+                        const inv = (d.fin_inv || 0) * 500;
 
-                    // Map metrics from API (normalization handled by scale)
-                    // fin_fraud is 0 in 97% of DB rows — use anomaly_score as live fraud signal
-                    const cost = (d.fin_cost || 0) * 1000;
-                    const fraud = d.fin_fraud > 0 ? d.fin_fraud * 100 : (d.anomaly_score || 0) * 100;
-                    const risk = (d.fin_risk || 0) * 100;
-                    const inv = (d.fin_inv || 0) * 500;
-
-                    pushValue(costData, cost);
-                    pushValue(fraudData, fraud);
-                    pushValue(riskData, risk);
-                    pushValue(invData, inv);
-                    tick++;
-                    saveToStorage();
+                        pushValue(costData, cost);
+                        pushValue(fraudData, fraud);
+                        pushValue(riskData, risk);
+                        pushValue(invData, inv);
+                    }
 
                     const isAnomaly = d.anomaly === 1;
                     const anomalyColor = isAnomaly ? '#ef4444' : null;
@@ -1808,20 +1798,28 @@
                     drawLineChart('chart-risk', riskData, anomalyColor || '#f97316', true, '%');
                     drawLineChart('chart-inv', invData, anomalyColor || '#3b82f6', true, '');
 
+                    // To avoid redefining variables from Initial Load that are needed in UI logic:
+                    const costVal = costData.length > 0 ? costData[costData.length - 1].value : 0;
+                    const fraudVal = fraudData.length > 0 ? fraudData[fraudData.length - 1].value : 0;
+                    const riskVal = riskData.length > 0 ? riskData[riskData.length - 1].value : 0;
+                    const invVal = invData.length > 0 ? invData[invData.length - 1].value : 0;
+
                     // Update Cards and Nodes
-                    updateUIState('cost', cost, isAnomaly, 'card-cost', 'label-cost', '$');
-                    updateUIState('fraud', fraud, isAnomaly, 'card-fraud', 'label-fraud', '');
-                    updateUIState('risk', risk, isAnomaly, 'card-risk', 'label-risk', '%');
-                    updateUIState('inv', inv, isAnomaly, 'card-inv', 'label-inv', '');
+                    updateUIState('cost', costVal, isAnomaly, 'card-cost', 'label-cost', '$');
+                    updateUIState('fraud', fraudVal, isAnomaly, 'card-fraud', 'label-fraud', '');
+                    updateUIState('risk', riskVal, isAnomaly, 'card-risk', 'label-risk', '%');
+                    updateUIState('inv', invVal, isAnomaly, 'card-inv', 'label-inv', '');
 
                     // Update Top Topology Flows
-                    updateFlowTopology(d.risk_scores || {}, isAnomaly);
+                    if (typeof updateFlowTopology === 'function') {
+                        updateFlowTopology(d.risk_scores || {}, isAnomaly);
+                    }
 
                     // Randomize minor logs for realism when not anomaly
                     if(!isAnomaly && Math.random() < 0.1) {
-                        addTerminalLog("Standart finansal validasyon tamamlandı. Aktarım OK.");
+                        if (typeof addTerminalLog === 'function') addTerminalLog("Standart finansal validasyon tamamlandı. Aktarım OK.");
                     } else if (!isAnomaly && Math.random() < 0.05) {
-                        addTerminalLog("AI Cost-saving algoritması 2.4% verimlilik raporladı.");
+                        if (typeof addTerminalLog === 'function') addTerminalLog("AI Cost-saving algoritması 2.4% verimlilik raporladı.");
                     }
 
                     // Overall Anomaly logic for the primary node
@@ -1832,7 +1830,7 @@
                             finNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';
                         }
                         if(Math.random() < 0.3) {
-                            addTerminalLog(`[RISK ALERT] Global fraud score artışı: ${d.anomaly_score.toFixed(3)}`, true, false);
+                            if (typeof addTerminalLog === 'function') addTerminalLog(`[RISK ALERT] Global fraud score artışı: ${d.anomaly_score.toFixed(3)}`, true, false);
                         }
                     } else {
                         if (finNode) {
@@ -1846,13 +1844,15 @@
                 }
             }
 
-            // Start loop
-            setTimeout(() => {
-                const savedRate = localStorage.getItem('asgard_refresh_rate') || '1';
-                const intervalMs = parseInt(savedRate) * 1000;
-                setInterval(fetchAndUpdate, intervalMs);
-                fetchAndUpdate();
-            }, 600);
+            // Perform initial render
+            if (buffer.length > 0) {
+                processDataUpdate(buffer[buffer.length - 1], true);
+            }
+
+            // Listen to global auth.js stream
+            window.addEventListener('nexus_stream_data', (e) => {
+                processDataUpdate(e.detail, false);
+            });
         })();
         // ═══════════════════════════════════════════════════════════════════
 

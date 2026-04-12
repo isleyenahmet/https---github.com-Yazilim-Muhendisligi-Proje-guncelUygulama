@@ -1063,7 +1063,7 @@
 
         <!-- Back Button -->
         <div class="back-button" onclick="window.location.href='#'" id="backBtn">
-            <i class="fas fa-arrow-left text-[#ef4444] text-2xl"></i>
+            <i class="fas fa-arrow-left text-[#38bdf8] text-2xl"></i>
         </div>
 
         <!-- Main scrollable container -->
@@ -1720,24 +1720,27 @@
         // LIVE DATA STREAM — GNN-AIOps (IoT Metrics)
         // ═══════════════════════════════════════════════════════════════════
         (function startIoTLiveStream() {
-            const API = '/api/stream'; 
             const MAX_POINTS = 30;
 
-            // rolling data buffers for 4 IoT metrics
             const tempData = [];
             const vibData = [];
             const cycleData = [];
             const torqData = [];
+            let tick = 0;
 
-            // Initialize buffers with empty data
-            for(let i=0; i<MAX_POINTS; i++) {
-                tempData.push({time: i, value: 0});
-                vibData.push({time: i, value: 0});
-                cycleData.push({time: i, value: 0});
-                torqData.push({time: i, value: 0});
-            }
-
-            let tick = MAX_POINTS;
+            // 1. Initial Load from global buffer
+            const buffer = JSON.parse(sessionStorage.getItem('nexus_global_stream_buffer') || '[]');
+            buffer.forEach((d) => {
+                const temp = (d.iot_temp || 0) * 100;
+                const vib = (d.iot_vib || 0) * 100;
+                const cycle = (d.iot_cycle || 0) * 100;
+                const torq = (d.iot_torq || 0) * 100;
+                tempData.push({ time: tick, value: temp });
+                vibData.push({ time: tick, value: vib });
+                cycleData.push({ time: tick, value: cycle });
+                torqData.push({ time: tick, value: torq });
+                tick++;
+            });
 
             function pushValue(arr, value) {
                 arr.push({ time: tick, value: value });
@@ -1779,23 +1782,20 @@
                 }
             }
 
-            async function fetchAndUpdate() {
+            function processDataUpdate(d, isInitialRender = false) {
                 try {
-                    const response = await fetch(API);
-                    if (!response.ok) return;
-                    const d = await response.json();
-                    tick++;
+                    if (!isInitialRender) {
+                        tick++;
+                        const temp = (d.iot_temp || 0) * 100;
+                        const vib = (d.iot_vib || 0) * 100;
+                        const cycle = (d.iot_cycle || 0) * 100;
+                        const torq = (d.iot_torq || 0) * 100;
 
-                    // Map metrics from API (normalization handled by scale)
-                    const temp = (d.iot_temp || 0) * 100;
-                    const vib = (d.iot_vib || 0) * 100;
-                    const cycle = (d.iot_cycle || 0) * 100;
-                    const torq = (d.iot_torq || 0) * 100;
-
-                    pushValue(tempData, temp);
-                    pushValue(vibData, vib);
-                    pushValue(cycleData, cycle);
-                    pushValue(torqData, torq);
+                        pushValue(tempData, temp);
+                        pushValue(vibData, vib);
+                        pushValue(cycleData, cycle);
+                        pushValue(torqData, torq);
+                    }
 
                     const isAnomaly = d.anomaly === 1;
                     const anomalyColor = isAnomaly ? '#ef4444' : null;
@@ -1806,11 +1806,17 @@
                     drawLineChart('chart-cycle', cycleData, anomalyColor || '#22c55e', true, '%');
                     drawLineChart('chart-torq', torqData, anomalyColor || '#a855f7', true, 'Nm');
 
+                    // Extract logic variables
+                    const tempVal = tempData.length > 0 ? tempData[tempData.length - 1].value : 0;
+                    const vibVal = vibData.length > 0 ? vibData[vibData.length - 1].value : 0;
+                    const cycleVal = cycleData.length > 0 ? cycleData[cycleData.length - 1].value : 0;
+                    const torqVal = torqData.length > 0 ? torqData[torqData.length - 1].value : 0;
+
                     // Update Cards and Nodes
-                    updateUIState('temp', temp, isAnomaly, 'card-temp', 'label-temp', '°C');
-                    updateUIState('vib', vib, isAnomaly, 'card-vib', 'label-vib', 'Hz');
-                    updateUIState('cycle', cycle, isAnomaly, 'card-cycle', 'label-cycle', '%');
-                    updateUIState('torq', torq, isAnomaly, 'card-torq', 'label-torq', 'Nm');
+                    updateUIState('temp', tempVal, isAnomaly, 'card-temp', 'label-temp', '°C');
+                    updateUIState('vib', vibVal, isAnomaly, 'card-vib', 'label-vib', 'Hz');
+                    updateUIState('cycle', cycleVal, isAnomaly, 'card-cycle', 'label-cycle', '%');
+                    updateUIState('torq', torqVal, isAnomaly, 'card-torq', 'label-torq', 'Nm');
 
                     // Overall Anomaly logic for the primary node
                     const iotNode = document.getElementById('iot-primary');
@@ -1831,13 +1837,15 @@
                 }
             }
 
-            // Start loop
-            setTimeout(() => {
-                const savedRate = localStorage.getItem('asgard_refresh_rate') || '1';
-                const intervalMs = parseInt(savedRate) * 1000;
-                setInterval(fetchAndUpdate, intervalMs);
-                fetchAndUpdate();
-            }, 600);
+            // Perform initial render
+            if (buffer.length > 0) {
+                processDataUpdate(buffer[buffer.length - 1], true);
+            }
+
+            // Listen to global auth.js stream
+            window.addEventListener('nexus_stream_data', (e) => {
+                processDataUpdate(e.detail, false);
+            });
         })();
         // ═══════════════════════════════════════════════════════════════════
 
