@@ -1836,13 +1836,7 @@
         });
         
         const dataStreamParticles = [];
-        for (let i = 0; i < 200; i++) {
-            const particle = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 6), new THREE.MeshStandardMaterial({ color: 0x4ade80, emissive: 0x88ff88 }));
-            particle.userData = { vel: new THREE.Vector3((Math.random() - 0.5) * 0.01, (Math.random() - 0.5) * 0.01, (Math.random() - 0.5) * 0.01), pos: new THREE.Vector3((Math.random() - 0.5) * 6, (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 5) };
-            particle.position.copy(particle.userData.pos);
-            twinScene.add(particle);
-            dataStreamParticles.push(particle);
-        }
+        // Removed flying particles as per request
         
         const gridHelper = new THREE.GridHelper(14, 28, 0x2ecc71, 0x22aa55);
         gridHelper.position.y = -1.6; gridHelper.material.transparent = true; gridHelper.material.opacity = 0.35;
@@ -1890,13 +1884,7 @@
                     child.position.copy(child.userData.curve.getPoint(child.userData.t));
                 }
             });
-            dataStreamParticles.forEach(p => {
-                p.userData.pos.add(p.userData.vel.clone().multiplyScalar(twinGlobalConfig.speedMul));
-                if (Math.abs(p.userData.pos.x) > 5) p.userData.vel.x *= -1;
-                if (Math.abs(p.userData.pos.y) > 3.5) p.userData.vel.y *= -1;
-                if (Math.abs(p.userData.pos.z) > 5) p.userData.vel.z *= -1;
-                p.position.copy(p.userData.pos);
-            });
+            // Removed flying particles animation
             updateNodeRiskVisuals();
             twinControls.update();
             
@@ -1927,35 +1915,12 @@
             }
         }, 100);
 
-        // Data stream particles
+        // Data stream particles (Removed to clean up the UI)
         function createDataStream() {
-            const container = document.getElementById('particle-container');
-            if (!container) {
-                const newContainer = document.createElement('div');
-                newContainer.id = 'particle-container';
-                newContainer.className = 'absolute inset-0 pointer-events-none';
-                newContainer.style.zIndex = '25';
-                document.body.appendChild(newContainer);
-            }
-
-            setInterval(() => {
-                const container = document.getElementById('particle-container');
-                if (!container) return;
-
-                for (let i = 0; i < 5; i++) {
-                    setTimeout(() => {
-                        const stream = document.createElement('div');
-                        stream.className = 'data-stream';
-                        stream.style.left = Math.random() * 100 + '%';
-                        stream.style.top = Math.random() * 100 + '%';
-                        container.appendChild(stream);
-                        setTimeout(() => stream.remove(), 3000);
-                    }, i * 100);
-                }
-            }, 2000);
+            // Intentionally left blank as per user request to remove flying particles
         }
 
-        setTimeout(createDataStream, 1000);
+        // setTimeout(createDataStream, 1000);
 
         // Forecast panel click
         document.getElementById('forecastPanel').addEventListener('click', () => {
