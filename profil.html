@@ -1683,6 +1683,28 @@
             color: #ef4444 !important;
             transform: translateY(-2px);
         }
+        #pageTitle {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(31, 199, 98, 0.3));
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        #pageSubtitle {
+            font-size: 10px;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
     </style>
     <!-- Auth -->
     <script src="auth.js"></script>
@@ -1810,18 +1832,9 @@
 
         <!-- Top Navigation -->
         <div class="top-nav" id="topNav">
-            <div class="glass-premium px-6 py-3">
-                <div class="flex items-center gap-3">
-                    <div id="topNavAvatar"
-                        class="w-8 h-8 rounded-full bg-gradient-to-br from-brand to-green-600 flex items-center justify-center">
-                        <i class="fas fa-user text-white text-sm"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-lg font-bold tracking-tight text-white" id="pageTitle">Profil Sayfası</h1>
-                        <p class="text-[10px] text-brand uppercase tracking-[0.2em] font-medium" id="pageSubtitle">
-                            Kullanıcı Bilgileri ve Erişim Yetkileri</p>
-                    </div>
-                </div>
+            <div style="display: flex; flex-direction: column; justify-content: center; padding-left: 10px;">
+                <h1 id="pageTitle">PROFİL SAYFASI</h1>
+                <p id="pageSubtitle" style="color: #1fc762 !important;">KULLANICI BİLGİLERİ VE ERİŞİM YETKİLERİ</p>
             </div>
 
             <div class="glass-premium px-6 py-3 flex items-center gap-6">
@@ -1849,10 +1862,6 @@
             </div>
         </div>
 
-        <!-- Back Button -->
-        <div class="back-button" onclick="window.location.href='#'" id="backBtn">
-            <i class="fas fa-arrow-left text-brand text-2xl"></i>
-        </div>
 
         <!-- Profile Content -->
         <div class="profile-container">

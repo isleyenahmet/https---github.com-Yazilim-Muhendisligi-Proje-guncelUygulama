@@ -1127,6 +1127,28 @@
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes slideDown { from { transform: translateY(0); opacity: 1; } to { transform: translateY(100px); opacity: 0; } }
+        #pageTitle {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.3));
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        #pageSubtitle {
+            font-size: 10px;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
@@ -1249,16 +1271,9 @@
         
         <!-- Top Navigation -->
         <div class="top-nav" id="topNav">
-            <div class="glass-premium px-6 py-3">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center">
-                        <i class="fas fa-chart-line text-white text-sm"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-lg font-bold tracking-tight text-white" id="pageTitle">Yapay Zeka Anomali Öngörü Sistemi</h1>
-                        <p class="text-[10px] text-[#8b5cf6] uppercase tracking-[0.2em] font-medium" id="pageSubtitle">24 SAAT · TAHMİN · GNN</p>
-                    </div>
-                </div>
+            <div style="display: flex; flex-direction: column; justify-content: center; padding-left: 10px;">
+                <h1 id="pageTitle">YAPAY ZEKA ANOMALİ ÖNGÖRÜ SİSTEMİ</h1>
+                <p id="pageSubtitle" style="color: #8b5cf6 !important;">24 SAAT · TAHMİN · GNN</p>
             </div>
 
             <div class="glass-premium px-6 py-3 flex items-center gap-6">
@@ -1285,10 +1300,6 @@
             </div>
         </div>
 
-        <!-- Back Button -->
-        <div class="back-button" onclick="window.location.href='dashboard.html'" id="backBtn">
-            <i class="fas fa-arrow-left text-[#8b5cf6] text-2xl"></i>
-        </div>
 
         <!-- AI Content -->
         <div class="ai-container">
@@ -1886,7 +1897,7 @@
             sidebar.classList.toggle('collapsed');
             mainWrapper.classList.toggle('sidebar-collapsed');
             topNav.classList.toggle('sidebar-collapsed');
-            backBtn.classList.toggle('sidebar-collapsed');
+            if (backBtn) backBtn.classList.toggle('sidebar-collapsed');
             
             if (sidebar.classList.contains('collapsed')) {
                 collapseIcon.classList.remove('fa-chevron-left');
@@ -1898,9 +1909,12 @@
         });
 
         // Back button
-        document.getElementById('backBtn').addEventListener('click', () => {
-            window.location.href = 'dashboard.html';
-        });
+        const btn = document.getElementById('backBtn');
+        if (btn) {
+            btn.addEventListener('click', () => {
+                window.location.href = 'dashboard.html';
+            });
+        }
 
         // Department filter functionality
         const deptBtns = document.querySelectorAll('.dept-btn');

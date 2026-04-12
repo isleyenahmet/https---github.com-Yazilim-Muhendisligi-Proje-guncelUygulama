@@ -1062,6 +1062,28 @@
         .permission-allowed {
             color: #14b8a6;
         }
+        #pageTitle {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(20, 184, 166, 0.3));
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        #pageSubtitle {
+            font-size: 10px;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
     </style>
 
     <!-- Auth -->
@@ -1189,18 +1211,9 @@
 
         <!-- Top Navigation -->
         <div class="top-nav" id="topNav">
-            <div class="glass-premium px-6 py-3">
-                <div class="flex items-center gap-3">
-                    <div
-                        class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center">
-                        <i class="fas fa-shield-alt text-white text-sm"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-lg font-bold tracking-tight text-white" id="pageTitle">Erişim Belirleme</h1>
-                        <p class="text-[10px] text-[#14b8a6] uppercase tracking-[0.2em] font-medium" id="pageSubtitle">
-                            Yetki Yönetim Paneli</p>
-                    </div>
-                </div>
+            <div style="display: flex; flex-direction: column; justify-content: center; padding-left: 10px;">
+                <h1 id="pageTitle">ERİŞİM BELİRLEME</h1>
+                <p id="pageSubtitle" style="color: #14b8a6 !important;">YETKİ YÖNETİM PANELİ</p>
             </div>
 
             <div class="glass-premium px-6 py-3 flex items-center gap-6">
@@ -1228,10 +1241,6 @@
             </div>
         </div>
 
-        <!-- Back Button -->
-        <div class="back-button" onclick="window.location.href='dashboard.html'" id="backBtn">
-            <i class="fas fa-arrow-left text-[#14b8a6] text-2xl"></i>
-        </div>
 
         <!-- Access Control Content -->
         <div class="access-container">
