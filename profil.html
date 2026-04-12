@@ -3140,20 +3140,21 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROTOKOL KURULUYOR...';
             btn.disabled = true;
             const payload = {
-                department: document.getElementById('emergencyDept').value,
+                requested_page: document.getElementById('emergencyDept').value,
                 reason: document.getElementById('emergencyReason').value,
                 level: document.getElementById('emergencyLevel').value
             };
             try {
-                const res = await fetch('/api/emergency-auth', {
+                const res = await fetch('/api/emergency/request', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
                     body: JSON.stringify(payload)
                 });
+                const data = await res.json();
                 if (res.ok) {
-                    btn.innerHTML = '<i class="fas fa-check"></i> ONAYLANDI';
+                    btn.innerHTML = '<i class="fas fa-check"></i> TALEBİNİZ İLETİLDİ';
                     btn.style.background = '#059669';
-                    showToast('Acil yetki ALPHA modu aktif edildi.');
+                    showToast(data.message || 'Acil yetki talebiniz iletildi.');
                     setTimeout(() => {
                         document.getElementById('emergencyModal').classList.remove('active');
                         document.body.style.overflow = '';
@@ -3161,7 +3162,7 @@
                         btn.style.background = '';
                         btn.disabled = false;
                     }, 2000);
-                } else showToast('Yetkilendirme başarısız', 'error');
+                } else showToast(data.detail || 'Yetkilendirme başarısız', 'error');
             } catch (err) { showToast('Kritik bağlantı hatası', 'error'); btn.disabled = false; btn.innerHTML = original; }
         }
 

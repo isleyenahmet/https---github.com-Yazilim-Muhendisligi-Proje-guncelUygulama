@@ -1302,6 +1302,25 @@
                 </div>
             </div>
 
+            <!-- Emergency Access Requests -->
+            <div id="emergencyRequestsSection" style="display: none; margin-bottom: 30px;" class="glass-premium border-amber-500/30 bg-amber-500/5 p-6 animate-pulse">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500">
+                            <i class="fas fa-bolt text-lg"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-white">Bekleyen Acil Yetki Talepleri</h2>
+                            <p class="text-xs text-amber-500/70 uppercase tracking-wider font-bold">Kritik Müdahale Onayı Bekleniyor</p>
+                        </div>
+                    </div>
+                    <div id="reqBadgeCount" class="bg-amber-500 text-black text-xs font-black px-3 py-1 rounded-full">0</div>
+                </div>
+                <div id="requestsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Talepler buraya yüklenecek -->
+                </div>
+            </div>
+
             <!-- Users Table -->
             <div class="users-section">
                 <div class="section-header">
@@ -1713,7 +1732,7 @@
         }
 
         async function fetchAllData() {
-            const token = localStorage.getItem('asgard_token');
+            const token = getToken();
             console.log("[API] Fetching all user data... Token exists:", !!token);
             const headers = { 'Authorization': `Bearer ${token}` };
             try {
@@ -1824,7 +1843,7 @@
             let newPages = allow ? [...new Set([...user.pages, module])] : user.pages.filter(p => p !== module);
             try {
                 const res = await fetch(`/api/users/update/${username}`, {
-                    method: 'PUT', headers: { 'Authorization': `Bearer ${localStorage.getItem('asgard_token')}`, 'Content-Type': 'application/json' },
+                    method: 'PUT', headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ pages: newPages })
                 });
                 if (res.ok) { user.pages = newPages; renderAll(); showToast(`${username} için yetki güncellendi`, 'success'); }
@@ -1836,7 +1855,7 @@
             if (!confirm(`${username} kullanıcısını silmek istediğinize emin misiniz?`)) return;
             try {
                 const res = await fetch(`/api/users/delete/${username}`, {
-                    method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('asgard_token')}` }
+                    method: 'DELETE', headers: { 'Authorization': `Bearer ${getToken()}` }
                 });
                 if (res.ok) { allUsers = allUsers.filter(u => u.username !== username); renderAll(); showToast('Kullanıcı silindi', 'success'); }
             } catch (e) { showToast('Silme işlemi başarısız', 'error'); }
@@ -1901,7 +1920,7 @@
                 // UPDATE logic
                 try {
                     const res = await fetch(`/api/users/update/${targetUser}`, {
-                        method: 'PUT', headers: { 'Authorization': `Bearer ${localStorage.getItem('asgard_token')}`, 'Content-Type': 'application/json' },
+                        method: 'PUT', headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ name, role, department: dept })
                     });
                     if (res.ok) { 
@@ -1918,7 +1937,7 @@
                 };
                 try {
                     const res = await fetch('/api/users/add', {
-                        method: 'POST', headers: { 'Authorization': `Bearer ${localStorage.getItem('asgard_token')}`, 'Content-Type': 'application/json' },
+                        method: 'POST', headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
                     });
                     if (res.ok) { 
@@ -1929,6 +1948,82 @@
                 } catch (e) { showToast('Ekleme hatası', 'error'); }
             }
         }
+
+        // ─── EMERGENCY REQUEST LOGIC ───────────────────────────────────────
+        async function fetchPendingRequests() {
+            const token = getToken();
+            const headers = { 'Authorization': `Bearer ${token}` };
+            try {
+                const res = await fetch('/api/admin/requests/pending', { headers });
+                if (res.ok) {
+                    const requests = await res.json();
+                    renderRequests(requests);
+                }
+            } catch (e) { console.error("Error fetching requests:", e); }
+        }
+
+        function renderRequests(requests) {
+            const section = document.getElementById('emergencyRequestsSection');
+            const list = document.getElementById('requestsList');
+            const badge = document.getElementById('reqBadgeCount');
+            
+            if (requests.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            section.style.display = 'block';
+            badge.textContent = requests.length;
+            
+            list.innerHTML = requests.map(req => `
+                <div class="glass-premium-light p-4 border-amber-500/20 hover:border-amber-500/50 transition-all">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-500 text-xs font-bold">
+                                ${req.username.substring(0,2).toUpperCase()}
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold text-white">${req.user_display_name}</div>
+                                <div class="text-[10px] text-slate-400">@${req.username}</div>
+                            </div>
+                        </div>
+                        <div class="bg-amber-500/10 text-amber-500 text-[10px] font-bold px-2 py-0.5 rounded border border-amber-500/20">
+                            ${req.requested_page.toUpperCase()} Access
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-300 italic mb-4 bg-black/20 p-2 rounded border border-white/5">
+                        "${req.reason}"
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="handleResolve(${req.id}, 'approved')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-black text-[10px] font-bold py-2 rounded-lg transition-all">
+                            <i class="fas fa-check mr-1"></i> ONAYLA
+                        </button>
+                        <button onclick="handleResolve(${req.id}, 'rejected')" class="flex-1 bg-red-500/20 hover:bg-red-500/40 text-red-500 text-[10px] font-bold py-2 rounded-lg transition-all border border-red-500/30">
+                            <i class="fas fa-times mr-1"></i> REDDET
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.handleResolve = async (id, status) => {
+            const token = getToken();
+            try {
+                const res = await fetch('/api/admin/requests/resolve', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ request_id: id, status: status })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showToast(data.message, 'success');
+                    fetchPendingRequests();
+                    fetchAllData(); // Refresh users table to see new permissions
+                } else {
+                    showToast(data.detail || 'İşlem başarısız', 'error');
+                }
+            } catch (e) { showToast('Bağlantı hatası', 'error'); }
+        };
 
         // ─── UI INTERACTION ────────────────────────────────────────────────
         const sidebar = document.getElementById('sidebar');
@@ -1991,14 +2086,18 @@
                 Object.assign(t.style, { position:'fixed', bottom:'20px', right:'20px', padding:'10px 20px', background:'#14b8a6', borderRadius:'8px', zIndex:'9999', color:'white' });
                 document.body.appendChild(t);
             }
-            setTimeout(() => t.className = `toast ${type}`, 3000);
+            setTimeout(() => { if(t) t.classList.remove('show'); }, 3000);
         }
 
         // ─── INIT ──────────────────────────────────────────────────────────
         (async () => {
             await checkAdmin();
             await fetchAllData();
+            await fetchPendingRequests();
             document.querySelector('.modal-btn-primary').onclick = handleUserSubmit;
+            
+            // Poll for new requests every 30 seconds
+            setInterval(fetchPendingRequests, 30000);
         })();
     </script>
 </body>

@@ -1,0 +1,6 @@
+[2026-04-02 11:36:43] ACCESS REQUEST: User=finans_mudur, Page=it, Level=temporary
+[2026-04-02 11:39:59] ACCESS REQUEST: User=iot_mudur, Page=finance, Level=temporary
+[2026-04-02 11:58:21] ACCESS REQUEST: User=iot_mudur, Page=finance, Level=temporary
+[2026-04-02 23:20:09] ACCESS REQUEST: User=it_mudur, Page=finance, Level=elevated
+[2026-04-02 23:21:02] ACCESS REQUEST: User=iot_mudur, Page=it, Level=temporary
+[2026-04-08 23:46:25] ACCESS REQUEST: User=karamazak, Page=it, Level=temporary

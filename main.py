@@ -75,6 +75,21 @@ def init_db():
                 FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
             )
         """)
+        # Access Requests Tablosu
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS access_requests (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL,
+                requested_page TEXT NOT NULL,
+                reason TEXT NOT NULL,
+                level TEXT NOT NULL,
+                status TEXT DEFAULT 'pending',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                resolved_at TIMESTAMP,
+                expires_at TIMESTAMP,
+                FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
+            )
+        """)
         conn.commit()
     finally:
         conn.close()
@@ -262,7 +277,13 @@ class UserUpdateRequest(BaseModel):
     pages: Optional[List[str]] = None
 
 class EmergencyAuthRequest(BaseModel):
+    requested_page: str
     reason: str
+    level: str
+
+class AccessRequestResolve(BaseModel):
+    request_id: int
+    status: str  # 'approved' or 'rejected'
 
 # ─── Dependencies ─────────────────────────────────────────────────────────────
 async def get_current_user(authorization: str = Header(None)):
@@ -297,6 +318,16 @@ async def login(req: LoginRequest):
         user = dict(row)
         pages_list = user["pages"].split(",") if user["pages"] else []
         
+        # Geçici yetkileri kontrol et
+        cur.execute("""
+            SELECT requested_page FROM access_requests 
+            WHERE username = ? AND status = 'approved' AND expires_at > CURRENT_TIMESTAMP
+        """, (user["username"],))
+        temp_rows = cur.fetchall()
+        for tr in temp_rows:
+            if tr["requested_page"] not in pages_list:
+                pages_list.append(tr["requested_page"])
+        
         payload = {
             "sub": user["username"],
             "name": user["name"],
@@ -318,7 +349,42 @@ async def login(req: LoginRequest):
 
 @app.get("/api/me")
 async def me(user=Depends(get_current_user)):
-    return user
+    # JWT'den gelen bilgiler güncel olmayabilir (geçici yetki onaylanmış olabilir)
+    # Bu yüzden DB'den tekrar kontrol ediyoruz
+    username = user["sub"]
+    conn = get_db_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users WHERE username = ?", (username,))
+        row = cur.fetchone()
+        if not row: return user # Fallback to token payload
+        
+        db_user = dict(row)
+        pages_list = db_user["pages"].split(",") if db_user["pages"] else []
+        
+        # Geçici yetkileri kontrol et
+        cur.execute("""
+            SELECT requested_page FROM access_requests 
+            WHERE username = ? AND status = 'approved' AND expires_at > CURRENT_TIMESTAMP
+        """, (username,))
+        temp_rows = cur.fetchall()
+        for tr in temp_rows:
+            if tr["requested_page"] not in pages_list:
+                pages_list.append(tr["requested_page"])
+        
+        # Token formatına uygun hale getir
+        clean_user = {
+            "sub": db_user["username"],
+            "name": db_user["name"],
+            "role": db_user["role"],
+            "initials": db_user["initials"],
+            "email": db_user["email"],
+            "department": db_user["department"],
+            "pages": pages_list
+        }
+        return clean_user
+    finally:
+        conn.close()
 
 # ─── Profile Endpoints ────────────────────────────────────────────────────────
 @app.post("/api/profile/update")
@@ -588,21 +654,93 @@ async def get_access_stats(current_user=Depends(admin_required)):
         conn.close()
 
 # ─── Emergency Authorization ───────────────────────────────────────────────────
-@app.post("/api/emergency-auth")
-async def emergency_auth(req: EmergencyAuthRequest, current_user=Depends(get_current_user)):
-    log_msg = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] EMERGENCY AUTH REQUEST: User={current_user['sub']}, Reason={req.reason}"
-    print(log_msg)
-    
+# ─── Emergency Authorization ───────────────────────────────────────────────────
+@app.post("/api/emergency/request")
+async def emergency_request(req: EmergencyAuthRequest, current_user=Depends(get_current_user)):
+    username = current_user["sub"]
+    conn = get_db_connection()
     try:
-        with open("emergency_auth.log", "a", encoding="utf-8") as f:
-            f.write(log_msg + "\n")
-    except:
-        pass
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO access_requests (username, requested_page, reason, level)
+            VALUES (?, ?, ?, ?)
+        """, (username, req.requested_page, req.reason, req.level))
+        conn.commit()
+        
+        # Log to file as well for security audit
+        log_msg = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] ACCESS REQUEST: User={username}, Page={req.requested_page}, Level={req.level}"
+        try:
+            with open("access_requests.log", "a", encoding="utf-8") as f:
+                f.write(log_msg + "\n")
+        except: pass
+        
+        return {"status": "success", "message": "Acil yetki talebiniz iletildi. Admin onayı bekleniyor."}
+    finally:
+        conn.close()
 
-    return {
-        "status": "success", 
-        "message": "Acil yetki talebiniz sistem yöneticisine iletildi ve loglandı."
-    }
+@app.get("/api/admin/requests/pending")
+async def list_pending_requests(current_user=Depends(admin_required)):
+    conn = get_db_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT r.*, u.name as user_display_name 
+            FROM access_requests r
+            JOIN users u ON r.username = u.username
+            WHERE r.status = 'pending'
+            ORDER BY r.created_at DESC
+        """)
+        rows = cur.fetchall()
+        return [dict(r) for r in rows]
+    finally:
+        conn.close()
+
+@app.post("/api/admin/requests/resolve")
+async def resolve_request(req: AccessRequestResolve, current_user=Depends(admin_required)):
+    conn = get_db_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM access_requests WHERE id = ?", (req.request_id,))
+        request = cur.fetchone()
+        if not request:
+            raise HTTPException(status_code=404, detail="Talep bulunamadı")
+        
+        if req.status == 'approved':
+            # Süre hesapla
+            hours = 2
+            if request["level"] == 'elevated': hours = 6
+            elif request["level"] == 'critical': hours = 24
+            
+            expires_at = (datetime.now() + timedelta(hours=hours)).strftime('%Y-%m-%d %H:%M:%S')
+            
+            cur.execute("""
+                UPDATE access_requests 
+                SET status = 'approved', resolved_at = CURRENT_TIMESTAMP, expires_at = ? 
+                WHERE id = ?
+            """, (expires_at, req.request_id))
+            conn.commit()
+            return {"message": f"Talep onaylandı. {hours} saatlik erişim tanımlandı."}
+        else:
+            cur.execute("""
+                UPDATE access_requests 
+                SET status = 'rejected', resolved_at = CURRENT_TIMESTAMP 
+                WHERE id = ?
+            """, (req.request_id,))
+            conn.commit()
+            return {"message": "Talep reddedildi."}
+    finally:
+        conn.close()
+
+@app.get("/api/admin/notifications/count")
+async def get_notif_count(current_user=Depends(admin_required)):
+    conn = get_db_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM access_requests WHERE status = 'pending'")
+        count = cur.fetchone()[0]
+        return {"count": count}
+    finally:
+        conn.close()
 
 # ─── System Health ────────────────────────────────────────────────────────────
 @app.get("/api/health")
