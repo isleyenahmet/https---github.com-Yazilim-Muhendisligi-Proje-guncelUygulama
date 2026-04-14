@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS · Yapay Zeka Anomali Öngörü Sistemi</title>
+    <title>ASGARD · Yapay Zeka Anomali Öngörü Sistemi</title>
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1161,7 +1161,7 @@
                 <div class="logo-icon">
                     <i class="fas fa-brain text-white text-xl"></i>
                 </div>
-                <span class="logo-text">NEXUS·AI</span>
+                <span class="logo-text">ASGARD·AI</span>
             </div>
             <div class="collapse-btn" id="collapseBtn">
                 <i class="fas fa-chevron-left" id="collapseIcon"></i>
@@ -1254,7 +1254,7 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-white truncate">Admin User</p>
-                    <p class="text-xs text-slate-400 truncate">admin@nexus.ai</p>
+                    <p class="text-xs text-slate-400 truncate">admin@asgard.ai</p>
                 </div>
                 <i class="fas fa-ellipsis-v text-slate-400 text-xs"></i>
             </div>
@@ -1965,7 +1965,7 @@
         let chartIT_instance, chartIoT_instance, chartFinance_instance, chartHR_instance;
 
         // sessionStorage helpers for yapayZekaV2 chart persistence
-        const VZ_SS_KEY = 'nexus_vz_charts';
+        const VZ_SS_KEY = 'asgard_vz_charts';
         function loadVZStorage() {
             try { const s = sessionStorage.getItem(VZ_SS_KEY); if (s) return JSON.parse(s); } catch(e) {}
             return null;
@@ -1989,7 +1989,7 @@
             const configHitRadius = 10;
 
             const vzSaved = loadVZStorage();
-            const globalBuffer = JSON.parse(sessionStorage.getItem('nexus_global_stream_buffer') || '[]');
+            const globalBuffer = JSON.parse(sessionStorage.getItem('asgard_global_stream_buffer') || '[]');
 
             // Helper to get global history with padding to 30 items
             function getGlobalHistory(mapperFunc, fallbackVal, fallbackArr) {
@@ -2531,12 +2531,12 @@
                 } catch(e) { /* ignore network drop */ }
             }
             // Listen to global stream instead of local fetch loop
-            window.addEventListener('nexus_stream_data', (e) => {
+            window.addEventListener('asgard_stream_data', (e) => {
                 processDataUpdate(e.detail);
             });
             
             // Initial render via global buffer if available
-            const buffer = JSON.parse(sessionStorage.getItem('nexus_global_stream_buffer') || '[]');
+            const buffer = JSON.parse(sessionStorage.getItem('asgard_global_stream_buffer') || '[]');
             if (buffer.length > 0) {
                 processDataUpdate(buffer[buffer.length - 1]);
             }
@@ -2549,7 +2549,7 @@
             const nm = document.getElementById('user-name');
             const em = document.getElementById('user-email');
             if (nm) nm.textContent = user.name || 'Admin User';
-            if (em) em.textContent = user.email || 'admin@nexus.ai';
+            if (em) em.textContent = user.email || 'admin@asgard.ai';
 
             // XAI Visibility Sync
             const shapVisible = localStorage.getItem('asgard_xai_shap') !== 'false';
@@ -2633,7 +2633,7 @@
                 reportContainer.innerHTML = `
                     <div class="report-header">
                         <div>
-                            <h1 style="font-size: 24px; font-weight: 800; color: #8b5cf6;">NEXUS·AI ANALIZ RAPORU</h1>
+                            <h1 style="font-size: 24px; font-weight: 800; color: #8b5cf6;">ASGARD·AI ANALIZ RAPORU</h1>
                             <p style="font-size: 14px; color: #94a3b8; margin-top: 5px;">Yapay Zeka Anomali Öngörü Sistemi</p>
                         </div>
                         <div style="text-align: right;">
@@ -2687,7 +2687,7 @@
                     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
                     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                    pdf.save(`NEXUS_Report_${selectedInterval}_${new Date().getTime()}.pdf`);
+                    pdf.save(`ASGARD_Report_${selectedInterval}_${new Date().getTime()}.pdf`);
                     
                 } catch (error) {
                     console.error("PDF generation error:", error);
@@ -2726,7 +2726,7 @@
 
         async function loadUsersForSelection() {
             try {
-                const token = localStorage.getItem('nexus_token');
+                const token = localStorage.getItem('asgard_token');
                 const response = await fetch('http://127.0.0.1:5003/api/users', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });

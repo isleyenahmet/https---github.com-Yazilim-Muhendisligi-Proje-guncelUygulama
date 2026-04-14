@@ -1,11 +1,11 @@
 /**
- * auth.js — NEXUS AIOps RBAC Kimlik Doğrulama Modülü
+ * auth.js — ASGARD AIOps RBAC Kimlik Doğrulama Modülü
  * Tüm HTML sayfalarına dahil edilir.
  */
 
 // Sayfa içeriği yüklenmeden (flash efekti olmadan) yönlendirme
 (function() {
-    const TOKEN_KEY = 'nexus_token';
+    const TOKEN_KEY = 'asgard_token';
     const path = window.location.pathname;
     const currentPage = path.split('/').pop();
     
@@ -13,12 +13,12 @@
     if (currentPage === 'login.html' || currentPage === '' || path === '/') return;
 
     if (!localStorage.getItem(TOKEN_KEY)) {
-        window.location.href = 'login.html';
+        window.location.replace('login.html');
     }
 })();
 
 const AUTH_API = 'http://127.0.0.1:5003';
-const TOKEN_KEY = 'nexus_token';
+const TOKEN_KEY = 'asgard_token';
 
 /* ── Sayfa → İzin Anahtarı Haritası ──────────────────────────── */
 const PAGE_MAP = {
@@ -49,7 +49,7 @@ function clearToken() {
 /* ── Logout ───────────────────────────────────────────────────── */
 function logout() {
     clearToken();
-    window.location.href = 'login.html';
+    window.location.replace('login.html');
 }
 
 /* ── getUser: /api/me ile kullanıcı bilgisini çek ────────────── */
@@ -71,13 +71,13 @@ async function getUser() {
 async function checkAuth() {
     const token = getToken();
     if (!token) {
-        window.location.href = 'login.html';
+        window.location.replace('login.html');
         return null;
     }
     const user = await getUser();
     if (!user) {
         clearToken();
-        window.location.href = 'login.html';
+        window.location.replace('login.html');
         return null;
     }
     return user;
@@ -90,7 +90,7 @@ function guardPage(user) {
     if (!pageKey) return; // Bilinmeyen sayfa, geç
 
     if (!user.pages.includes(pageKey)) {
-        window.location.href = 'dashboard.html';
+        window.location.replace('dashboard.html');
     }
 }
 
@@ -176,10 +176,10 @@ async function initAuth() {
  * geçiş yapıldığında verilerin "sıfırdan" başlamasını engeller.   */
 
 function startGlobalBackgroundStream() {
-    if (window.nexusStreamRunning) return;
-    window.nexusStreamRunning = true;
+    if (window.asgardStreamRunning) return;
+    window.asgardStreamRunning = true;
 
-    const BUFFER_KEY = 'nexus_global_stream_buffer';
+    const BUFFER_KEY = 'asgard_global_stream_buffer';
     const MAX_POINTS = 30;
 
     function seedGlobalBuffer() {
@@ -230,7 +230,7 @@ function startGlobalBackgroundStream() {
             sessionStorage.setItem(BUFFER_KEY, JSON.stringify(buffer));
 
             // Notify active page
-            window.dispatchEvent(new CustomEvent('nexus_stream_data', { detail: d }));
+            window.dispatchEvent(new CustomEvent('asgard_stream_data', { detail: d }));
         } catch(e) {}
     }, 2000);
 }

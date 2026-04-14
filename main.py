@@ -33,7 +33,7 @@ DB_PATH = BASE_DIR / "gigafactory_live.db"
 USERS_PATH = BASE_DIR / "users.json"
 
 # ─── Auth Config ──────────────────────────────────────────────────────────────
-JWT_SECRET = "nexus-aiops-super-secret-2025"
+JWT_SECRET = "asgard-aiops-super-secret-2025"
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRE_HOURS = 8
 

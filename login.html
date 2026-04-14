@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS AI · Giriş</title>
+    <title>ASGARD AI · Giriş</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap"
         rel="stylesheet">
@@ -447,7 +447,7 @@
             <div class="logo-icon">
                 <i class="fas fa-brain"></i>
             </div>
-            <div class="logo-title">NEXUS · AI</div>
+            <div class="logo-title">ASGARD · AI</div>
             <div class="logo-subtitle">AIOps Intelligence Platform</div>
         </div>
 
@@ -532,16 +532,25 @@
         </div>
 
         <div class="login-footer">
-            © 2025 NEXUS Intelligence · Tüm hakları saklıdır
+            © 2025 ASGARD Intelligence · Tüm hakları saklıdır
         </div>
     </div>
 
     <script>
         const API = 'http://127.0.0.1:5003';
 
-        // Zaten giriş yapılmışsa dashboard'a yönlendir
-        if (localStorage.getItem('nexus_token')) {
-            window.location.href = 'dashboard.html';
+        // Token kontrolü yap (sessiz arka plan doğrulaması)
+        const currentToken = localStorage.getItem('asgard_token');
+        if (currentToken) {
+            fetch(`${API}/api/me`, {
+                headers: { 'Authorization': `Bearer ${currentToken}` }
+            }).then(res => {
+                if (res.ok) {
+                    window.location.replace('dashboard.html');
+                } else {
+                    localStorage.removeItem('asgard_token');
+                }
+            }).catch(e => console.error("Doğrulama hatası:", e));
         }
 
         // Şifre toggle
@@ -606,7 +615,7 @@
                 }
 
                 // Token kaydet
-                localStorage.setItem('nexus_token', data.token);
+                localStorage.setItem('asgard_token', data.token);
 
                 // Başarı animasyonu
                 btnText.textContent = '✓ Giriş Başarılı!';

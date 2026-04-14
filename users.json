@@ -5,7 +5,7 @@
       "password": "IK@2025",
       "name": "Ali Çelik",
       "initials": "AÇ",
-      "email": "ali.celik@nexus.ai",
+      "email": "ali.celik@asgard.ai",
       "department": "İnsan Kaynakları",
       "role": "hr",
       "pages": [
@@ -19,7 +19,7 @@
       "password": "Fin@2025",
       "name": "Ayşe Kaya",
       "initials": "AK",
-      "email": "ayse.kaya@nexus.ai",
+      "email": "ayse.kaya@asgard.ai",
       "department": "Finans",
       "role": "finance",
       "pages": [
@@ -46,7 +46,7 @@
       "password": "IoT@2025",
       "name": "Fatma Demir",
       "initials": "FD",
-      "email": "fatma.demir@nexus.ai",
+      "email": "fatma.demir@asgard.ai",
       "department": "IoT ve Üretim",
       "role": "iot",
       "pages": [
@@ -60,7 +60,7 @@
       "password": "IT@2025",
       "name": "Mehmet Yılmaz",
       "initials": "MY",
-      "email": "mehmet.yilmaz@nexus.ai",
+      "email": "mehmet.yilmaz@asgard.ai",
       "department": "Bilgi Teknolojileri",
       "role": "it",
       "pages": [
@@ -74,7 +74,7 @@
       "password": "Admin@2025",
       "name": "Sistem Yöneticisi",
       "initials": "SY",
-      "email": "admin@nexus.ai",
+      "email": "admin@asgard.ai",
       "department": "Yönetim",
       "role": "admin",
       "pages": [

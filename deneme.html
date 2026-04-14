@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>NEXUS INTELLIGENCE · 3D Digital Twin</title>
+    <title>ASGARD INTELLIGENCE · 3D Digital Twin</title>
 
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -222,7 +222,7 @@
         <div class="sidebar-header">
             <div class="sidebar-logo">
                 <div class="logo-icon"><i class="fas fa-brain text-white text-xl"></i></div>
-                <span class="logo-text">NEXUS·AI</span>
+                <span class="logo-text">ASGARD·AI</span>
             </div>
             <div class="collapse-btn" id="collapseBtn"><i class="fas fa-chevron-left" id="collapseIcon"></i></div>
         </div>
@@ -239,7 +239,7 @@
         <div class="absolute bottom-0 left-0 right-0 p-5 border-t border-white/5">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center"><span class="text-xs font-bold" id="sidebarInitials">AD</span></div>
-                <div class="flex-1 min-w-0 sidebar-text"><p class="text-sm font-medium truncate" id="sidebarName">Admin User</p><p class="text-xs text-slate-400 truncate" id="sidebarEmail">admin@nexus.ai</p></div>
+                <div class="flex-1 min-w-0 sidebar-text"><p class="text-sm font-medium truncate" id="sidebarName">Admin User</p><p class="text-xs text-slate-400 truncate" id="sidebarEmail">admin@asgard.ai</p></div>
                 <button onclick="logout()" class="text-slate-400 hover:text-red-400 transition"><i class="fas fa-sign-out-alt"></i></button>
             </div>
         </div>
@@ -518,7 +518,7 @@
         function renderDashboard() {
             departmentContent.innerHTML = `
                 <div class="content-header">
-                    <h1 class="content-title">3D Digital Twin · Nexus Core</h1>
+                    <h1 class="content-title">3D Digital Twin · Asgard Core</h1>
                     <p class="content-subtitle">Gerçek Zamanlı Sistem Topolojisi | Anomali Görselleştirme | GNN Tabanlı Tespit</p>
                 </div>
                 <div id="twin-container-placeholder"></div>
@@ -671,7 +671,7 @@
             if (user) {
                 document.getElementById('sidebarInitials').innerText = user.initials || 'AD';
                 document.getElementById('sidebarName').innerText = user.name || 'Admin User';
-                document.getElementById('sidebarEmail').innerText = user.email || 'admin@nexus.ai';
+                document.getElementById('sidebarEmail').innerText = user.email || 'admin@asgard.ai';
             }
         })();
     </script>

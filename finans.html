@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS · FINANCE ERP DEEP DIVE · ANALYTICS</title>
+    <title>ASGARD · FINANCE ERP DEEP DIVE · ANALYTICS</title>
 
     <!-- Fonts & Icons -->
     <link
@@ -962,7 +962,7 @@
                 <div class="logo-icon">
                     <i class="fas fa-brain text-white text-xl"></i>
                 </div>
-                <span class="logo-text">NEXUS·AI</span>
+                <span class="logo-text">ASGARD·AI</span>
             </div>
             <div class="collapse-btn" id="collapseBtn">
                 <i class="fas fa-chevron-left" id="collapseIcon"></i>
@@ -1056,7 +1056,7 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-white truncate" id="sidebarName">Admin User</p>
-                    <p class="text-xs text-slate-400 truncate" id="sidebarEmail">admin@nexus.ai</p>
+                    <p class="text-xs text-slate-400 truncate" id="sidebarEmail">admin@asgard.ai</p>
                 </div>
                 <button onclick="logout()" title="Çıkış Yap"
                     style="background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;transition:color 0.3s;"
@@ -1714,7 +1714,7 @@
             let tick = 0;
 
             // 1. Initial Load from global buffer
-            const buffer = JSON.parse(sessionStorage.getItem('nexus_global_stream_buffer') || '[]');
+            const buffer = JSON.parse(sessionStorage.getItem('asgard_global_stream_buffer') || '[]');
             buffer.forEach((d) => {
                 const cost = (d.fin_cost || 0) * 1000;
                 const fraud = d.fin_fraud > 0 ? d.fin_fraud * 100 : (d.anomaly_score || 0) * 100;
@@ -1850,7 +1850,7 @@
             }
 
             // Listen to global auth.js stream
-            window.addEventListener('nexus_stream_data', (e) => {
+            window.addEventListener('asgard_stream_data', (e) => {
                 processDataUpdate(e.detail, false);
             });
         })();
@@ -1865,7 +1865,7 @@
             const em = document.getElementById('sidebarEmail');
             if (ini) ini.textContent = user.initials || 'AD';
             if (nm) nm.textContent = user.name || 'Admin User';
-            if (em) em.textContent = user.email || 'admin@nexus.ai';
+            if (em) em.textContent = user.email || 'admin@asgard.ai';
         })();
     </script>
 </body>
