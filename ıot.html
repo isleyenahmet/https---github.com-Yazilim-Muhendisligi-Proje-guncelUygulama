@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -1782,6 +1782,16 @@
                 }
             }
 
+            // Helper: per-metric anomaly detection using z-score
+            function isMetricAnomaly(arr) {
+                if (arr.length < 5) return false;
+                const vals = arr.map(d => d.value);
+                const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+                const std = Math.sqrt(vals.reduce((a, b) => a + (b - mean) ** 2, 0) / vals.length);
+                const last = vals[vals.length - 1];
+                return std > 0 && Math.abs(last - mean) > 1.8 * std;
+            }
+
             function processDataUpdate(d, isInitialRender = false) {
                 try {
                     if (!isInitialRender) {
@@ -1797,30 +1807,35 @@
                         pushValue(torqData, torq);
                     }
 
-                    const isAnomaly = d.anomaly === 1;
-                    const anomalyColor = isAnomaly ? '#ef4444' : null;
+                    const globalAnomaly = d.anomaly === 1;
 
-                    // Redraw specific charts
-                    drawLineChart('chart-temp', tempData, anomalyColor || '#38bdf8', true, '°C');
-                    drawLineChart('chart-vib', vibData, anomalyColor || '#3b82f6', true, 'Hz');
-                    drawLineChart('chart-cycle', cycleData, anomalyColor || '#22c55e', true, '%');
-                    drawLineChart('chart-torq', torqData, anomalyColor || '#a855f7', true, 'Nm');
+                    // Per-metric anomaly: check each metric individually
+                    const tempAnomaly  = globalAnomaly && isMetricAnomaly(tempData);
+                    const vibAnomaly   = globalAnomaly && isMetricAnomaly(vibData);
+                    const cycleAnomaly = globalAnomaly && isMetricAnomaly(cycleData);
+                    const torqAnomaly  = globalAnomaly && isMetricAnomaly(torqData);
+
+                    // Redraw specific charts - each with its own anomaly colour
+                    drawLineChart('chart-temp',  tempData,  tempAnomaly  ? '#ef4444' : '#38bdf8', true, String.fromCharCode(176)+'C');
+                    drawLineChart('chart-vib',   vibData,   vibAnomaly   ? '#ef4444' : '#3b82f6', true, 'Hz');
+                    drawLineChart('chart-cycle', cycleData, cycleAnomaly ? '#ef4444' : '#22c55e', true, '%');
+                    drawLineChart('chart-torq',  torqData,  torqAnomaly  ? '#ef4444' : '#a855f7', true, 'Nm');
 
                     // Extract logic variables
-                    const tempVal = tempData.length > 0 ? tempData[tempData.length - 1].value : 0;
-                    const vibVal = vibData.length > 0 ? vibData[vibData.length - 1].value : 0;
+                    const tempVal  = tempData.length  > 0 ? tempData[tempData.length - 1].value   : 0;
+                    const vibVal   = vibData.length   > 0 ? vibData[vibData.length - 1].value     : 0;
                     const cycleVal = cycleData.length > 0 ? cycleData[cycleData.length - 1].value : 0;
-                    const torqVal = torqData.length > 0 ? torqData[torqData.length - 1].value : 0;
+                    const torqVal  = torqData.length  > 0 ? torqData[torqData.length - 1].value   : 0;
 
-                    // Update Cards and Nodes
-                    updateUIState('temp', tempVal, isAnomaly, 'card-temp', 'label-temp', '°C');
-                    updateUIState('vib', vibVal, isAnomaly, 'card-vib', 'label-vib', 'Hz');
-                    updateUIState('cycle', cycleVal, isAnomaly, 'card-cycle', 'label-cycle', '%');
-                    updateUIState('torq', torqVal, isAnomaly, 'card-torq', 'label-torq', 'Nm');
+                    // Update Cards and Nodes - each card only turns red for its own metric
+                    updateUIState('temp',  tempVal,  tempAnomaly,  'card-temp',  'label-temp',  String.fromCharCode(176)+'C');
+                    updateUIState('vib',   vibVal,   vibAnomaly,   'card-vib',   'label-vib',   'Hz');
+                    updateUIState('cycle', cycleVal, cycleAnomaly, 'card-cycle', 'label-cycle', '%');
+                    updateUIState('torq',  torqVal,  torqAnomaly,  'card-torq',  'label-torq',  'Nm');
 
-                    // Overall Anomaly logic for the primary node
+                    // Overall Anomaly logic for the primary node - stays global
                     const iotNode = document.getElementById('iot-primary');
-                    if (isAnomaly) {
+                    if (globalAnomaly) {
                         if (iotNode) {
                             iotNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
                             iotNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';

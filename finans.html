@@ -1774,6 +1774,16 @@
                 }
             }
 
+            // Helper: per-metric anomaly detection using z-score
+            function isMetricAnomaly(arr) {
+                if (arr.length < 5) return false;
+                const vals = arr.map(d => d.value);
+                const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+                const std = Math.sqrt(vals.reduce((a, b) => a + (b - mean) ** 2, 0) / vals.length);
+                const last = vals[vals.length - 1];
+                return std > 0 && Math.abs(last - mean) > 1.8 * std;
+            }
+
             function processDataUpdate(d, isInitialRender = false) {
                 try {
                     if (!isInitialRender) {
@@ -1789,42 +1799,47 @@
                         pushValue(invData, inv);
                     }
 
-                    const isAnomaly = d.anomaly === 1;
-                    const anomalyColor = isAnomaly ? '#ef4444' : null;
+                    const globalAnomaly = d.anomaly === 1;
 
-                    // Redraw specific charts
-                    drawLineChart('chart-cost', costData, anomalyColor || '#fbbf24', true, '$');
-                    drawLineChart('chart-fraud', fraudData, anomalyColor || '#ef4444', true, '');
-                    drawLineChart('chart-risk', riskData, anomalyColor || '#f97316', true, '%');
-                    drawLineChart('chart-inv', invData, anomalyColor || '#3b82f6', true, '');
+                    // Per-metric anomaly: check each metric individually
+                    const costAnomaly  = globalAnomaly && isMetricAnomaly(costData);
+                    const fraudAnomaly = globalAnomaly && isMetricAnomaly(fraudData);
+                    const riskAnomaly  = globalAnomaly && isMetricAnomaly(riskData);
+                    const invAnomaly   = globalAnomaly && isMetricAnomaly(invData);
+
+                    // Redraw specific charts — each with its own anomaly colour
+                    drawLineChart('chart-cost',  costData,  costAnomaly  ? '#ef4444' : '#fbbf24', true, '$');
+                    drawLineChart('chart-fraud', fraudData, fraudAnomaly ? '#ef4444' : '#ef4444', true, '');
+                    drawLineChart('chart-risk',  riskData,  riskAnomaly  ? '#ef4444' : '#f97316', true, '%');
+                    drawLineChart('chart-inv',   invData,   invAnomaly   ? '#ef4444' : '#3b82f6', true, '');
 
                     // To avoid redefining variables from Initial Load that are needed in UI logic:
-                    const costVal = costData.length > 0 ? costData[costData.length - 1].value : 0;
+                    const costVal  = costData.length  > 0 ? costData[costData.length - 1].value   : 0;
                     const fraudVal = fraudData.length > 0 ? fraudData[fraudData.length - 1].value : 0;
-                    const riskVal = riskData.length > 0 ? riskData[riskData.length - 1].value : 0;
-                    const invVal = invData.length > 0 ? invData[invData.length - 1].value : 0;
+                    const riskVal  = riskData.length  > 0 ? riskData[riskData.length - 1].value   : 0;
+                    const invVal   = invData.length   > 0 ? invData[invData.length - 1].value     : 0;
 
-                    // Update Cards and Nodes
-                    updateUIState('cost', costVal, isAnomaly, 'card-cost', 'label-cost', '$');
-                    updateUIState('fraud', fraudVal, isAnomaly, 'card-fraud', 'label-fraud', '');
-                    updateUIState('risk', riskVal, isAnomaly, 'card-risk', 'label-risk', '%');
-                    updateUIState('inv', invVal, isAnomaly, 'card-inv', 'label-inv', '');
+                    // Update Cards and Nodes — each card only turns red for its own metric
+                    updateUIState('cost',  costVal,  costAnomaly,  'card-cost',  'label-cost',  '$');
+                    updateUIState('fraud', fraudVal, fraudAnomaly, 'card-fraud', 'label-fraud', '');
+                    updateUIState('risk',  riskVal,  riskAnomaly,  'card-risk',  'label-risk',  '%');
+                    updateUIState('inv',   invVal,   invAnomaly,   'card-inv',   'label-inv',   '');
 
                     // Update Top Topology Flows
                     if (typeof updateFlowTopology === 'function') {
-                        updateFlowTopology(d.risk_scores || {}, isAnomaly);
+                        updateFlowTopology(d.risk_scores || {}, globalAnomaly);
                     }
 
                     // Randomize minor logs for realism when not anomaly
-                    if(!isAnomaly && Math.random() < 0.1) {
+                    if(!globalAnomaly && Math.random() < 0.1) {
                         if (typeof addTerminalLog === 'function') addTerminalLog("Standart finansal validasyon tamamlandı. Aktarım OK.");
-                    } else if (!isAnomaly && Math.random() < 0.05) {
+                    } else if (!globalAnomaly && Math.random() < 0.05) {
                         if (typeof addTerminalLog === 'function') addTerminalLog("AI Cost-saving algoritması 2.4% verimlilik raporladı.");
                     }
 
-                    // Overall Anomaly logic for the primary node
+                    // Overall Anomaly logic for the primary node — stays global
                     const finNode = document.getElementById('node-main-vault') || document.getElementById('finance-primary');
-                    if (isAnomaly) {
+                    if (globalAnomaly) {
                         if (finNode) {
                             finNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
                             finNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';

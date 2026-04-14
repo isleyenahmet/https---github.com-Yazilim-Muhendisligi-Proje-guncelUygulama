@@ -1934,6 +1934,16 @@
                 }
             }
 
+            // Helper: per-metric anomaly detection using z-score
+            function isMetricAnomaly(arr) {
+                if (arr.length < 5) return false;
+                const vals = arr.map(d => d.value);
+                const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+                const std = Math.sqrt(vals.reduce((a, b) => a + (b - mean) ** 2, 0) / vals.length);
+                const last = vals[vals.length - 1];
+                return std > 0 && Math.abs(last - mean) > 1.8 * std;
+            }
+
             function processDataUpdate(d, isInitialRender = false) {
                 try {
                     if (!isInitialRender) {
@@ -1949,30 +1959,35 @@
                         pushValue(taskData, task);
                     }
 
-                    const isAnomaly = d.anomaly === 1;
-                    const anomalyColor = isAnomaly ? '#ef4444' : null;
+                    const globalAnomaly = d.anomaly === 1;
 
-                    // Redraw specific charts
-                    drawLineChart('chart-path', pathData, anomalyColor || '#3b82f6', true, 'ms');
-                    drawLineChart('chart-coll', collData, anomalyColor || '#22c55e', true, '');
-                    drawLineChart('chart-soc', socData, anomalyColor || '#f97316', true, '');
-                    drawLineChart('chart-task', taskData, anomalyColor || '#a855f7', true, '%');
+                    // Per-metric anomaly: check each metric individually
+                    const pathAnomaly = globalAnomaly && isMetricAnomaly(pathData);
+                    const collAnomaly = globalAnomaly && isMetricAnomaly(collData);
+                    const socAnomaly  = globalAnomaly && isMetricAnomaly(socData);
+                    const taskAnomaly = globalAnomaly && isMetricAnomaly(taskData);
+
+                    // Redraw specific charts — each with its own anomaly colour
+                    drawLineChart('chart-path', pathData, pathAnomaly ? '#ef4444' : '#3b82f6', true, 'ms');
+                    drawLineChart('chart-coll', collData, collAnomaly ? '#ef4444' : '#22c55e', true, '');
+                    drawLineChart('chart-soc',  socData,  socAnomaly  ? '#ef4444' : '#f97316', true, '');
+                    drawLineChart('chart-task', taskData, taskAnomaly ? '#ef4444' : '#a855f7', true, '%');
 
                     // Extract logic variables
                     const pathVal = pathData.length > 0 ? pathData[pathData.length - 1].value : 0;
                     const collVal = collData.length > 0 ? collData[collData.length - 1].value : 0;
-                    const socVal = socData.length > 0 ? socData[socData.length - 1].value : 0;
+                    const socVal  = socData.length  > 0 ? socData[socData.length - 1].value   : 0;
                     const taskVal = taskData.length > 0 ? taskData[taskData.length - 1].value : 0;
 
-                    // Update Cards and Nodes
-                    updateUIState('path', pathVal, isAnomaly, 'card-path', 'label-path', 'ms');
-                    updateUIState('coll', collVal, isAnomaly, 'card-coll', 'label-coll', '');
-                    updateUIState('soc', socVal, isAnomaly, 'card-soc', 'label-soc', '');
-                    updateUIState('task', taskVal, isAnomaly, 'card-task', 'label-task', '%');
+                    // Update Cards and Nodes — each card only turns red for its own metric
+                    updateUIState('path', pathVal, pathAnomaly, 'card-path', 'label-path', 'ms');
+                    updateUIState('coll', collVal, collAnomaly, 'card-coll', 'label-coll', '');
+                    updateUIState('soc',  socVal,  socAnomaly,  'card-soc',  'label-soc',  '');
+                    updateUIState('task', taskVal, taskAnomaly, 'card-task', 'label-task', '%');
 
-                    // Overall Anomaly logic for the primary node
+                    // Overall Anomaly logic for the primary node — stays global
                     const hrNode = document.getElementById('hr-primary');
-                    if (isAnomaly) {
+                    if (globalAnomaly) {
                         if (hrNode) {
                             hrNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
                             hrNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';

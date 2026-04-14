@@ -1772,6 +1772,16 @@
                 }
             }
 
+            // Helper: per-metric anomaly detection using z-score
+            function isMetricAnomaly(arr) {
+                if (arr.length < 5) return false;
+                const vals = arr.map(d => d.value);
+                const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+                const std = Math.sqrt(vals.reduce((a, b) => a + (b - mean) ** 2, 0) / vals.length);
+                const last = vals[vals.length - 1];
+                return std > 0 && Math.abs(last - mean) > 1.8 * std;
+            }
+
             function processDataUpdate(d, isInitialRender = false) {
                 try {
                     if (!isInitialRender) {
@@ -1787,34 +1797,39 @@
                         pushValue(securityData, sec);
                     }
 
-                    const isAnomaly = d.anomaly === 1;
-                    const anomalyColor = isAnomaly ? '#ef4444' : null;
+                    const globalAnomaly = d.anomaly === 1;
 
-                    // Redraw specific charts
-                    drawLineChart('chart-latency', latencyData, anomalyColor || '#60a5fa', true);
-                    drawLineChart('chart-throughput', throughputData, anomalyColor || '#22c55e', true);
-                    drawLineChart('chart-packetloss', packetLossData, anomalyColor || '#ef4444', true);
-                    drawLineChart('chart-security', securityData, anomalyColor || '#a855f7', true);
+                    // Per-metric anomaly: check each metric individually
+                    const latAnomaly  = globalAnomaly && isMetricAnomaly(latencyData);
+                    const thrAnomaly  = globalAnomaly && isMetricAnomaly(throughputData);
+                    const lossAnomaly = globalAnomaly && isMetricAnomaly(packetLossData);
+                    const secAnomaly  = globalAnomaly && isMetricAnomaly(securityData);
+
+                    // Redraw specific charts — each with its own anomaly colour
+                    drawLineChart('chart-latency',    latencyData,    latAnomaly  ? '#ef4444' : '#60a5fa', true);
+                    drawLineChart('chart-throughput', throughputData, thrAnomaly  ? '#ef4444' : '#22c55e', true);
+                    drawLineChart('chart-packetloss', packetLossData, lossAnomaly ? '#ef4444' : '#ef4444', true);
+                    drawLineChart('chart-security',   securityData,   secAnomaly  ? '#ef4444' : '#a855f7', true);
 
                     // Extract logic variables
-                    const latVal = latencyData.length > 0 ? latencyData[latencyData.length - 1].value : 0;
-                    const thrVal = throughputData.length > 0 ? throughputData[throughputData.length - 1].value : 0;
+                    const latVal  = latencyData.length   > 0 ? latencyData[latencyData.length - 1].value   : 0;
+                    const thrVal  = throughputData.length > 0 ? throughputData[throughputData.length - 1].value : 0;
                     const lossVal = packetLossData.length > 0 ? packetLossData[packetLossData.length - 1].value : 0;
-                    const secVal = securityData.length > 0 ? securityData[securityData.length - 1].value : 0;
+                    const secVal  = securityData.length   > 0 ? securityData[securityData.length - 1].value   : 0;
 
-                    // Update Cards and Nodes
-                    updateUIState('net_lat', latVal, isAnomaly, 'card-latency', 'status-latency', 'ms');
-                    updateUIState('net_thr', thrVal, isAnomaly, 'card-throughput', 'status-throughput', 'Mbps');
-                    updateUIState('net_p_loss', lossVal, isAnomaly, 'card-packetloss', 'status-packetloss', '%');
-                    updateUIState('net_sec', secVal, isAnomaly, 'card-security', 'status-security', '');
+                    // Update Cards and Nodes — each card only turns red for its own metric
+                    updateUIState('net_lat',    latVal,  latAnomaly,  'card-latency',    'status-latency',    'ms');
+                    updateUIState('net_thr',    thrVal,  thrAnomaly,  'card-throughput',  'status-throughput', 'Mbps');
+                    updateUIState('net_p_loss', lossVal, lossAnomaly, 'card-packetloss',  'status-packetloss', '%');
+                    updateUIState('net_sec',    secVal,  secAnomaly,  'card-security',    'status-security',   '');
 
                     // Update global UI elements
                     const lastUpdate = document.getElementById('lastUpdate');
                     if (lastUpdate && !isInitialRender) lastUpdate.textContent = new Date().toLocaleTimeString();
 
-                    // Overall Anomaly logic
+                    // Overall Anomaly logic — primary node turns red only when global anomaly
                     const itNode = document.getElementById('it-primary');
-                    if (isAnomaly) {
+                    if (globalAnomaly) {
                         if (itNode) {
                             itNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
                             itNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';
