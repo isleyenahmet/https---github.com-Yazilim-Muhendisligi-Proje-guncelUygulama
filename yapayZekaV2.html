@@ -2752,8 +2752,8 @@
                             🧠
                         </div>
                         <div>
-                            <div style="font-size:11px;letter-spacing:4px;color:#8b5cf6;font-weight:700;text-transform:uppercase">ASGARD · AI PLATFORM</div>
-                            <div style="font-size:9px;letter-spacing:2px;color:#475569;margin-top:2px">INDUSTRIAL AIOPS & ROOT CAUSE ANALYSIS</div>
+                            <div style="font-size:12px;letter-spacing:3px;color:#8b5cf6;font-weight:700;text-transform:uppercase">ASGARD · AI PLATFORM</div>
+                            <div style="font-size:10px;letter-spacing:2px;color:#475569;margin-top:2px">INDUSTRIAL AIOPS & ROOT CAUSE ANALYSIS</div>
                         </div>
                     </div>
 
@@ -2761,14 +2761,13 @@
 
                     <!-- Title block -->
                     <div style="margin-bottom:40px">
-                        <div style="font-size:9px;letter-spacing:5px;color:#64748b;font-weight:700;margin-bottom:10px">GİZLİ · KURUMSAL KULLANIM</div>
-                        <h1 style="font-size:38px;font-weight:900;color:white;
-                            background:linear-gradient(135deg,#ffffff,#94a3b8);
-                            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-                            margin:0 0 8px;line-height:1.1">
+                        <div style="font-size:10px;letter-spacing:4px;color:#64748b;font-weight:700;margin-bottom:12px">GİZLİ · KURUMSAL KULLANIM</div>
+                        <h1 style="font-size:28px;font-weight:900;color:#ffffff;
+                            margin:0 0 8px;line-height:1.2;
+                            text-shadow:0 0 40px rgba(139,92,246,0.4),0 2px 8px rgba(0,0,0,0.5);">
                             YZ ANOMALİ ÖNGÖRÜ<br>ANALİZ RAPORU
                         </h1>
-                        <div style="font-size:13px;color:#64748b;margin-top:6px">Graph Attention Network · SHAP/LIME Açıklanabilirlik · Predictive Analytics</div>
+                        <div style="font-size:12px;color:#64748b;margin-top:8px">Graph Attention Network · SHAP/LIME Açıklanabilirlik · Predictive Analytics</div>
                     </div>
 
                     <!-- Status badge -->
@@ -2795,23 +2794,23 @@
                         ].map(([lbl,val]) => `
                             <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
                                        border-radius:12px;padding:16px">
-                                <div style="font-size:9px;color:#64748b;margin-bottom:6px;letter-spacing:1px">${lbl}</div>
-                                <div style="font-size:13px;font-weight:700;color:white">${val}</div>
+                                <div style="font-size:11px;color:#64748b;margin-bottom:6px;letter-spacing:1px">${lbl}</div>
+                                <div style="font-size:14px;font-weight:700;color:white">${val}</div>
                             </div>`).join('')}
                     </div>
 
                     <!-- Dept coverage -->
                     <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(139,92,246,0.2);
                         border-radius:12px;padding:20px;margin-bottom:40px">
-                        <div style="font-size:9px;color:#8b5cf6;letter-spacing:2px;font-weight:700;margin-bottom:12px">ANALİZ KAPSAMI</div>
+                        <div style="font-size:11px;color:#8b5cf6;letter-spacing:2px;font-weight:700;margin-bottom:12px">ANALİZ KAPSAMI</div>
                         <div style="display:flex;flex-wrap:wrap;gap:8px">
                             ${selectedDepts.map(d => {
                                 const cfg = DEPT_CONFIG[d];
                                 return `<div style="display:flex;align-items:center;gap:6px;padding:6px 14px;
                                     background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.25);
                                     border-radius:8px;">
-                                    <span style="font-size:14px">${cfg?.icon||'📊'}</span>
-                                    <span style="font-size:11px;font-weight:600;color:#e2e8f0">${cfg?.fullName||d}</span>
+                                    <span style="font-size:15px">${cfg?.icon||'📊'}</span>
+                                    <span style="font-size:12px;font-weight:600;color:#e2e8f0">${cfg?.fullName||d}</span>
                                 </div>`;
                             }).join('')}
                         </div>
@@ -2859,8 +2858,8 @@
                     <div style="display:flex;align-items:center;gap:10px;margin-bottom:28px">
                         <div style="width:4px;height:36px;background:linear-gradient(180deg,#8b5cf6,#3b82f6);border-radius:2px"></div>
                         <div>
-                            <div style="font-size:20px;font-weight:800;color:white">YÖNETİCİ ÖZETİ</div>
-                            <div style="font-size:10px;color:#64748b;letter-spacing:2px;margin-top:2px">EXECUTIVE SUMMARY · GENEL DEĞERLENDIRME</div>
+                            <div style="font-size:22px;font-weight:800;color:white">YÖNETİCİ ÖZETİ</div>
+                            <div style="font-size:11px;color:#64748b;letter-spacing:2px;margin-top:2px">EXECUTIVE SUMMARY · GENEL DEĞERLENDİRME</div>
                         </div>
                     </div>
 
@@ -2868,17 +2867,17 @@
                     <div style="display:flex;gap:24px;margin-bottom:32px">
                         <div style="min-width:160px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);
                             border-radius:16px;padding:24px;text-align:center">
-                            <div style="font-size:44px;font-weight:900;color:${avgRm.color};line-height:1">${(100-avgScore).toFixed(0)}</div>
-                            <div style="font-size:10px;color:#64748b;margin-top:4px">SİSTEM SAĞLIĞI</div>
-                            <div style="font-size:9px;font-weight:700;color:${avgRm.color};letter-spacing:2px;margin-top:4px">${avgRm.label}</div>
+                            <div style="font-size:36px;font-weight:900;color:${avgRm.color};line-height:1">${(100-avgScore).toFixed(0)}</div>
+                            <div style="font-size:11px;color:#64748b;margin-top:6px">SİSTEM SAĞLIĞI</div>
+                            <div style="font-size:10px;font-weight:700;color:${avgRm.color};letter-spacing:2px;margin-top:4px">${avgRm.label}</div>
                             <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:4px;margin-top:12px;overflow:hidden">
                                 <div style="height:4px;width:${100-avgScore}%;background:${avgRm.color};border-radius:4px"></div>
                             </div>
                         </div>
                         <div style="flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);
                             border-radius:16px;padding:20px">
-                            <div style="font-size:10px;color:#8b5cf6;font-weight:700;letter-spacing:2px;margin-bottom:12px">GENEL DEĞERLENDİRME</div>
-                            <div style="font-size:12px;color:#cbd5e1;line-height:1.7">
+                            <div style="font-size:11px;color:#8b5cf6;font-weight:700;letter-spacing:2px;margin-bottom:12px">GENEL DEĞERLENDİRME</div>
+                            <div style="font-size:13px;color:#cbd5e1;line-height:1.75">
                                 ${avgScore > 60
                                     ? `Bu rapor döneminde izlenen sistemlerde <strong style="color:#ef4444">anormal faaliyet örüntüleri</strong> tespit edilmiştir. ASGARD'ın GAT tabanlı modeli, düğümler arası anormal ağırlık geçişleri gözlemleyerek olası operasyonel risk odaklarını işaretlemiştir. Risk yönetim ekibinin ivedilikle bilgilendirilmesi önerilmektedir.`
                                     : avgScore > 30
@@ -2894,8 +2893,8 @@
                         <div style="display:grid;grid-template-columns:2fr 1.5fr 1fr 1.5fr 2fr;
                             padding:10px 20px;background:rgba(139,92,246,0.08);
                             border-bottom:1px solid rgba(255,255,255,0.07)">
-                            ${['DEPARTMAN','MEVCUT DEĞER','RİSK SKORU','DURUM','ÖNÖLEM'].map(h =>
-                                `<div style="font-size:8px;font-weight:700;color:#8b5cf6;letter-spacing:1.5px">${h}</div>`).join('')}
+                            ${['DEPARTMAN','MEVCUT DEĞER','RİSK SKORU','DURUM','ÖNLEM'].map(h =>
+                                `<div style="font-size:10px;font-weight:700;color:#8b5cf6;letter-spacing:1px">${h}</div>`).join('')}
                         </div>
                         ${rows.map((r,i) => `
                         <div style="display:grid;grid-template-columns:2fr 1.5fr 1fr 1.5fr 2fr;
@@ -2904,21 +2903,21 @@
                             <div style="display:flex;align-items:center;gap:8px">
                                 <span style="font-size:16px">${r.cfg?.icon||'📊'}</span>
                                 <div>
-                                    <div style="font-size:11px;font-weight:600;color:white">${r.cfg?.fullName||r.d}</div>
-                                    <div style="font-size:9px;color:#64748b;margin-top:1px">${r.d.toUpperCase()}</div>
+                                    <div style="font-size:12px;font-weight:600;color:white">${r.cfg?.fullName||r.d}</div>
+                                    <div style="font-size:10px;color:#64748b;margin-top:2px">${r.d.toUpperCase()}</div>
                                 </div>
                             </div>
-                            <div style="font-size:12px;font-weight:700;color:${r.cfg?.color||'#fff'};align-self:center">${r.val}</div>
+                            <div style="font-size:13px;font-weight:700;color:${r.cfg?.color||'#fff'};align-self:center">${r.val}</div>
                             <div style="align-self:center">
-                                <div style="font-size:11px;font-weight:700;color:${r.rm.color}">${r.score.toFixed(0)}%</div>
+                                <div style="font-size:12px;font-weight:700;color:${r.rm.color}">${r.score.toFixed(0)}%</div>
                                 <div style="height:3px;width:${r.score}%;background:${r.rm.color};border-radius:2px;margin-top:3px"></div>
                             </div>
                             <div style="align-self:center">
-                                <span style="display:inline-block;padding:3px 10px;border-radius:6px;
+                                <span style="display:inline-block;padding:4px 10px;border-radius:6px;
                                     background:${r.rm.bg};color:${r.rm.color};
-                                    font-size:9px;font-weight:700;letter-spacing:1px">${r.rm.emoji} ${r.rm.label}</span>
+                                    font-size:10px;font-weight:700;letter-spacing:1px">${r.rm.emoji} ${r.rm.label}</span>
                             </div>
-                            <div style="font-size:9px;color:#94a3b8;align-self:center;line-height:1.5">
+                            <div style="font-size:10px;color:#94a3b8;align-self:center;line-height:1.5">
                                 ${r.score > 60 ? 'İvedi müdahale gerekli' : r.score > 30 ? 'Yakın takip önerilir' : 'Rutin izleme yeterli'}
                             </div>
                         </div>`).join('')}
@@ -2927,15 +2926,15 @@
                     <!-- AI metodoloji notu -->
                     <div style="background:rgba(139,92,246,0.05);border:1px solid rgba(139,92,246,0.2);
                         border-radius:12px;padding:18px;margin-bottom:28px">
-                        <div style="font-size:9px;font-weight:700;color:#8b5cf6;letter-spacing:2px;margin-bottom:8px">🧠 AI MODEL BİLGİSİ</div>
+                        <div style="font-size:11px;font-weight:700;color:#8b5cf6;letter-spacing:2px;margin-bottom:10px">🧠 AI MODEL BİLGİSİ</div>
                         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
                             ${[
                                 ['GAT Modeli','Graph Attention Network · 4 katman · 8 dikkat başlığı'],
                                 ['Açıklanabilirlik','SHAP TreeExplainer + LIME TabularExplainer'],
                                 ['Tahmin Ufku','Anlık + 2 saatlik öngörü · %89.3 doğruluk']
                             ].map(([t,d]) => `<div>
-                                <div style="font-size:9px;font-weight:700;color:#e2e8f0;margin-bottom:3px">${t}</div>
-                                <div style="font-size:9px;color:#64748b;line-height:1.5">${d}</div>
+                                <div style="font-size:11px;font-weight:700;color:#e2e8f0;margin-bottom:4px">${t}</div>
+                                <div style="font-size:10px;color:#64748b;line-height:1.6">${d}</div>
                             </div>`).join('')}
                         </div>
                     </div>
@@ -2983,17 +2982,17 @@
                         <div style="display:flex;align-items:center;gap:12px">
                             <div style="width:4px;height:40px;background:${cfg?.color||'#8b5cf6'};border-radius:2px"></div>
                             <div>
-                                <div style="font-size:8px;color:#64748b;letter-spacing:3px;font-weight:700">DEPARTMAN ANALİZİ · SAYFA ${pageNum}</div>
-                                <div style="font-size:22px;font-weight:800;color:white;margin-top:2px">
+                                <div style="font-size:10px;color:#64748b;letter-spacing:2px;font-weight:700">DEPARTMAN ANALİZİ · SAYFA ${pageNum}</div>
+                                <div style="font-size:24px;font-weight:800;color:white;margin-top:4px">
                                     ${cfg?.icon||'📊'} ${cfg?.fullName||dept}
                                 </div>
                             </div>
                         </div>
                         <div style="text-align:right">
-                            <div style="font-size:28px;font-weight:900;color:${rm.color};line-height:1">${score.toFixed(0)}</div>
-                            <div style="font-size:8px;color:#64748b;margin-top:2px">RİSK SKORU</div>
-                            <div style="display:inline-block;padding:2px 10px;background:${rm.bg};color:${rm.color};
-                                border-radius:6px;font-size:9px;font-weight:700;margin-top:4px;letter-spacing:1px">${rm.emoji} ${rm.label}</div>
+                            <div style="font-size:30px;font-weight:900;color:${rm.color};line-height:1">${score.toFixed(0)}</div>
+                            <div style="font-size:10px;color:#64748b;margin-top:4px">RİSK SKORU</div>
+                            <div style="display:inline-block;padding:3px 10px;background:${rm.bg};color:${rm.color};
+                                border-radius:6px;font-size:10px;font-weight:700;margin-top:4px;letter-spacing:1px">${rm.emoji} ${rm.label}</div>
                         </div>
                     </div>
 
@@ -3003,7 +3002,7 @@
                         <!-- Chart image -->
                         <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
                             border-radius:14px;padding:16px">
-                            <div style="font-size:9px;color:#64748b;letter-spacing:2px;font-weight:700;margin-bottom:10px">PERFORMANS GRAFİĞİ · TARİHSEL & TAHMİN</div>
+                            <div style="font-size:10px;color:#64748b;letter-spacing:2px;font-weight:700;margin-bottom:10px">PERFORMANS GRAFİĞİ · TARİHSEL & TAHMİN</div>
                             ${chartImg
                                 ? `<img src="${chartImg}" style="width:100%;border-radius:8px;max-height:160px;object-fit:contain">`
                                 : `<div style="height:140px;display:flex;align-items:center;justify-content:center;color:#334155;font-size:11px">Grafik verisi yok</div>`
@@ -3013,7 +3012,7 @@
                         <!-- Sub-metric bars -->
                         <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
                             border-radius:14px;padding:16px">
-                            <div style="font-size:9px;color:#64748b;letter-spacing:2px;font-weight:700;margin-bottom:14px">ALT METRİK ANALİZİ</div>
+                            <div style="font-size:10px;color:#64748b;letter-spacing:2px;font-weight:700;margin-bottom:14px">ALT METRİK ANALİZİ</div>
                             ${subMetrics.map(m => miniBar(m.label, m.pct, m.color)).join('')}
                         </div>
                     </div>
@@ -3021,23 +3020,23 @@
                     <!-- AI Insight -->
                     <div style="background:rgba(139,92,246,0.05);border:1px solid rgba(139,92,246,0.2);
                         border-radius:14px;padding:18px;margin-bottom:16px">
-                        <div style="font-size:9px;color:#8b5cf6;letter-spacing:2px;font-weight:700;margin-bottom:10px">🤖 AI ANALİZ YORUMU</div>
-                        <div style="font-size:11px;color:#cbd5e1;line-height:1.75;margin-bottom:12px">${insight.summary}</div>
+                        <div style="font-size:11px;color:#8b5cf6;letter-spacing:2px;font-weight:700;margin-bottom:10px">🤖 AI ANALİZ YORUMU</div>
+                        <div style="font-size:12px;color:#cbd5e1;line-height:1.75;margin-bottom:12px">${insight.summary}</div>
                         <div style="height:1px;background:rgba(255,255,255,0.06);margin-bottom:12px"></div>
-                        <div style="font-size:10px;color:#94a3b8;line-height:1.6">${insight.forecast}</div>
+                        <div style="font-size:11px;color:#94a3b8;line-height:1.6">${insight.forecast}</div>
                     </div>
 
                     <!-- Öneri -->
                     <div style="background:${rm.bg};border:1px solid ${rm.color}33;
                         border-radius:12px;padding:14px;margin-bottom:16px">
-                        <div style="font-size:9px;color:${rm.color};font-weight:700;letter-spacing:2px;margin-bottom:6px">💡 ÖNERİLEN AKSIYON</div>
-                        <div style="font-size:11px;color:#e2e8f0;line-height:1.6">${insight.recommendation}</div>
+                        <div style="font-size:11px;color:${rm.color};font-weight:700;letter-spacing:2px;margin-bottom:8px">💡 ÖNERİLEN AKSİYON</div>
+                        <div style="font-size:12px;color:#e2e8f0;line-height:1.6">${insight.recommendation}</div>
                     </div>
 
                     <!-- SHAP küçük -->
                     <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);
                         border-radius:12px;padding:14px">
-                        <div style="font-size:9px;color:#64748b;letter-spacing:2px;font-weight:700;margin-bottom:10px">SHAP ÖZELLIK KATKILARI (GAT SONUÇLARI)</div>
+                        <div style="font-size:10px;color:#64748b;letter-spacing:2px;font-weight:700;margin-bottom:10px">SHAP ÖZELLİK KATKILARI (GAT SONUÇLARI)</div>
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
                             ${[['Birincil özellik anahtarı', 0.38+Math.random()*0.2],
                                ['İkincil sapma vektörü',     0.27+Math.random()*0.15],
@@ -3066,9 +3065,9 @@
                 <div style="padding:48px 60px">
                     <div style="display:flex;align-items:center;gap:12px;margin-bottom:32px">
                         <div style="width:4px;height:32px;background:linear-gradient(180deg,#8b5cf6,#3b82f6);border-radius:2px"></div>
-                        <div style="font-size:16px;font-weight:800;color:white">YASAL UYARI & BİLGİLENDİRME</div>
+                        <div style="font-size:18px;font-weight:800;color:white">YASAL UYARI & BİLGİLENDİRME</div>
                     </div>
-                    <div style="font-size:10px;color:#475569;line-height:1.9;margin-bottom:32px">
+                    <div style="font-size:12px;color:#475569;line-height:1.9;margin-bottom:32px">
                         Bu rapor, ASGARD Yapay Zeka Anomali Öngörü Platformu tarafından otomatik olarak üretilmiştir. 
                         İçerdiği tüm analizler, tahminler ve öneriler <strong style="color:#94a3b8">bilgi amaçlı</strong> olup 
                         operasyonel kararlar için tek başına referans alınmamalıdır. 
@@ -3083,16 +3082,16 @@
                             ['📅 Oluşturulma','', reportTime],
                             ['🤖 AI Modeli','', 'GAT v4.1 · SHAP · LIME'],
                             ['🔒 Gizlilik','', 'Dahili Kullanım']
-                        ].map(([icon, _, val]) => `
+                        ].map(([title, _, val]) => `
                             <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);
-                                border-radius:10px;padding:14px;text-align:center">
-                                <div style="font-size:16px;margin-bottom:6px">${icon}</div>
-                                <div style="font-size:10px;font-weight:600;color:#94a3b8">${val}</div>
+                                border-radius:10px;padding:16px;text-align:center">
+                                <div style="font-size:11px;font-weight:700;color:#94a3b8;margin-bottom:4px">${title.replace(/^[^\s]+\s/,'')}</div>
+                                <div style="font-size:13px;font-weight:600;color:#e2e8f0">${val}</div>
                             </div>`).join('')}
                     </div>
                     <div style="text-align:center;padding-top:24px;border-top:1px solid rgba(255,255,255,0.05)">
-                        <div style="font-size:11px;color:#334155;letter-spacing:3px">ASGARD · INDUSTRIAL AIOPS PLATFORM</div>
-                        <div style="font-size:9px;color:#1e293b;margin-top:4px">Powered by Graph Attention Network & Explainable AI</div>
+                        <div style="font-size:12px;color:#475569;letter-spacing:3px">ASGARD · INDUSTRIAL AIOPS PLATFORM</div>
+                        <div style="font-size:10px;color:#334155;margin-top:6px">Powered by Graph Attention Network & Explainable AI</div>
                     </div>
                 </div>
                 <div style="position:absolute;bottom:0;left:0;right:0;height:4px;
