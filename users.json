@@ -5,7 +5,7 @@
       "password": "IK@2025",
       "name": "Ali Çelik",
       "initials": "AÇ",
-      "email": "ali.celik@asgard.ai",
+      "email": "ali.celik@nexus.ai",
       "department": "İnsan Kaynakları",
       "role": "hr",
       "pages": [
@@ -19,13 +19,15 @@
       "password": "Fin@2025",
       "name": "Ayşe Kaya",
       "initials": "AK",
-      "email": "ayse.kaya@asgard.ai",
+      "email": "ayse.kaya@nexus.ai",
       "department": "Finans",
       "role": "finance",
       "pages": [
         "dashboard",
         "profile",
-        "finance"
+        "finance",
+        "it",
+        "ai"
       ]
     },
     {
@@ -46,7 +48,7 @@
       "password": "IoT@2025",
       "name": "Fatma Demir",
       "initials": "FD",
-      "email": "fatma.demir@asgard.ai",
+      "email": "fatma.demir@nexus.ai",
       "department": "IoT ve Üretim",
       "role": "iot",
       "pages": [
@@ -60,7 +62,7 @@
       "password": "IT@2025",
       "name": "Mehmet Yılmaz",
       "initials": "MY",
-      "email": "mehmet.yilmaz@asgard.ai",
+      "email": "mehmet.yilmaz@nexus.ai",
       "department": "Bilgi Teknolojileri",
       "role": "it",
       "pages": [
@@ -74,7 +76,7 @@
       "password": "Admin@2025",
       "name": "Sistem Yöneticisi",
       "initials": "SY",
-      "email": "admin@asgard.ai",
+      "email": "admin@nexus.ai",
       "department": "Yönetim",
       "role": "admin",
       "pages": [
@@ -116,7 +118,6 @@
         "profile",
         "it",
         "access",
-        "ai",
         "settings"
       ]
     },

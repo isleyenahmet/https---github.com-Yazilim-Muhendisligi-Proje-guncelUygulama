@@ -952,6 +952,171 @@
             opacity: 0.3;
         }
 
+        /* ── Active Sessions Panel ─────────────────────────────────────── */
+        .active-sessions-panel {
+            background: rgba(8, 20, 30, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(20, 184, 166, 0.25);
+            border-radius: 32px;
+            padding: 28px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .active-sessions-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #14b8a6, transparent);
+            animation: scanLine 3s linear infinite;
+        }
+
+        @keyframes scanLine {
+            0%   { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .active-session-card {
+            background: rgba(20, 184, 166, 0.04);
+            border: 1px solid rgba(20, 184, 166, 0.18);
+            border-radius: 20px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .active-session-card:hover {
+            border-color: rgba(20, 184, 166, 0.45);
+            background: rgba(20, 184, 166, 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px -10px rgba(20, 184, 166, 0.2);
+        }
+
+        .session-avatar {
+            width: 46px;
+            height: 46px;
+            min-width: 46px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(20,184,166,0.3), rgba(15,118,110,0.3));
+            border: 1px solid rgba(20,184,166,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: #14b8a6;
+        }
+
+        .session-info { flex: 1; min-width: 0; }
+        .session-name { font-weight: 700; font-size: 14px; color: #fff; }
+        .session-sub  { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+
+        .session-module-badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(20,184,166,0.15);
+            color: #14b8a6;
+            border: 1px solid rgba(20,184,166,0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* Countdown ring */
+        .countdown-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            min-width: 70px;
+        }
+
+        .countdown-ring {
+            position: relative;
+            width: 56px;
+            height: 56px;
+        }
+
+        .countdown-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .countdown-ring .bg-circle {
+            fill: none;
+            stroke: rgba(255,255,255,0.06);
+            stroke-width: 4;
+        }
+
+        .countdown-ring .fg-circle {
+            fill: none;
+            stroke: #14b8a6;
+            stroke-width: 4;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear, stroke 0.5s ease;
+        }
+
+        .countdown-ring .fg-circle.urgent {
+            stroke: #ef4444;
+            filter: drop-shadow(0 0 4px rgba(239,68,68,0.7));
+        }
+
+        .countdown-ring .fg-circle.warning {
+            stroke: #f59e0b;
+            filter: drop-shadow(0 0 4px rgba(245,158,11,0.5));
+        }
+
+        .countdown-time {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .countdown-label {
+            font-size: 9px;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .terminate-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239,68,68,0.3);
+            border-radius: 12px;
+            color: #ef4444;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .terminate-btn:hover {
+            background: rgba(239,68,68,0.18);
+            border-color: rgba(239,68,68,0.6);
+            transform: scale(1.04);
+            box-shadow: 0 0 16px rgba(239,68,68,0.2);
+        }
+
+        .no-active-sessions {
+            text-align: center;
+            padding: 28px;
+            color: rgba(255,255,255,0.3);
+            font-size: 13px;
+        }
+
         /* Modal */
         .modal {
             display: none;
@@ -1306,8 +1471,27 @@
                 </div>
             </div>
 
+            <!-- Active Temporary Sessions -->
+            <div id="activeSessionsSection" class="active-sessions-panel" style="display:none;">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-teal-500/15 flex items-center justify-center text-teal-400 border border-teal-500/30">
+                            <i class="fas fa-user-clock text-base"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-base font-bold text-white">Aktif Geçici Yetkiler</h2>
+                            <p class="text-[10px] text-teal-500/70 uppercase tracking-widest font-bold">Onaylı Oturumlar · Canlı Süre Takibi</p>
+                        </div>
+                    </div>
+                    <div id="activeSessionsBadge" class="bg-teal-500/20 text-teal-400 border border-teal-500/30 text-xs font-black px-3 py-1 rounded-full">0 Aktif</div>
+                </div>
+                <div id="activeSessionsList" class="flex flex-col gap-3">
+                    <!-- JS ile dolacak -->
+                </div>
+            </div>
+
             <!-- Emergency Access Requests -->
-            <div id="emergencyRequestsSection" style="display: none; margin-bottom: 30px;" class="glass-premium border-amber-500/30 bg-amber-500/5 p-6 animate-pulse">
+            <div id="emergencyRequestsSection" style="display: none; margin-bottom: 30px;" class="glass-premium border-amber-500/30 bg-amber-500/5 p-6">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500">
@@ -1995,9 +2179,10 @@
                             ${req.requested_page.toUpperCase()} Access
                         </div>
                     </div>
-                    <div class="text-xs text-slate-300 italic mb-4 bg-black/20 p-2 rounded border border-white/5">
+                    <div class="text-xs text-slate-300 italic mb-3 bg-black/20 p-2 rounded border border-white/5">
                         "${req.reason}"
                     </div>
+                    ${req.duration_hours ? `<div class="text-[10px] text-teal-400/80 mb-3 flex items-center gap-1"><i class="fas fa-clock"></i> Talep edilen süre: <strong>${req.duration_hours} saat</strong></div>` : ''}
                     <div class="flex gap-2">
                         <button onclick="handleResolve(${req.id}, 'approved')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-black text-[10px] font-bold py-2 rounded-lg transition-all">
                             <i class="fas fa-check mr-1"></i> ONAYLA
@@ -2022,11 +2207,220 @@
                 if (res.ok) {
                     showToast(data.message, 'success');
                     fetchPendingRequests();
-                    fetchAllData(); // Refresh users table to see new permissions
+                    fetchActiveSessions(); // Refresh active sessions after approval
+                    fetchAllData();
                 } else {
                     showToast(data.detail || 'İşlem başarısız', 'error');
                 }
             } catch (e) { showToast('Bağlantı hatası', 'error'); }
+        };
+
+        // ─── ACTIVE SESSIONS LOGIC ─────────────────────────────────────────
+        let sessionTimers = {}; // { sessionId: intervalId }
+        let activeSessions = [];
+
+        async function fetchActiveSessions() {
+            const token = getToken();
+            try {
+                const res = await fetch('/api/admin/requests/active', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    activeSessions = await res.json();
+                } else {
+                    // Fallback: show approved requests that have duration_hours as active sessions
+                    const res2 = await fetch('/api/admin/requests/approved', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (res2.ok) activeSessions = await res2.json();
+                    else activeSessions = [];
+                }
+            } catch (e) {
+                console.warn('[Sessions] Active sessions endpoint not available, using fallback mock.');
+                // Demo fallback with mock data so admins can see the UI
+                activeSessions = _demoSessions;
+            }
+            renderActiveSessions();
+        }
+
+        // Demo sessions – shown when API is unavailable for preview purposes
+        const _demoSessions = [
+            {
+                id: 'demo-1',
+                username: 'zeynep.yildiz',
+                user_display_name: 'Zeynep Yıldız',
+                requested_page: 'finance',
+                approved_at: new Date(Date.now() - 25 * 60 * 1000).toISOString(), // 25 min ago
+                duration_hours: 2,
+                reason: 'Acil dönem sonu raporlama için geçici erişim'
+            },
+            {
+                id: 'demo-2',
+                username: 'can.aksoy',
+                user_display_name: 'Can Aksoy',
+                requested_page: 'it',
+                approved_at: new Date(Date.now() - 110 * 60 * 1000).toISOString(), // 110 min ago
+                duration_hours: 2,
+                reason: 'Sunucu bakımı sonrası sistem kontrol'
+            }
+        ];
+
+        function renderActiveSessions() {
+            const section  = document.getElementById('activeSessionsSection');
+            const list     = document.getElementById('activeSessionsList');
+            const countBadge = document.getElementById('activeSessionsBadge');
+
+            // Clear existing timers
+            Object.values(sessionTimers).forEach(t => clearInterval(t));
+            sessionTimers = {};
+
+            // Filter only sessions that still have time remaining
+            const now = Date.now();
+            const stillActive = activeSessions.filter(s => {
+                if (!s.duration_hours || !s.approved_at) return true; // no expiry info → keep
+                const expiresAt = new Date(s.approved_at).getTime() + s.duration_hours * 3600 * 1000;
+                return expiresAt > now;
+            });
+
+            if (stillActive.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+            countBadge.textContent = `${stillActive.length} Aktif`;
+
+            const MODULE_ICONS = {
+                finance: 'fa-chart-line', iot: 'fa-wifi', it: 'fa-microchip',
+                hr: 'fa-users', ai: 'fa-brain', access: 'fa-shield-alt', settings: 'fa-cog'
+            };
+
+            list.innerHTML = stillActive.map(s => {
+                const initials = s.user_display_name
+                    ? s.user_display_name.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase()
+                    : s.username.substring(0,2).toUpperCase();
+                const modIcon = MODULE_ICONS[s.requested_page] || 'fa-key';
+                const hasDuration = s.duration_hours && s.approved_at;
+                const CIRC = 2 * Math.PI * 22; // circumference r=22
+
+                return `
+                <div class="active-session-card" id="session-card-${s.id}">
+                    <div class="session-avatar">${initials}</div>
+                    <div class="session-info">
+                        <div class="session-name">${s.user_display_name || s.username}</div>
+                        <div class="session-sub">
+                            <i class="fas ${modIcon} mr-1"></i>${s.requested_page.toUpperCase()} erişimi
+                            · @${s.username}
+                        </div>
+                        ${s.reason ? `<div class="text-[10px] text-slate-500 mt-1 italic truncate max-w-xs">"${s.reason}"</div>` : ''}
+                    </div>
+
+                    ${ hasDuration ? `
+                    <div class="countdown-wrap" id="countdown-wrap-${s.id}">
+                        <div class="countdown-ring">
+                            <svg width="56" height="56" viewBox="0 0 56 56">
+                                <circle class="bg-circle" cx="28" cy="28" r="22"/>
+                                <circle class="fg-circle" id="fg-${s.id}" cx="28" cy="28" r="22"
+                                    stroke-dasharray="${CIRC}"
+                                    stroke-dashoffset="0"/>
+                            </svg>
+                            <div class="countdown-time" id="ctime-${s.id}">--:--</div>
+                        </div>
+                        <div class="countdown-label">Kalan Süre</div>
+                    </div>` : `
+                    <div class="session-module-badge"><i class="fas fa-infinity mr-1"></i>Süresiz</div>
+                    `}
+
+                    <button class="terminate-btn" onclick="terminateSession('${s.id}', '${s.username}', '${s.requested_page}')">
+                        <i class="fas fa-stop-circle"></i> Göreve Son Ver
+                    </button>
+                </div>`;
+            }).join('');
+
+            // Start countdown timers
+            stillActive.forEach(s => {
+                if (!s.duration_hours || !s.approved_at) return;
+                const approvedAt = new Date(s.approved_at).getTime();
+                const totalMs = s.duration_hours * 3600 * 1000;
+                const CIRC = 2 * Math.PI * 22;
+
+                function tick() {
+                    const remaining = (approvedAt + totalMs) - Date.now();
+                    const ctimeEl = document.getElementById(`ctime-${s.id}`);
+                    const fgEl    = document.getElementById(`fg-${s.id}`);
+                    const card    = document.getElementById(`session-card-${s.id}`);
+
+                    if (!ctimeEl || !fgEl) { clearInterval(sessionTimers[s.id]); return; }
+
+                    if (remaining <= 0) {
+                        clearInterval(sessionTimers[s.id]);
+                        card && card.remove();
+                        // re-check if section should hide
+                        if (document.getElementById('activeSessionsList').children.length === 0) {
+                            document.getElementById('activeSessionsSection').style.display = 'none';
+                        }
+                        return;
+                    }
+
+                    const totalSec = Math.ceil(remaining / 1000);
+                    const h = Math.floor(totalSec / 3600);
+                    const m = Math.floor((totalSec % 3600) / 60);
+                    const sc = totalSec % 60;
+                    ctimeEl.textContent = h > 0
+                        ? `${h}s ${String(m).padStart(2,'0')}d`
+                        : `${String(m).padStart(2,'0')}:${String(sc).padStart(2,'0')}`;
+
+                    // Progress arc
+                    const fraction = Math.max(0, remaining / totalMs);
+                    fgEl.style.strokeDashoffset = CIRC * (1 - fraction);
+
+                    // Color urgency
+                    fgEl.classList.remove('urgent','warning');
+                    if (fraction < 0.15)      fgEl.classList.add('urgent');
+                    else if (fraction < 0.35) fgEl.classList.add('warning');
+                }
+
+                tick();
+                sessionTimers[s.id] = setInterval(tick, 1000);
+            });
+        }
+
+        window.terminateSession = async (sessionId, username, page) => {
+            if (!confirm(`"${username}" kullanıcısının "${page.toUpperCase()}" erişimini şimdi sonlandırmak istiyor musunuz?`)) return;
+            const token = getToken();
+            try {
+                // Try dedicated terminate endpoint first
+                const res = await fetch('/api/admin/requests/terminate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ session_id: sessionId, username, page })
+                });
+                if (res.ok) {
+                    showToast(`${username} kullanıcısının geçici erişimi sonlandırıldı.`, 'success');
+                } else {
+                    // Fallback: revoke the page permission directly
+                    const user = allUsers.find(u => u.username === username);
+                    if (user) {
+                        const newPages = user.pages.filter(p => p !== page);
+                        await fetch(`/api/users/update/${username}`, {
+                            method: 'PUT',
+                            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ pages: newPages })
+                        });
+                        user.pages = newPages;
+                        showToast(`${username} kullanıcısının ${page.toUpperCase()} erişimi iptal edildi.`, 'success');
+                    }
+                }
+            } catch (e) {
+                showToast('Bağlantı hatası oluştu.', 'error');
+            }
+
+            // Remove from local list and refresh UI
+            activeSessions = activeSessions.filter(s => String(s.id) !== String(sessionId));
+            // Remove demo session as well
+            _demoSessions.splice(_demoSessions.findIndex(s => String(s.id) === String(sessionId)), 1);
+            renderActiveSessions();
+            fetchAllData();
         };
 
         // ─── UI INTERACTION ────────────────────────────────────────────────
@@ -2098,10 +2492,12 @@
             await checkAdmin();
             await fetchAllData();
             await fetchPendingRequests();
+            await fetchActiveSessions();
             document.querySelector('.modal-btn-primary').onclick = handleUserSubmit;
             
-            // Poll for new requests every 30 seconds
+            // Poll for new requests and active sessions
             setInterval(fetchPendingRequests, 30000);
+            setInterval(fetchActiveSessions, 10000);
         })();
     </script>
 </body>

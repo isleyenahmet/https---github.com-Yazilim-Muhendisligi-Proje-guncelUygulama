@@ -1365,7 +1365,6 @@
             const retention = document.getElementById('data-retention')?.value || '30';
 
             localStorage.setItem(KEYS.REFRESH, rate);
-            localStorage.setItem(KEYS.NOTIFS,  notifs);
             localStorage.setItem(KEYS.SOUND,   sound);
             localStorage.setItem(KEYS.SHAP,    shap);
             localStorage.setItem(KEYS.LIME,    lime);
@@ -1380,7 +1379,7 @@
             const lastUpdatedEl = document.getElementById('last-updated-text');
             if (lastUpdatedEl) lastUpdatedEl.textContent = 'Son güncelleme: ' + timeStr;
 
-            showToast('✅ Ayarlar başarıyla kaydedildi!', 'success');
+            showToast('Ayarlar başarıyla kaydedildi!', 'success');
         }
 
         // ── Ayarları Sıfırla ──────────────────────────────────────────────
