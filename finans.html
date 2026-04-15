@@ -1285,84 +1285,6 @@
                     </div>
                 </div>
 
-                <!-- FINANS TOPOLOJİSİ & AI TERMINAL -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-                    <!-- Sankey / Flow Map (sol 2 kolon) -->
-                    <div class="lg:col-span-2 chart-card flex flex-col relative overflow-hidden" style="min-height: 400px; padding:0;">
-                        <div class="p-6 pb-2 z-30 relative pointer-events-none">
-                            <div class="chart-title text-xl">
-                                <i class="fas fa-project-diagram text-[#FFD700]"></i>
-                                Finansal Akış Topolojisi
-                            </div>
-                            <div class="chart-subtitle border-0 mb-0">Merkez Havuzdan Departmanlara Likidite ve Kaynak Akışı</div>
-                        </div>
-                        
-                        <!-- Flow Container -->
-                        <div class="flex-1 relative w-full h-full flex items-center justify-center -mt-8">
-                            <!-- Background Grid -->
-                            <div class="absolute inset-0 opacity-20 z-0" style="background-image: linear-gradient(rgba(255, 215, 0, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 215, 0, 0.2) 1px, transparent 1px); background-size: 20px 20px;"></div>
-                            
-                            <!-- Static SVG Structure for Flow -->
-                            <svg class="w-full h-full absolute inset-0 z-10" preserveAspectRatio="xMidYMid meet" viewBox="0 0 800 300">
-                                <!-- Base Paths -->
-                                <path d="M 150 150 C 300 150, 400 50, 650 50" fill="none" stroke="rgba(59, 130, 246, 0.1)" stroke-width="6" />
-                                <path d="M 150 150 C 350 150, 450 150, 650 150" fill="none" stroke="rgba(34, 197, 94, 0.1)" stroke-width="6" />
-                                <path d="M 150 150 C 300 150, 400 250, 650 250" fill="none" stroke="rgba(168, 85, 247, 0.1)" stroke-width="6" />
-                                
-                                <!-- Animated Flow Lines -->
-                                <path id="flow-it" d="M 150 150 C 300 150, 400 50, 650 50" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="8 12" class="flow-anim" />
-                                <path id="flow-iot" d="M 150 150 C 350 150, 450 150, 650 150" fill="none" stroke="#22c55e" stroke-width="2" stroke-dasharray="8 12" class="flow-anim" />
-                                <path id="flow-hr" d="M 150 150 C 300 150, 400 250, 650 250" fill="none" stroke="#a855f7" stroke-width="2" stroke-dasharray="8 12" class="flow-anim" />
-                            </svg>
-
-                            <!-- Nodes -->
-                            <div class="absolute left-[15%] top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
-                                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] border-4 border-[#FFD700] shadow-[0_0_40px_rgba(255,215,0,0.5)] flex items-center justify-center animate-pulse">
-                                    <i class="fas fa-university text-[#FFD700] text-2xl"></i>
-                                </div>
-                                <span class="text-xs font-bold mt-3 text-[#FFD700] tracking-widest bg-black/50 px-3 py-1 rounded-full border border-[#FFD700]/30 shadow-lg backdrop-blur">ANA KASA</span>
-                            </div>
-
-                            <!-- Destination Nodes -->
-                            <div class="absolute left-[85%] top-[16.6%] -translate-y-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
-                                <div id="node-it" class="w-14 h-14 rounded-xl bg-[#0a1526] border-2 border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.3)] flex items-center justify-center backdrop-blur transition-all duration-300">
-                                    <i class="fas fa-server text-blue-400 text-xl"></i>
-                                </div>
-                                <span class="text-[11px] uppercase font-bold mt-2 text-blue-300 bg-black/40 px-2 py-0.5 rounded backdrop-blur">IT Altyapı</span>
-                            </div>
-
-                            <div class="absolute left-[85%] top-[50%] -translate-y-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
-                                <div id="node-iot" class="w-14 h-14 rounded-xl bg-[#0a1a0f] border-2 border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.3)] flex items-center justify-center backdrop-blur transition-all duration-300">
-                                    <i class="fas fa-microchip text-green-400 text-xl"></i>
-                                </div>
-                                <span class="text-[11px] uppercase font-bold mt-2 text-green-300 bg-black/40 px-2 py-0.5 rounded backdrop-blur">IoT Sensör</span>
-                            </div>
-
-                            <div class="absolute left-[85%] top-[83.3%] -translate-y-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
-                                <div id="node-hr" class="w-14 h-14 rounded-xl bg-[#160a26] border-2 border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.3)] flex items-center justify-center backdrop-blur transition-all duration-300">
-                                    <i class="fas fa-users text-purple-400 text-xl"></i>
-                                </div>
-                                <span class="text-[11px] uppercase font-bold mt-2 text-purple-300 bg-black/40 px-2 py-0.5 rounded backdrop-blur">Otonom Loj.</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- AI Terminal (sağ kolon) -->
-                    <div class="chart-card flex flex-col overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.8)]" style="min-height: 400px; padding: 0; background: #050505;">
-                        <div class="flex items-center justify-between p-4 border-b border-green-500/20 bg-[#0a1005]">
-                            <div class="flex items-center gap-3">
-                                <div class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></div>
-                                <span class="font-mono font-bold text-xs text-green-400 tracking-wider">AIOPS_DEFENDER_TERM</span>
-                            </div>
-                            <i class="fas fa-microchip text-green-500/50"></i>
-                        </div>
-                        <div id="ai-terminal-output" class="flex-1 p-5 font-mono text-[11px] overflow-y-auto w-full text-green-400/90 flex flex-col gap-2">
-                            <div class="opacity-50 break-words mb-2">> System initialized. Connecting to Gigafactory Live Node [127.0.0.1:5003]...</div>
-                            <div class="opacity-50 break-words mb-4">> Analyzing liquidity flow algorithms. Quantum secure channel active.</div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Last updated info -->
                 <div class="flex justify-between items-center mt-8 text-xs text-slate-500">
                     <span>Last updated: 15:24:07 UTC · Auto-refresh every 30s</span>
@@ -1532,72 +1454,6 @@
         });
 
         // ── AI Terminal & Flow Logic ─────────────────────────────────────────
-        function addTerminalLog(message, isWarning = false, isError = false) {
-            const term = document.getElementById('ai-terminal-output');
-            if(!term) return;
-            const entry = document.createElement('div');
-            
-            let borderColor = '#22c55e';
-            let textColor = 'text-green-400';
-            
-            if(isError) {
-                borderColor = '#ef4444';
-                textColor = 'text-red-400';
-            } else if(isWarning) {
-                borderColor = '#facc15';
-                textColor = 'text-yellow-400';
-            }
-            
-            entry.className = `ai-log-entry ${textColor} font-mono text-[11px] mb-2`;
-            entry.style.borderColor = borderColor;
-            
-            const time = new Date().toLocaleTimeString('tr-TR');
-            entry.innerHTML = `<span class="opacity-50">[${time}]</span> ${message}`;
-            
-            term.appendChild(entry);
-            term.scrollTop = term.scrollHeight;
-            
-            // Keep buffer at 50 nodes
-            if(term.children.length > 50) {
-                term.removeChild(term.children[0]);
-            }
-        }
-
-        // Set node mapping for Finans -> Departmen flow
-        const flowMap = {
-            IT: { flowId: 'flow-it', nodeId: 'node-it' },
-            IoT: { flowId: 'flow-iot', nodeId: 'node-iot' },
-            HR: { flowId: 'flow-hr', nodeId: 'node-hr' }
-        };
-
-        function updateFlowTopology(riskScores, isAnomaly) {
-            for(const [dept, ids] of Object.entries(flowMap)) {
-                const flow = document.getElementById(ids.flowId);
-                const node = document.getElementById(ids.nodeId);
-                if(!flow || !node) continue;
-                
-                // Simulate individual risk influence from backend if available, 
-                // else use logic based on global anomaly state
-                let score = riskScores[dept] || 0;
-                
-                flow.className.baseVal = 'flow-anim';
-                node.style.borderColor = '';
-                node.style.boxShadow = '';
-                
-                if (score > 80 || (isAnomaly && Math.random() > 0.5)) {
-                    flow.className.baseVal = 'flow-anim critical';
-                    node.style.borderColor = '#ef4444';
-                    node.style.boxShadow = '0 0 20px rgba(239, 68, 68, 0.6)';
-                    if(Math.random() < 0.2) {
-                        addTerminalLog(`CRITICAL STOP: ${dept} nakit akışı veya işlem onayı bloklandı.`, false, true);
-                    }
-                } else if (score > 40) {
-                    flow.className.baseVal = 'flow-anim warning';
-                    node.style.borderColor = '#facc15';
-                    node.style.boxShadow = '0 0 15px rgba(250, 204, 21, 0.4)';
-                }
-            }
-        }
 
         // Sadece drawLineChart fonksiyonunu tutuyoruz
         function drawLineChart(containerId, data, color, area = false, unit = '') {
@@ -1825,17 +1681,6 @@
                     updateUIState('risk',  riskVal,  riskAnomaly,  'card-risk',  'label-risk',  '%');
                     updateUIState('inv',   invVal,   invAnomaly,   'card-inv',   'label-inv',   '');
 
-                    // Update Top Topology Flows
-                    if (typeof updateFlowTopology === 'function') {
-                        updateFlowTopology(d.risk_scores || {}, globalAnomaly);
-                    }
-
-                    // Randomize minor logs for realism when not anomaly
-                    if(!globalAnomaly && Math.random() < 0.1) {
-                        if (typeof addTerminalLog === 'function') addTerminalLog("Standart finansal validasyon tamamlandı. Aktarım OK.");
-                    } else if (!globalAnomaly && Math.random() < 0.05) {
-                        if (typeof addTerminalLog === 'function') addTerminalLog("AI Cost-saving algoritması 2.4% verimlilik raporladı.");
-                    }
 
                     // Overall Anomaly logic for the primary node — stays global
                     const finNode = document.getElementById('node-main-vault') || document.getElementById('finance-primary');
@@ -1843,9 +1688,6 @@
                         if (finNode) {
                             finNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
                             finNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';
-                        }
-                        if(Math.random() < 0.3) {
-                            if (typeof addTerminalLog === 'function') addTerminalLog(`[RISK ALERT] Global fraud score artışı: ${d.anomaly_score.toFixed(3)}`, true, false);
                         }
                     } else {
                         if (finNode) {
