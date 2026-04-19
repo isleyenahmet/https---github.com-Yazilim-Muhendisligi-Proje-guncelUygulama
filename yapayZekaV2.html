@@ -1203,9 +1203,9 @@
                 <span class="menu-text">Finans</span>
             </div>
 
-            <div class="menu-item" data-department="hr">
+            <div class="menu-item" data-department="logistics">
                 <div class="menu-icon">
-                    <i class="fas fa-users"></i>
+                    <i class="fas fa-truck"></i>
                 </div>
                 <span class="menu-text">Otonom Lojistik</span>
                 <span class="menu-badge">2</span>
@@ -1357,8 +1357,8 @@
                 <div class="dept-btn finance" data-dept="finance">
                     <i class="fas fa-chart-line"></i> Finans
                 </div>
-                <div class="dept-btn hr" data-dept="hr">
-                    <i class="fas fa-users"></i> İK
+                <div class="dept-btn logistics" data-dept="logistics">
+                    <i class="fas fa-truck"></i> Otonom Lojistik
                 </div>
             </div>
 
@@ -1493,14 +1493,14 @@
                     </div>
                 </div>
 
-                <!-- HR Department -->
-                <div class="anomaly-card" data-dept="hr">
+                <!-- Otonom Lojistik -->
+                <div class="anomaly-card" data-dept="logistics">
                     <div class="anomaly-header">
                         <div class="anomaly-title">
-                            <div class="anomaly-icon hr">
-                                <i class="fas fa-users"></i>
+                            <div class="anomaly-icon logistics">
+                                <i class="fas fa-truck"></i>
                             </div>
-                            <span class="anomaly-name">HR Department</span>
+                            <span class="anomaly-name">Otonom Lojistik</span>
                         </div>
                         <div class="anomaly-badge badge-warning">
                             <i class="fas fa-exclamation-triangle"></i> Anomali
@@ -1518,7 +1518,7 @@
                         </div>
                     </div>
                     <div class="chart-wrapper">
-                        <canvas id="chartHR"></canvas>
+                        <canvas id="chartLogistics"></canvas>
                     </div>
 
                     <div class="anomaly-stats">
@@ -1635,7 +1635,7 @@
                                 <span class="feature-value">0.43</span>
                             </div>
                             <div class="feature-item">
-                                <span class="feature-name">hr_tickets</span>
+                                <span class="feature-name">log_latency</span>
                                 <div class="feature-bar">
                                     <div class="feature-bar-fill" style="width: 31%"></div>
                                 </div>
@@ -1768,10 +1768,10 @@
                         <i class="fas fa-chart-line text-green-400"></i>
                         <span class="text-sm">Finance Department</span>
                     </div>
-                    <div class="chart-selector-item active" data-dept="hr">
+                    <div class="chart-selector-item active" data-dept="logistics">
                         <div class="checkbox-custom"><i class="fas fa-check"></i></div>
-                        <i class="fas fa-users text-purple-400"></i>
-                        <span class="text-sm">HR Department</span>
+                        <i class="fas fa-truck text-purple-400"></i>
+                        <span class="text-sm">Otonom Lojistik</span>
                     </div>
             <div class="option-group" id="userSelectionGroup" style="display: none;">
                 <label class="option-label">Alıcıları Seçin</label>
@@ -1962,7 +1962,7 @@
         }
 
         // Create charts for each department
-        let chartIT_instance, chartIoT_instance, chartFinance_instance, chartHR_instance;
+        let chartIT_instance, chartIoT_instance, chartFinance_instance, chartLogistics_instance;
 
         // sessionStorage helpers for yapayZekaV2 chart persistence
         const VZ_SS_KEY = 'asgard_vz_charts';
@@ -1976,7 +1976,7 @@
                     it:      chartIT_instance      ? chartIT_instance.data.datasets[0].data.filter(x => x !== null).slice(-30) : null,
                     iot:     chartIoT_instance     ? chartIoT_instance.data.datasets[0].data.filter(x => x !== null).slice(-30) : null,
                     finance: chartFinance_instance ? chartFinance_instance.data.datasets[0].data.filter(x => x !== null).slice(-30) : null,
-                    hr:      chartHR_instance      ? chartHR_instance.data.datasets[0].data.filter(x => x !== null).slice(-30) : null,
+                    logistics: chartLogistics_instance ? chartLogistics_instance.data.datasets[0].data.filter(x => x !== null).slice(-30) : null,
                 };
                 sessionStorage.setItem(VZ_SS_KEY, JSON.stringify(snap));
             } catch(e) {}
@@ -2189,20 +2189,20 @@
                 }
             });
 
-            // HR Chart
-            const ctxHR = document.getElementById('chartHR').getContext('2d');
-            const defaultHr = (vzSaved && vzSaved.hr && vzSaved.hr.length === 30) ? vzSaved.hr : [45, 52, 48, 55, 62, 68, 72, 78, 82, 88, 92, 98, 105, 112, 118, 124, 132, 138, 144, 148, 152, 155, 156, 154, 152, 153, 154, 155, 156, 156];
-            const hrHistoric = getGlobalHistory(d => (d.hr_satisfaction || d.hr_age) ? parseInt((1 - (d.hr_satisfaction || 0)) * 150 + (d.hr_age || 0) * 50) : 100, 100, defaultHr);
-            const hrForecast = generateForecastData(hrHistoric[29], 0.8, 30);
+            // Logistics Chart
+            const ctxLogistics = document.getElementById('chartLogistics').getContext('2d');
+            const defaultLog = (vzSaved && vzSaved.logistics && vzSaved.logistics.length === 30) ? vzSaved.logistics : [45, 52, 48, 55, 62, 68, 72, 78, 82, 88, 92, 98, 105, 112, 118, 124, 132, 138, 144, 148, 152, 155, 156, 154, 152, 153, 154, 155, 156, 156];
+            const logHistoric = getGlobalHistory(d => (d.log_satisfaction || d.log_age) ? parseInt((1 - (d.log_satisfaction || 0)) * 150 + (d.log_age || 0) * 50) : 100, 100, defaultLog);
+            const logForecast = generateForecastData(logHistoric[29], 0.8, 30);
             
-            chartHR_instance = new Chart(ctxHR, {
+            chartLogistics_instance = new Chart(ctxLogistics, {
                 type: 'line',
                 data: {
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Helpdesk Talepleri',
-                            data: [...hrHistoric, ...Array(30).fill(null)],
+                            label: 'Lojistik Talepleri',
+                            data: [...logHistoric, ...Array(30).fill(null)],
                             borderColor: '#a855f7',
                             backgroundColor: 'rgba(168, 85, 247, 0.1)',
                             tension: configTension,
@@ -2212,7 +2212,7 @@
                         },
                         {
                             label: 'Tahmin',
-                            data: [...Array(29).fill(null), hrHistoric[29], ...hrForecast],
+                            data: [...Array(29).fill(null), logHistoric[29], ...logForecast],
                             borderColor: '#8b5cf6',
                             borderDash: [5, 5],
                             backgroundColor: 'transparent',
@@ -2269,7 +2269,7 @@
         const aiToastContainer = document.getElementById('aiToastContainer');
 
         let unreadNotifs = 0;
-        let lastReportedState = { it:0, iot:0, finance:0, hr:0 };
+        let lastReportedState = { it:0, iot:0, finance:0, logistics:0 };
 
         notifBtn.addEventListener('click', () => {
             notificationPanel.classList.add('active');
@@ -2385,12 +2385,12 @@
                             val: d.fin_amount ? ((d.fin_amount) * 5).toFixed(1) : Math.max(0, ((chartFinance_instance.data.datasets[0].data.filter(x => x !== null).slice(-1)[0] || 3.0) + (Math.random() - 0.5) * 0.4)).toFixed(1),
                             suffix: '%'
                         },
-                        hr: {
-                            score: risk.HR,
-                            badgeSel: '.anomaly-card[data-dept="hr"] .anomaly-badge',
-                            currSel: '.anomaly-card[data-dept="hr"] .anomaly-current',
-                            chart: chartHR_instance,
-                            val: (d.hr_satisfaction || d.hr_age) ? parseInt((1 - (d.hr_satisfaction || 0)) * 150 + (d.hr_age || 0) * 50) : parseInt((chartHR_instance.data.datasets[0].data.filter(x => x !== null).slice(-1)[0] || 150) + (Math.random() - 0.5) * 2),
+                        logistics: {
+                            score: risk.Logistics || risk.HR,
+                            badgeSel: '.anomaly-card[data-dept="logistics"] .anomaly-badge',
+                            currSel: '.anomaly-card[data-dept="logistics"] .anomaly-current',
+                            chart: chartLogistics_instance,
+                            val: (d.log_satisfaction || d.log_age) ? parseInt((1 - (d.log_satisfaction || 0)) * 150 + (d.log_age || 0) * 50) : parseInt((chartLogistics_instance.data.datasets[0].data.filter(x => x !== null).slice(-1)[0] || 150) + (Math.random() - 0.5) * 2),
                             suffix: ''
                         }
                     };
@@ -2428,7 +2428,7 @@
                             if (key === 'it') { toastTitle = "IT Yük Dengeleme"; toastDesc = "Sunucu CPU kullanımı çok yüksek. Trafiğin %30'u Yedek Bölge B'ye aktarılsın mı?"; actionText = "Trafiği Yönlendir"; }
                             if (key === 'iot') { toastTitle = "IoT Gateway Restart"; toastDesc = "Cihazlarda iletişim koptu. Edge cihazlar yeniden başlatılsın mı?"; actionText = "Gateway Restart"; }
                             if (key === 'finance') { toastTitle = "Finans İşlem Durdurma"; toastDesc = "Olası hatalı işlem paterni tespit edildi. Yüksek riskli işlemler bloklansın mı?"; actionText = "İşlemleri Blokla"; }
-                            if (key === 'hr') { toastTitle = "Otomatik Destek Ataması"; toastDesc = "Destek talepleri birikiyor. AI robot ajanlar 1. Seviye desteği devralsın mı?"; actionText = "AI Destek Aktif"; }
+                            if (key === 'logistics' || key === 'hr') { toastTitle = "Otonom Lojistik Destek Ataması"; toastDesc = "Lojistik talepleri birikiyor. Otonom robot araçlar 1. Seviye sevkiyatı devralsın mı?"; actionText = "Otonom Sevkiyat Aktif"; }
                             
                             showAIToast(toastTitle, toastDesc, actionText, 'critical');
                             
@@ -2493,7 +2493,7 @@
                         const it_val = Math.max(0.1, (risk.IT / 100) + (Math.random()*0.1 - 0.05));
                         const iot_val = Math.max(0.1, (risk.IoT / 100) + (Math.random()*0.1 - 0.05));
                         const fin_val = Math.max(0.1, (risk.Finans / 100) + (Math.random()*0.1 - 0.05));
-                        const hr_val = Math.max(0.1, (risk.HR / 100) + (Math.random()*0.1 - 0.05));
+                        const log_val = Math.max(0.1, (risk.Logistics / 100) || (risk.HR / 100) + (Math.random()*0.1 - 0.05));
                         
                         function updateBar(idx, val, overrideColor) {
                             if (!featureBars[idx]) return;
@@ -2519,7 +2519,7 @@
                         updateBar(1, iot_val); // iot_pdr
                         updateBar(2, it_val * 0.8); // it_response
                         updateBar(3, fin_val); // fin_error
-                        updateBar(4, hr_val); // hr_tickets
+                        updateBar(4, log_val); // log_latency
                         
                         // LIME
                         updateBar(5, iot_val, '#ef4444');
@@ -2639,7 +2639,7 @@
             finance: { fullName:'Finans / ERP',        icon:'💰', color:'#fbbf24',
                        metrics:['İşlem Maliyeti','Fraud Skoru','Risk Endeksi','Stok Değeri'],
                        unit:['$','','%',''] },
-            hr:      { fullName:'İnsan Kaynakları',    icon:'👥', color:'#a855f7',
+            hr:      { fullName:'Otonom Lojistik',    icon:'🚚', color:'#a855f7',
                        metrics:['Erişim Yolu','İşbirliği','SOC Güvenlik','Görev Başarımı'],
                        unit:['ms','','','%'] }
         };
@@ -2689,14 +2689,14 @@
                 },
                 hr: {
                     critical: [
-                        `Helpdesk talep hacmi saatlik ortalamayı %67 aştı. Öncelik dağılımı P1/P2 oranının anormal biçimde yükselmesini işaret ediyor.`,
-                        `Sistem güvenlik modülü beklenmedik erişim denemeleri kaydetti. SOC analizi kimlik doğrulama hatalarında artış olduğunu ortaya koyuyor.`,
-                        `GAT köprüsü; HR düğümü ile IT düğümü arasındaki bağımlılık katsayısının anomali yayılım riskine katkısını 0.44 olarak ölçtü.`
+                        `Lojistik sevkiyat hacmi saatlik ortalamayı %67 aştı. Öncelik dağılımı P1/P2 oranının anormal biçimde yükselmesini işaret ediyor.`,
+                        `Otonom depo modülü beklenmedik rota hataları kaydetti. AGM (Automated Guided Vehicle) analizi parkur geçişlerinde aksama olduğunu ortaya koyuyor.`,
+                        `GAT köprüsü; Lojistik düğümü ile IT düğümü arasındaki bağımlılık katsayısının anomali yayılım riskine katkısını 0.44 olarak ölçtü.`
                     ],
                     normal: [
-                        `Çalışan etkinlik metrikleri norm aralığında. Ortalama görev tamamlama süresi hedef KPI değerinin altında.`,
-                        `Helpdesk SLA uyum oranı %94.7. Açık bilet sayısı kontrol altında; otomatik atamaların %88'i ilk atamada çözüme kavuştu.`,
-                        `SOC güvenlik aksiyonu gerekmiyor. Erişim log analizi yetkisiz giriş girişimi içermiyor. Sistem temiz.`
+                        `Araç etkinlik metrikleri norm aralığında. Ortalama teslimat süresi hedef KPI değerinin altında.`,
+                        `Lojistik SLA uyum oranı %94.7. Açık sevkiyat sayısı kontrol altında; otonom rotaların %88'i ilk planlamada çözüme kavuştu.`,
+                        `Depo güvenlik aksiyonu gerekmiyor. Erişim log analizi yetkisiz giriş girişimi içermiyor. Sistem temiz.`
                     ]
                 }
             };

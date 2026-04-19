@@ -467,7 +467,7 @@
             border: 1px solid rgba(59, 130, 246, 0.3);
         }
 
-        .role-hr {
+        .role-logistics {
             background: rgba(168, 85, 247, 0.15);
             color: #a855f7;
             border: 1px solid rgba(168, 85, 247, 0.3);
@@ -650,7 +650,7 @@
             color: #3b82f6;
         }
 
-        .icon-hr {
+        .icon-logistics {
             background: rgba(168, 85, 247, 0.15);
             color: #a855f7;
         }
@@ -1760,9 +1760,9 @@
                 <span class="menu-text">Finans</span>
             </div>
 
-            <div class="menu-item" data-department="hr">
+            <div class="menu-item" data-department="logistics">
                 <div class="menu-icon">
-                    <i class="fas fa-users"></i>
+                    <i class="fas fa-truck"></i>
                 </div>
                 <span class="menu-text">Otonom Lojistik</span>
                 <span class="menu-badge">2</span>
@@ -2124,11 +2124,11 @@
                         </div>
                     </div>
 
-                    <!-- İK -->
-                    <div class="permission-card" data-module="hr">
+                    <!-- Lojistik -->
+                    <div class="permission-card" data-module="logistics">
                         <div class="permission-card-header">
-                            <div class="permission-icon icon-hr">
-                                <i class="fas fa-users"></i>
+                            <div class="permission-icon icon-logistics">
+                                <i class="fas fa-truck"></i>
                             </div>
                             <div>
                                 <div class="permission-title">Otonom Lojistik</div>
@@ -2137,16 +2137,16 @@
                         </div>
 
                         <div class="permission-status">
-                            <span class="status-badge" id="hr-status">
+                            <span class="status-badge" id="logistics-status">
                                 Yükleniyor...
                             </span>
-                            <span class="status-badge" id="hr-level"></span>
+                            <span class="status-badge" id="logistics-level"></span>
                         </div>
                         <div class="progress-bar-container">
-                            <div class="progress-bar" id="hr-progress" style="width: 0%;"></div>
+                            <div class="progress-bar" id="logistics-progress" style="width: 0%;"></div>
                         </div>
 
-                        <div class="permission-details mt-4" id="hr-details">
+                        <div class="permission-details mt-4" id="logistics-details">
                             <div class="detail-row toggle-detail-row">
                                 <span class="detail-label-small">Rota verileri</span>
                                 <span class="detail-value-small permission-tag"></span>
@@ -2869,7 +2869,7 @@
                 'IoT ve Üretim': { bg: 'linear-gradient(135deg, #38bdf8, #0284c7)', text: '#fff' },
                 'IoT': { bg: 'linear-gradient(135deg, #38bdf8, #0284c7)', text: '#fff' },
                 'Finans': { bg: 'linear-gradient(135deg, #f59e0b, #b45309)', text: '#fff' },
-                'İnsan Kaynakları': { bg: 'linear-gradient(135deg, #a855f7, #7e22ce)', text: '#fff' },
+                'Otonom Lojistik': { bg: 'linear-gradient(135deg, #a855f7, #7e22ce)', text: '#fff' },
                 'Yönetim': { bg: 'linear-gradient(135deg, #f59e0b, #b45309)', text: '#fff' }
             };
 
@@ -3053,7 +3053,7 @@
             const dept = userObj.department;
 
             if (role === 'admin' || role === 'ceo') {
-                pages = ["dashboard", "it", "iot", "finance", "hr", "access", "ai", "settings", "profile"];
+                pages = ["dashboard", "it", "iot", "finance", "logistics", "access", "ai", "settings", "profile"];
             } else if (role === 'it_head') {
                 pages = ["dashboard", "profile", "it", "access", "ai", "settings"];
             } else if (role === 'iot_head') {
@@ -3061,7 +3061,7 @@
             } else if (role === 'finance_head') {
                 pages = ["dashboard", "profile", "finance"];
             } else if (role === 'logistics_head') {
-                pages = ["dashboard", "profile", "hr"];
+                pages = ["dashboard", "profile", "logistics"];
             } else if (role === 'it_staff') {
                 pages = ["dashboard", "profile", "it"];
             } else if (role === 'iot_staff' || role === 'ot_staff') {
@@ -3069,7 +3069,7 @@
             } else if (role === 'finance_staff') {
                 pages = ["dashboard", "profile", "finance"];
             } else if (role === 'logistics_staff') {
-                pages = ["dashboard", "profile", "hr"];
+                pages = ["dashboard", "profile", "logistics"];
             }
             
             userObj.pages = pages;
@@ -3211,7 +3211,7 @@
                 { id: 'it', name: 'IT Departmanı', icon: 'fa-microchip' },
                 { id: 'iot', name: 'IoT Departmanı', icon: 'fa-wifi' },
                 { id: 'finance', name: 'Finans Departmanı', icon: 'fa-chart-line' },
-                { id: 'hr', name: 'Otonom Lojistik', icon: 'fa-users' },
+                { id: 'logistics', name: 'Otonom Lojistik', icon: 'fa-truck' },
                 { id: 'settings', name: 'Sistem Ayarları', icon: 'fa-cog' },
                 { id: 'ai', name: 'Yapay Zeka', icon: 'fa-brain' }
             ];

@@ -1307,9 +1307,9 @@
                 <span class="menu-text">Finans</span>
             </div>
 
-            <div class="menu-item" data-department="hr">
+            <div class="menu-item" data-department="logistics">
                 <div class="menu-icon">
-                    <i class="fas fa-users"></i>
+                    <i class="fas fa-truck"></i>
                 </div>
                 <span class="menu-text">Otonom Lojistik</span>
                 <span class="menu-badge">2</span>
@@ -1465,8 +1465,8 @@
                     <div class="filter-btn" data-dept="it">
                         <i class="fas fa-microchip"></i> IT
                     </div>
-                    <div class="filter-btn" data-dept="hr">
-                        <i class="fas fa-users"></i> İK
+                    <div class="filter-btn" data-dept="logistics">
+                        <i class="fas fa-truck"></i> Otonom Lojistik
                     </div>
                 </div>
             </div>
@@ -1531,7 +1531,7 @@
                             <th>Finans</th>
                             <th>IoT</th>
                             <th>IT</th>
-                            <th>İK</th>
+                            <th>Otonom Lojistik</th>
                             <th>AI</th>
                             <th>Ayarlar</th>
                             <th>İşlemler</th>
@@ -1653,8 +1653,8 @@
                                     </div>
                                 </div>
                             </td>
-                            <td><span class="role-badge role-hr"><i class="fas fa-users"></i> İK Müdürü</span></td>
-                            <td>İK</td>
+                            <td><span class="role-badge role-logistics"><i class="fas fa-truck"></i> Otonom Lojistik Müdürü</span></td>
+                            <td>Otonom Lojistik</td>
                             <td><i class="fas fa-times-circle permission-denied"></i></td>
                             <td><i class="fas fa-times-circle permission-denied"></i></td>
                             <td><i class="fas fa-times-circle permission-denied"></i></td>
@@ -1697,7 +1697,7 @@
                                 <th>Finans</th>
                                 <th>IoT</th>
                                 <th>IT</th>
-                                <th>İK</th>
+                                <th>Otonom Lojistik</th>
                                 <th>AI</th>
                                 <th>Erişim</th>
                                 <th>Sistem</th>
@@ -1741,11 +1741,11 @@
                         <div class="template-desc">IT modülüne tam erişim</div>
                         <span class="template-badge">IT</span>
                     </div>
-                    <div class="template-card" onclick="useTemplate('hr', 'hr')">
-                        <div class="template-icon"><i class="fas fa-users"></i></div>
-                        <div class="template-name">İK Müdürü</div>
-                        <div class="template-desc">İK modülüne tam erişim</div>
-                        <span class="template-badge">İK</span>
+                    <div class="template-card" onclick="useTemplate('logistics', 'logistics')">
+                        <div class="template-icon"><i class="fas fa-truck"></i></div>
+                        <div class="template-name">Otonom Lojistik Müdürü</div>
+                        <div class="template-desc">Lojistik modülüne tam erişim</div>
+                        <span class="template-badge">Otonom Lojistik</span>
                     </div>
                     <div class="template-card" onclick="useTemplate('employee', 'it')">
                         <div class="template-icon"><i class="fas fa-user-tie"></i></div>
@@ -1809,7 +1809,7 @@
                         <option value="finance">Finans Müdürü</option>
                         <option value="iot">IoT Müdürü</option>
                         <option value="it">IT Müdürü</option>
-                        <option value="hr">İK Müdürü</option>
+                        <option value="logistics">Otonom Lojistik Müdürü</option>
                         <option value="employee">Departman Çalışanı</option>
                     </select>
                 </div>
@@ -1819,7 +1819,7 @@
                         <option value="finance">Finans</option>
                         <option value="iot">IoT</option>
                         <option value="it">IT</option>
-                        <option value="hr">İK</option>
+                        <option value="logistics">Otonom Lojistik</option>
                         <option value="management">Yönetim</option>
                     </select>
                 </div>
@@ -1899,10 +1899,10 @@
         // ─── USER MANAGEMENT LOGIC ──────────────────────────────────────────
         let allUsers = [];
         let stats = {};
-        const MODULES = ["finance", "iot", "it", "hr", "ai", "access", "settings"];
+        const MODULES = ["finance", "iot", "it", "logistics", "ai", "access", "settings"];
         const MODULE_LABELS = {
             "finance": "Finans", "iot": "IoT", "it": "IT", 
-            "hr": "İK", "ai": "AI", "access": "Erişim", "settings": "Ayarlar"
+            "logistics": "Otonom Lojistik", "ai": "AI", "access": "Erişim", "settings": "Ayarlar"
         };
 
         async function checkAdmin() {

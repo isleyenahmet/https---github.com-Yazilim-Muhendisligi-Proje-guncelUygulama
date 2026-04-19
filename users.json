@@ -1,16 +1,16 @@
 {
   "users": [
     {
-      "username": "ik_mudur",
-      "password": "IK@2025",
+      "username": "lojistik_mudur",
+      "password": "Loj@2025",
       "name": "Ali Çelik",
       "initials": "AÇ",
       "email": "ali.celik@nexus.ai",
-      "department": "İnsan Kaynakları",
-      "role": "hr",
+      "department": "Otonom Lojistik",
+      "role": "logistics",
       "pages": [
         "dashboard",
-        "hr",
+        "logistics",
         "profile"
       ]
     },
@@ -54,7 +54,8 @@
       "pages": [
         "dashboard",
         "iot",
-        "profile"
+        "profile",
+        "it"
       ]
     },
     {
@@ -84,7 +85,7 @@
         "it",
         "iot",
         "finance",
-        "hr",
+        "logistics",
         "access",
         "ai",
         "settings",
@@ -146,7 +147,7 @@
       "pages": [
         "dashboard",
         "profile",
-        "hr"
+        "logistics"
       ]
     }
   ]
