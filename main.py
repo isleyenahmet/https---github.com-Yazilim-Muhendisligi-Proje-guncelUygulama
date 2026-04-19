@@ -117,11 +117,12 @@ def import_users_from_json():
         cur = conn.cursor()
         
         for u in users:
-            pages_str = ",".join(u["pages"]) if isinstance(u["pages"], list) else u["pages"]
+            pages_list = u["pages"] if isinstance(u["pages"], list) else u["pages"].split(",")
+            pages_str = ",".join(pages_list)
             
-            # Kullanıcıyı ekle
+            # Kullanıcıyı ekle veya GÜNCELLE (stale veriyi temizlemek için REPLACE kullanıyoruz)
             cur.execute("""
-                INSERT OR IGNORE INTO users (username, password, name, initials, email, department, role, pages)
+                INSERT OR REPLACE INTO users (username, password, name, initials, email, department, role, pages)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """, (u["username"], u["password"], u["name"], u.get("initials", generate_initials(u["name"])), 
                   u["email"], u["department"], u["role"], pages_str))
