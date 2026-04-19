@@ -451,6 +451,18 @@
             box-shadow: 0 30px 50px -15px rgba(255, 215, 0, 0.4);
         }
 
+        .metric-node.critical {
+            background: radial-gradient(circle at 30%, #ff0000, #8b0000) !important;
+            box-shadow: 0 0 60px rgba(239, 68, 68, 0.8), 0 0 100px rgba(255, 0, 0, 0.4), 0 20px 40px -15px rgba(0, 0, 0, 0.6) !important;
+            border-color: #ff0000 !important;
+            animation: criticalPulse 1s ease-in-out infinite !important;
+        }
+
+        @keyframes criticalPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 60px rgba(239, 68, 68, 0.8); }
+            50% { transform: scale(1.05); box-shadow: 0 0 100px rgba(239, 68, 68, 1); }
+        }
+
         /* Finans metrikleri için özel renkler */
         .metric-node.transaction-volume {
             box-shadow: 0 0 50px rgba(34, 197, 94, 0.6), 0 20px 40px -15px rgba(0, 0, 0, 0.6);
@@ -1595,6 +1607,16 @@
                 const nodeVal = document.getElementById(`val-${metricName}`);
                 const tooltipVal = document.getElementById(`tooltip-${metricName}`);
                 
+                // Explicit mapping for circular nodes
+                const mapping = {
+                    'cost': 'metric-cost',
+                    'fraud': 'metric-fraud',
+                    'risk': 'metric-risk',
+                    'inv': 'metric-inv'
+                };
+                const circleNodeId = mapping[metricName];
+                const circleNode = document.getElementById(circleNodeId);
+                
                 if (nodeVal) {
                     nodeVal.textContent = value.toFixed(2) + (unit ? " " + unit : "");
                 }
@@ -1611,6 +1633,10 @@
                         label.textContent = 'Critical';
                         label.className = 'text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full ml-auto';
                     }
+                    if (circleNode) {
+                        circleNode.classList.remove('normal', 'warning');
+                        circleNode.classList.add('critical');
+                    }
                 } else {
                     if (card) {
                         card.style.borderColor = '';
@@ -1626,6 +1652,10 @@
                         const s = states[metricName] || { text: 'Normal', color: 'blue' };
                         label.textContent = s.text;
                         label.className = `text-xs bg-${s.color}-500/20 text-${s.color}-300 px-2 py-1 rounded-full ml-auto`;
+                    }
+                    if (circleNode) {
+                        circleNode.classList.remove('critical', 'warning');
+                        circleNode.classList.add('normal');
                     }
                 }
             }

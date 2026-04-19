@@ -483,6 +483,18 @@
             }
         }
 
+        .metric-node.critical {
+            background: radial-gradient(circle at 30%, #ff0000, #8b0000) !important;
+            box-shadow: 0 0 60px rgba(239, 68, 68, 0.8), 0 0 100px rgba(255, 0, 0, 0.4), 0 20px 40px -15px rgba(0, 0, 0, 0.6) !important;
+            border-color: #ff0000 !important;
+            animation: criticalPulse 1s ease-in-out infinite !important;
+        }
+
+        @keyframes criticalPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 60px rgba(239, 68, 68, 0.8); }
+            50% { transform: scale(1.05); box-shadow: 0 0 100px rgba(239, 68, 68, 1); }
+        }
+
         @keyframes vibrationPulse {
             0%, 100% { box-shadow: 0 0 50px rgba(168, 85, 247, 0.6); }
             50% { box-shadow: 0 0 80px rgba(168, 85, 247, 0.9); }
@@ -1677,14 +1689,14 @@
             // Temperature Chart (blue)
             drawLineChart('chart-temp', generateTimeSeriesData(24, 0, 100, 0.05), '#38bdf8', true, ' °C');
 
-            // Speed Chart (blue)
-            drawLineChart('chart-speed', generateTimeSeriesData(24, 0, 100, 0.05), '#3b82f6', true, ' RPM');
+            // Vib Chart (blue)
+            drawLineChart('chart-vib', generateTimeSeriesData(24, 0, 100, 0.05), '#3b82f6', true, ' Hz');
 
-            // Wear Chart (green)
-            drawLineChart('chart-wear', generateTimeSeriesData(24, 0, 100, 0.05), '#22c55e', true, ' %');
+            // Cycle Chart (green)
+            drawLineChart('chart-cycle', generateTimeSeriesData(24, 0, 100, 0.05), '#22c55e', true, ' %');
 
             // Torque Chart (purple)
-            drawLineChart('chart-torque', generateTimeSeriesData(24, 0, 100, 0.05), '#a855f7', true, ' Nm');
+            drawLineChart('chart-torq', generateTimeSeriesData(24, 0, 100, 0.05), '#a855f7', true, ' Nm');
 
             // Correlation Chart
             drawScatterPlot('chart-correlation');
@@ -1754,6 +1766,16 @@
                 const nodeVal = document.getElementById(`val-${metricName}`);
                 const statusNode = document.getElementById(`status-${metricName}`);
                 
+                // Explicit mapping for circular nodes
+                const mapping = {
+                    'temp': 'metric-temp',
+                    'vib': 'metric-vib',
+                    'cycle': 'metric-cycle',
+                    'torq': 'metric-torque'
+                };
+                const circleNodeId = mapping[metricName];
+                const circleNode = document.getElementById(circleNodeId);
+                
                 if (nodeVal) {
                     nodeVal.textContent = value.toFixed(unit === "%" ? 1 : 2) + (unit ? " " + unit : "");
                 }
@@ -1767,6 +1789,10 @@
                         label.textContent = 'Critical';
                         label.className = 'text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full ml-auto';
                     }
+                    if (circleNode) {
+                        circleNode.classList.remove('normal', 'warning');
+                        circleNode.classList.add('critical');
+                    }
                     if (statusNode) statusNode.textContent = 'Critical';
                 } else {
                     if (card) {
@@ -1777,6 +1803,10 @@
                         label.textContent = metricName === 'temp' ? 'Stable' : (metricName === 'vib' ? 'Normal' : (metricName === 'cycle' ? 'Optimal' : 'Secure'));
                         const colorClass = metricName === 'temp' ? 'blue' : (metricName === 'vib' ? 'blue' : (metricName === 'cycle' ? 'green' : 'purple'));
                         label.className = `text-xs bg-${colorClass}-500/20 text-${colorClass}-300 px-2 py-1 rounded-full ml-auto`;
+                    }
+                    if (circleNode) {
+                        circleNode.classList.remove('critical', 'warning');
+                        circleNode.classList.add('normal');
                     }
                     if (statusNode) statusNode.textContent = 'Normal';
                 }
@@ -1816,10 +1846,10 @@
                     const torqAnomaly  = globalAnomaly && isMetricAnomaly(torqData);
 
                     // Redraw specific charts - each with its own anomaly colour
-                    drawLineChart('chart-temp',  tempData,  tempAnomaly  ? '#ef4444' : '#38bdf8', true, String.fromCharCode(176)+'C');
-                    drawLineChart('chart-vib',   vibData,   vibAnomaly   ? '#ef4444' : '#3b82f6', true, 'Hz');
-                    drawLineChart('chart-cycle', cycleData, cycleAnomaly ? '#ef4444' : '#22c55e', true, '%');
-                    drawLineChart('chart-torq',  torqData,  torqAnomaly  ? '#ef4444' : '#a855f7', true, 'Nm');
+                    drawLineChart('chart-temp',  tempData,  tempAnomaly  ? '#ef4444' : '#38bdf8', true, ' °C');
+                    drawLineChart('chart-vib',   vibData,   vibAnomaly   ? '#ef4444' : '#3b82f6', true, ' Hz');
+                    drawLineChart('chart-cycle', cycleData, cycleAnomaly ? '#ef4444' : '#22c55e', true, ' %');
+                    drawLineChart('chart-torq',  torqData,  torqAnomaly  ? '#ef4444' : '#a855f7', true, ' Nm');
 
                     // Extract logic variables
                     const tempVal  = tempData.length  > 0 ? tempData[tempData.length - 1].value   : 0;
@@ -1828,7 +1858,7 @@
                     const torqVal  = torqData.length  > 0 ? torqData[torqData.length - 1].value   : 0;
 
                     // Update Cards and Nodes - each card only turns red for its own metric
-                    updateUIState('temp',  tempVal,  tempAnomaly,  'card-temp',  'label-temp',  String.fromCharCode(176)+'C');
+                    updateUIState('temp',  tempVal,  tempAnomaly,  'card-temp',  'label-temp',  '°C');
                     updateUIState('vib',   vibVal,   vibAnomaly,   'card-vib',   'label-vib',   'Hz');
                     updateUIState('cycle', cycleVal, cycleAnomaly, 'card-cycle', 'label-cycle', '%');
                     updateUIState('torq',  torqVal,  torqAnomaly,  'card-torq',  'label-torq',  'Nm');

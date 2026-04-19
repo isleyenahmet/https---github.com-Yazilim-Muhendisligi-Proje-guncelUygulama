@@ -448,7 +448,9 @@
         }
 
         .metric-node.critical {
-            box-shadow: 0 0 60px rgba(239, 68, 68, 0.8), 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+            background: radial-gradient(circle at 30%, #ff0000, #8b0000) !important;
+            box-shadow: 0 0 60px rgba(239, 68, 68, 0.8), 0 0 100px rgba(255, 0, 0, 0.4), 0 20px 40px -15px rgba(0, 0, 0, 0.6) !important;
+            border-color: #ff0000 !important;
             animation: criticalPulse 1s ease-in-out infinite;
         }
 
@@ -1746,6 +1748,16 @@
                 const status = document.getElementById(statusId);
                 const nodeVal = document.getElementById(`val-${metricName}`);
                 
+                // Explicit mapping for circular nodes
+                const mapping = {
+                    'net_lat': 'metric-latency',
+                    'net_thr': 'metric-throughput',
+                    'net_p_loss': 'metric-packetloss',
+                    'net_sec': 'metric-security'
+                };
+                const circleNodeId = mapping[metricName];
+                const circleNode = document.getElementById(circleNodeId);
+                
                 if (nodeVal) {
                     nodeVal.textContent = value.toFixed(unit === "%" ? 2 : 1) + (unit ? " " + unit : "");
                 }
@@ -1759,6 +1771,10 @@
                         status.textContent = 'Critical';
                         status.className = 'text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full ml-auto';
                     }
+                    if (circleNode) {
+                        circleNode.classList.remove('normal', 'warning');
+                        circleNode.classList.add('critical');
+                    }
                 } else {
                     if (card) {
                         card.style.borderColor = '';
@@ -1768,6 +1784,10 @@
                         status.textContent = metricName === 'net_lat' ? 'Stable' : (metricName === 'net_thr' ? 'Optimal' : (metricName === 'net_p_loss' ? 'Normal' : 'Secure'));
                         const colorClass = metricName === 'net_lat' ? 'blue' : (metricName === 'net_thr' ? 'green' : (metricName === 'net_p_loss' ? 'green' : 'purple'));
                         status.className = `text-xs bg-${colorClass}-500/20 text-${colorClass}-300 px-2 py-1 rounded-full ml-auto`;
+                    }
+                    if (circleNode) {
+                        circleNode.classList.remove('critical', 'warning');
+                        circleNode.classList.add('normal');
                     }
                 }
             }
