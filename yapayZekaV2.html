@@ -1437,14 +1437,14 @@
 
                     <div class="anomaly-stats">
                         <div>
-                            <div class="anomaly-current critical">12.4%</div>
+                            <div class="anomaly-current critical">4475 RPM</div>
                             <div class="anomaly-threshold">
-                                <i class="fas fa-chart-line"></i> Eşik: 5%
+                                <i class="fas fa-chart-line"></i> Eşik: 4400 RPM
                             </div>
                         </div>
                         <div class="forecast-indicator">
                             <i class="fas fa-clock"></i>
-                            <span>+2h: 15.8%</span>
+                            <span>+2h: 4620 RPM</span>
                             <i class="fas fa-arrow-up text-red-400"></i>
                         </div>
                     </div>
@@ -2076,7 +2076,7 @@
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Packet Loss (%)',
+                            label: 'Motor Devri (RPM)',
                             data: [...iotHistoric, ...Array(30).fill(null)],
                             borderColor: '#ef4444',
                             backgroundColor: 'rgba(239, 68, 68, 0.1)',
@@ -2375,7 +2375,7 @@
                             currSel: '.anomaly-card[data-dept="iot"] .anomaly-current',
                             chart: chartIoT_instance,
                             val: d.iot_temp ? ((d.iot_temp) * 15 + 2).toFixed(1) : ((chartIoT_instance.data.datasets[0].data.filter(x => x !== null).slice(-1)[0] || 4475) + (Math.random() - 0.5) * 5).toFixed(1),
-                            suffix: '%'
+                            suffix: ' RPM'
                         },
                         finance: {
                             score: risk.Finans,
