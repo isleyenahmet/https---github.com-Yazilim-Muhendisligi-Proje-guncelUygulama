@@ -1968,7 +1968,10 @@
                     if (indHr) indHr.textContent = `${(d.log_soc * 10).toFixed(1)}/10 Sat · ${d.row_id % 100}% Load`;
 
                     const indIot = document.getElementById('ind-iot');
-                    if (indIot) indIot.textContent = `${(d.iot_temp * 50 + 20).toFixed(1)}°C · ${(d.iot_vib * 100).toFixed(0)} Hz`;
+                    if (indIot) {
+                        const tempVal = d.iot_temp > 200 ? (d.iot_temp - 273.15) : (d.iot_temp * 50 + 20);
+                        indIot.textContent = `${tempVal.toFixed(1)}°C · ${(d.iot_vib || 0).toFixed(0)} Hz`;
+                    }
 
                     const indFin = document.getElementById('ind-fin');
                     if (indFin) indFin.textContent = `$${(d.fin_cost * 1).toFixed(1)}k · ${(d.fin_inv * 1).toFixed(1)}% Inv`;

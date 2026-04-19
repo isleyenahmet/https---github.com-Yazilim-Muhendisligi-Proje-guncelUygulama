@@ -1731,10 +1731,10 @@
             // 1. Initial Load from global buffer
             const buffer = JSON.parse(sessionStorage.getItem('asgard_global_stream_buffer') || '[]');
             buffer.forEach((d) => {
-                const temp = (d.iot_temp || 0) * 100;
-                const vib = (d.iot_vib || 0) * 100;
-                const cycle = (d.iot_cycle || 0) * 100;
-                const torq = (d.iot_torq || 0) * 100;
+                const temp = d.iot_temp > 200 ? (d.iot_temp - 273.15) : (d.iot_temp * 50 + 20);
+                const vib = (d.iot_vib || 0);
+                const cycle = (d.iot_cycle || 0);
+                const torq = (d.iot_torq || 0);
                 tempData.push({ time: tick, value: temp });
                 vibData.push({ time: tick, value: vib });
                 cycleData.push({ time: tick, value: cycle });
@@ -1796,10 +1796,10 @@
                 try {
                     if (!isInitialRender) {
                         tick++;
-                        const temp = (d.iot_temp || 0) * 100;
-                        const vib = (d.iot_vib || 0) * 100;
-                        const cycle = (d.iot_cycle || 0) * 100;
-                        const torq = (d.iot_torq || 0) * 100;
+                        const temp = d.iot_temp > 200 ? (d.iot_temp - 273.15) : (d.iot_temp * 50 + 20);
+                        const vib = (d.iot_vib || 0);
+                        const cycle = (d.iot_cycle || 0);
+                        const torq = (d.iot_torq || 0);
 
                         pushValue(tempData, temp);
                         pushValue(vibData, vib);
