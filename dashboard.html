@@ -1931,14 +1931,8 @@
         // LIVE DATA STREAM — Dashboard
         // ═══════════════════════════════════════════════════════════════════
         (function startDashboardLiveStream() {
-            const API = 'http://127.0.0.1:5003/api/stream';
-
-            async function fetchAndUpdate() {
+            function processDataUpdate(d) {
                 try {
-                    const response = await fetch(API);
-                    if (!response.ok) return;
-                    const d = await response.json();
-
                     // Update System Health
                     const sysHealth = document.getElementById('sys-health-val');
                     if (sysHealth) {
@@ -1964,7 +1958,6 @@
                     }
 
                     function updateNode(id, score, isAnomaly) {
-                        // Artık DOM Manipülasyonu yerine 3D Digital Twin Satellite verisi güncellenecek
                         const nodeMap = {
                             'node-it': 'it',
                             'node-hr': 'hr',
@@ -1980,7 +1973,6 @@
                             sat.data.isAnomaly = isAnomaly;
                         }
                         
-                        // Tie risk linearly to curve particle speed (1x to 4x base)
                         if (score !== undefined) {
                             twinGlobalConfig.deptSpeeds[twinId] = 1.0 + (score / 100) * 3.0;
                         }
@@ -2003,7 +1995,7 @@
                         coreNode.material.emissive.setHex(0x011a13);
                     }
 
-                    // Update Indicators dynamically — Map correctly to API fields
+                    // Update Indicators dynamically
                     const indIt = document.getElementById('ind-it');
                     if (indIt) indIt.textContent = `${(d.net_thr * 100).toFixed(0)}% Util · ${(d.net_lat * 1).toFixed(1)}ms`;
 
@@ -2016,15 +2008,21 @@
                     const indFin = document.getElementById('ind-fin');
                     if (indFin) indFin.textContent = `$${(d.fin_cost * 1).toFixed(1)}k · ${(d.fin_inv * 1).toFixed(1)}% Inv`;
 
-                } catch (e) {
-                    // console.error("Dashboard stream init wait:", e);
-                }
+                } catch (e) {}
             }
 
-            const savedRate = localStorage.getItem('asgard_refresh_rate') || '1';
-            const intervalMs = parseInt(savedRate) * 1000;
-            setInterval(fetchAndUpdate, intervalMs);
-            setTimeout(fetchAndUpdate, 500); // Initial fast fetch
+            // Listen to global stream
+            window.addEventListener('asgard_stream_data', (e) => {
+                processDataUpdate(e.detail);
+            });
+
+            // Initial load from buffer
+            setTimeout(() => {
+                const buffer = JSON.parse(sessionStorage.getItem('asgard_global_stream_buffer') || '[]');
+                if (buffer.length > 0) {
+                    processDataUpdate(buffer[buffer.length - 1]);
+                }
+            }, 500);
         })();
 
         // ── Auth ──────────────────────────────────────────────────────────

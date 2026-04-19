@@ -2928,14 +2928,23 @@
                         border-radius:12px;padding:18px;margin-bottom:28px">
                         <div style="font-size:11px;font-weight:700;color:#8b5cf6;letter-spacing:2px;margin-bottom:10px">🧠 AI MODEL BİLGİSİ</div>
                         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
-                            ${[
-                                ['GAT Modeli','Graph Attention Network · 4 katman · 8 dikkat başlığı'],
-                                ['Açıklanabilirlik','SHAP TreeExplainer + LIME TabularExplainer'],
-                                ['Tahmin Ufku','Anlık + 2 saatlik öngörü · %89.3 doğruluk']
-                            ].map(([t,d]) => `<div>
-                                <div style="font-size:11px;font-weight:700;color:#e2e8f0;margin-bottom:4px">${t}</div>
-                                <div style="font-size:10px;color:#64748b;line-height:1.6">${d}</div>
-                            </div>`).join('')}
+                            <div>
+                                <div style="font-size:11px;font-weight:700;color:#e2e8f0;margin-bottom:4px">GAT Modeli</div>
+                                <div style="font-size:10px;color:#64748b;line-height:1.6">Graph Attention Network · 4 katman · 8 dikkat başlığı</div>
+                            </div>
+                            ${(localStorage.getItem('asgard_xai_shap') !== 'false' || localStorage.getItem('asgard_xai_lime') !== 'false') ? `
+                            <div>
+                                <div style="font-size:11px;font-weight:700;color:#e2e8f0;margin-bottom:4px">Açıklanabilirlik</div>
+                                <div style="font-size:10px;color:#64748b;line-height:1.6">
+                                    ${localStorage.getItem('asgard_xai_shap') !== 'false' ? 'SHAP TreeExplainer' : ''}
+                                    ${(localStorage.getItem('asgard_xai_shap') !== 'false' && localStorage.getItem('asgard_xai_lime') !== 'false') ? ' + ' : ''}
+                                    ${localStorage.getItem('asgard_xai_lime') !== 'false' ? 'LIME TabularExplainer' : ''}
+                                </div>
+                            </div>` : ''}
+                            <div>
+                                <div style="font-size:11px;font-weight:700;color:#e2e8f0;margin-bottom:4px">Tahmin Ufku</div>
+                                <div style="font-size:10px;color:#64748b;line-height:1.6">Anlık + 2 saatlik öngörü · %89.3 doğruluk</div>
+                            </div>
                         </div>
                     </div>
 
@@ -3034,6 +3043,7 @@
                     </div>
 
                     <!-- SHAP küçük -->
+                    ${localStorage.getItem('asgard_xai_shap') !== 'false' ? `
                     <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);
                         border-radius:12px;padding:14px">
                         <div style="font-size:10px;color:#64748b;letter-spacing:2px;font-weight:700;margin-bottom:10px">SHAP ÖZELLİK KATKILARI (GAT SONUÇLARI)</div>
@@ -3044,7 +3054,7 @@
                                ['Zaman serisi trendî',        0.12+Math.random()*0.1]
                               ].map(([lbl,v]) => miniBar(lbl, v*100, riskMeta(v*100).color)).join('')}
                         </div>
-                    </div>
+                    </div>` : ''}
 
                     <div style="display:flex;justify-content:space-between;align-items:center;padding-top:16px;margin-top:16px;
                         border-top:1px solid rgba(255,255,255,0.05)">
@@ -3080,7 +3090,7 @@
                     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:32px">
                         ${[
                             ['📅 Oluşturulma','', reportTime],
-                            ['🤖 AI Modeli','', 'GAT v4.1 · SHAP · LIME'],
+                            ['🤖 AI Modeli','', `GAT v4.1 ${localStorage.getItem('asgard_xai_shap') !== 'false' ? '· SHAP' : ''} ${localStorage.getItem('asgard_xai_lime') !== 'false' ? '· LIME' : ''}`],
                             ['🔒 Gizlilik','', 'Dahili Kullanım']
                         ].map(([title, _, val]) => `
                             <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);

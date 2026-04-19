@@ -216,21 +216,39 @@ function startGlobalBackgroundStream() {
     }
 
     seedGlobalBuffer();
+    
+    let currentInterval = (parseInt(localStorage.getItem('asgard_refresh_rate')) || 1) * 1000;
+    let timerId = null;
 
-    setInterval(async () => {
+    async function fetchIteration() {
         try {
             const res = await fetch('http://127.0.0.1:5003/api/stream');
-            if (!res.ok) return;
-            const d = await res.json();
-            
-            // Append to rolling buffer
-            let buffer = JSON.parse(sessionStorage.getItem(BUFFER_KEY) || '[]');
-            buffer.push(d);
-            if (buffer.length > MAX_POINTS) buffer.shift();
-            sessionStorage.setItem(BUFFER_KEY, JSON.stringify(buffer));
-
-            // Notify active page
-            window.dispatchEvent(new CustomEvent('asgard_stream_data', { detail: d }));
+            if (res.ok) {
+                const d = await res.json();
+                let buffer = JSON.parse(sessionStorage.getItem(BUFFER_KEY) || '[]');
+                buffer.push(d);
+                if (buffer.length > MAX_POINTS) buffer.shift();
+                sessionStorage.setItem(BUFFER_KEY, JSON.stringify(buffer));
+                window.dispatchEvent(new CustomEvent('asgard_stream_data', { detail: d }));
+            }
         } catch(e) {}
-    }, 2000);
+        
+        // Schedule next with potentially updated interval
+        timerId = setTimeout(fetchIteration, currentInterval);
+    }
+
+    // Start
+    fetchIteration();
+
+    // Listen for setting changes
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'asgard_refresh_rate') {
+            const newRate = parseInt(e.newValue) || 1;
+            currentInterval = newRate * 1000;
+            console.log(`[ASGARD] Refresh rate updated to ${newRate}s`);
+            // Optional: reset timer to apply immediately
+            clearTimeout(timerId);
+            timerId = setTimeout(fetchIteration, currentInterval);
+        }
+    });
 }
