@@ -2877,7 +2877,7 @@
                         <div style="flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);
                             border-radius:16px;padding:20px">
                             <div style="font-size:11px;color:#8b5cf6;font-weight:700;letter-spacing:2px;margin-bottom:12px">GENEL DEĞERLENDİRME</div>
-                            <div style="font-size:13px;color:#cbd5e1;line-height:1.75">
+                            <div style="font-size:13px;color:#f1f5f9;line-height:1.75">
                                 ${avgScore > 60
                                     ? `Bu rapor döneminde izlenen sistemlerde <strong style="color:#ef4444">anormal faaliyet örüntüleri</strong> tespit edilmiştir. ASGARD'ın GAT tabanlı modeli, düğümler arası anormal ağırlık geçişleri gözlemleyerek olası operasyonel risk odaklarını işaretlemiştir. Risk yönetim ekibinin ivedilikle bilgilendirilmesi önerilmektedir.`
                                     : avgScore > 30
@@ -2917,7 +2917,7 @@
                                     background:${r.rm.bg};color:${r.rm.color};
                                     font-size:10px;font-weight:700;letter-spacing:1px">${r.rm.emoji} ${r.rm.label}</span>
                             </div>
-                            <div style="font-size:10px;color:#94a3b8;align-self:center;line-height:1.5">
+                            <div style="font-size:10px;color:#cbd5e1;align-self:center;line-height:1.5">
                                 ${r.score > 60 ? 'İvedi müdahale gerekli' : r.score > 30 ? 'Yakın takip önerilir' : 'Rutin izleme yeterli'}
                             </div>
                         </div>`).join('')}
@@ -2991,7 +2991,7 @@
                         <div style="display:flex;align-items:center;gap:12px">
                             <div style="width:4px;height:40px;background:${cfg?.color||'#8b5cf6'};border-radius:2px"></div>
                             <div>
-                                <div style="font-size:10px;color:#64748b;letter-spacing:2px;font-weight:700">DEPARTMAN ANALİZİ · SAYFA ${pageNum}</div>
+                                <div style="font-size:10px;color:#94a3b8;letter-spacing:2px;font-weight:700">DEPARTMAN ANALİZİ · SAYFA ${pageNum}</div>
                                 <div style="font-size:24px;font-weight:800;color:white;margin-top:4px">
                                     ${cfg?.icon||'📊'} ${cfg?.fullName||dept}
                                 </div>
@@ -3030,9 +3030,9 @@
                     <div style="background:rgba(139,92,246,0.05);border:1px solid rgba(139,92,246,0.2);
                         border-radius:14px;padding:18px;margin-bottom:16px">
                         <div style="font-size:11px;color:#8b5cf6;letter-spacing:2px;font-weight:700;margin-bottom:10px">🤖 AI ANALİZ YORUMU</div>
-                        <div style="font-size:12px;color:#cbd5e1;line-height:1.75;margin-bottom:12px">${insight.summary}</div>
+                        <div style="font-size:12px;color:#f1f5f9;line-height:1.75;margin-bottom:12px">${insight.summary}</div>
                         <div style="height:1px;background:rgba(255,255,255,0.06);margin-bottom:12px"></div>
-                        <div style="font-size:11px;color:#94a3b8;line-height:1.6">${insight.forecast}</div>
+                        <div style="font-size:11px;color:#cbd5e1;line-height:1.6">${insight.forecast}</div>
                     </div>
 
                     <!-- Öneri -->
@@ -3077,14 +3077,14 @@
                         <div style="width:4px;height:32px;background:linear-gradient(180deg,#8b5cf6,#3b82f6);border-radius:2px"></div>
                         <div style="font-size:18px;font-weight:800;color:white">YASAL UYARI & BİLGİLENDİRME</div>
                     </div>
-                    <div style="font-size:12px;color:#475569;line-height:1.9;margin-bottom:32px">
+                    <div style="font-size:12px;color:#cbd5e1;line-height:1.9;margin-bottom:32px">
                         Bu rapor, ASGARD Yapay Zeka Anomali Öngörü Platformu tarafından otomatik olarak üretilmiştir. 
-                        İçerdiği tüm analizler, tahminler ve öneriler <strong style="color:#94a3b8">bilgi amaçlı</strong> olup 
+                        İçerdiği tüm analizler, tahminler ve öneriler <strong style="color:#ffffff">bilgi amaçlı</strong> olup 
                         operasyonel kararlar için tek başına referans alınmamalıdır. 
                         GAT (Graph Attention Network) modeli gerçek zamanlı veri akışları üzerinden çıkarım yapmaktadır; 
                         model performansı veri kalitesine bağlı olarak değişkenlik gösterebilir.
                         <br><br>
-                        Bu belge <strong style="color:#94a3b8">gizlilik derecesi taşımakta</strong> olup yalnızca yetkili kullanıcılar tarafından görüntülenebilir. 
+                        Bu belge <strong style="color:#ffffff">gizlilik derecesi taşımakta</strong> olup yalnızca yetkili kullanıcılar tarafından görüntülenebilir. 
                         İzinsiz çoğaltılması, dağıtılması veya üçüncü taraflarla paylaşılması yasaktır.
                     </div>
                     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:32px">
@@ -3100,8 +3100,8 @@
                             </div>`).join('')}
                     </div>
                     <div style="text-align:center;padding-top:24px;border-top:1px solid rgba(255,255,255,0.05)">
-                        <div style="font-size:12px;color:#475569;letter-spacing:3px">ASGARD · INDUSTRIAL AIOPS PLATFORM</div>
-                        <div style="font-size:10px;color:#334155;margin-top:6px">Powered by Graph Attention Network & Explainable AI</div>
+                        <div style="font-size:12px;color:#94a3b8;letter-spacing:3px">ASGARD · INDUSTRIAL AIOPS PLATFORM</div>
+                        <div style="font-size:10px;color:#64748b;margin-top:6px">Powered by Graph Attention Network & Explainable AI</div>
                     </div>
                 </div>
                 <div style="position:absolute;bottom:0;left:0;right:0;height:4px;

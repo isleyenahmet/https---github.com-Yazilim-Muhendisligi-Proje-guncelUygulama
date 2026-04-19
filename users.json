@@ -37,10 +37,9 @@
       "role": "finance",
       "pages": [
         "dashboard",
-        "profile",
         "finance",
-        "it",
-        "ai"
+        "ai",
+        "profile"
       ]
     },
     {
