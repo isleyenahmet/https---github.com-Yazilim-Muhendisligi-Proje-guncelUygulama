@@ -743,6 +743,43 @@ async def get_notif_count(current_user=Depends(admin_required)):
     finally:
         conn.close()
 
+@app.get("/api/admin/requests/approved")
+async def list_approved_requests(current_user=Depends(admin_required)):
+    """Onaylanmış ve hâlâ aktif (süresi dolmamış) erişim taleplerini döndürür."""
+    conn = get_db_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT r.*, u.name as user_display_name
+            FROM access_requests r
+            JOIN users u ON r.username = u.username
+            WHERE r.status = 'approved' AND r.expires_at > CURRENT_TIMESTAMP
+            ORDER BY r.expires_at ASC
+        """)
+        rows = cur.fetchall()
+        return [dict(r) for r in rows]
+    finally:
+        conn.close()
+
+@app.delete("/api/admin/requests/revoke/{request_id}")
+async def revoke_access(request_id: int, current_user=Depends(admin_required)):
+    """Onaylanmış bir erişimi iptal eder (expires_at'ı geçmişe alır)."""
+    conn = get_db_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            UPDATE access_requests
+            SET expires_at = CURRENT_TIMESTAMP, status = 'rejected'
+            WHERE id = ? AND status = 'approved'
+        """, (request_id,))
+        if cur.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Aktif erişim bulunamadı")
+        conn.commit()
+        return {"message": "Erişim iptal edildi."}
+    finally:
+        conn.close()
+
+
 # ─── System Health ────────────────────────────────────────────────────────────
 @app.get("/api/health")
 async def health():

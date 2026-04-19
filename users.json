@@ -1,6 +1,19 @@
 {
   "users": [
     {
+      "username": "ik_mudur",
+      "password": "IK@2025",
+      "name": "Ali Çelik",
+      "initials": "AÇ",
+      "email": "ali.celik@nexus.ai",
+      "department": "İnsan Kaynakları",
+      "role": "",
+      "pages": [
+        "dashboard",
+        "profile"
+      ]
+    },
+    {
       "username": "lojistik_mudur",
       "password": "Loj@2025",
       "name": "Ali Çelik",

@@ -1,20 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASGARD · Erişim Belirleme · Yetki Yönetimi</title>
-
+    <title>ASGARD · ERİŞİM YÖNETİMİ</title>
+    
     <!-- Fonts & Icons -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-
+    
     <!-- Three.js -->
     <script type="importmap">
         {
@@ -23,13 +20,11 @@
             }
         }
     </script>
+    <!-- Auth -->
+    <script src="auth.js"></script>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -41,7 +36,7 @@
             overflow: hidden;
         }
 
-        /* Premium noise texture - daha hafif */
+        /* Premium noise texture */
         body::before {
             content: "";
             position: fixed;
@@ -49,13 +44,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMTUiIC8+PC9zdmc+');
-            opacity: 0.2;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
+            opacity: 0.4;
             pointer-events: none;
             z-index: 1000;
         }
 
-        /* Grid overlay - turkuaz/petrol tonları */
+        /* Grid overlay - Erişim için Teal/Turkuaz tonları (#14b8a6) */
         .grid-overlay {
             position: fixed;
             top: 0;
@@ -63,31 +58,28 @@
             width: 100%;
             height: 100%;
             background-image:
-                linear-gradient(rgba(20, 184, 166, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(20, 184, 166, 0.02) 1px, transparent 1px);
-            background-size: 60px 60px;
+                linear-gradient(rgba(20, 184, 166, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(20, 184, 166, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
             pointer-events: none;
             z-index: 5;
         }
 
-        /* Custom glass morphism - turkuaz/petrol vurgulu */
+        /* Particles Layer */
+        #particle-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;
+        }
+
+        /* Custom glass morphism */
         .glass-premium {
-            background: rgba(8, 20, 30, 0.5);
+            background: rgba(10, 15, 25, 0.4);
             backdrop-filter: blur(16px) saturate(180%);
             -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border: 1px solid rgba(20, 184, 166, 0.2);
+            border: 1px solid rgba(20, 184, 166, 0.15);
             border-radius: 24px;
             box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8),
                 0 0 0 1px rgba(20, 184, 166, 0.1) inset,
-                0 0 30px -10px rgba(20, 184, 166, 0.2);
-        }
-
-        .glass-premium-light {
-            background: rgba(15, 30, 40, 0.3);
-            backdrop-filter: blur(12px) saturate(180%);
-            -webkit-backdrop-filter: blur(12px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
+                0 0 30px -10px rgba(20, 184, 166, 0.3);
         }
 
         /* Sidebar styles */
@@ -97,7 +89,7 @@
             top: 0;
             height: 100vh;
             width: 280px;
-            background: rgba(5, 12, 18, 0.9);
+            background: rgba(5, 10, 18, 0.85);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-right: 1px solid rgba(20, 184, 166, 0.15);
@@ -108,1151 +100,227 @@
             -ms-overflow-style: none;
         }
 
-        .sidebar::-webkit-scrollbar {
-            display: none;
-        }
-
-        .sidebar.collapsed {
-            width: 80px;
-        }
+        .sidebar::-webkit-scrollbar { display: none; }
+        .sidebar.collapsed { width: 80px; }
 
         .sidebar-header {
             padding: 24px 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            display: flex; align-items: center; justify-content: space-between;
         }
 
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            overflow: hidden;
-        }
+        .sidebar-logo { display: flex; align-items: center; gap: 12px; overflow: hidden; }
 
         .logo-icon {
-            width: 40px;
-            height: 40px;
-            min-width: 40px;
+            width: 40px; height: 40px; min-width: 40px;
             background: radial-gradient(circle at 30% 30%, #14b8a6, #0f766e);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
             box-shadow: 0 0 20px rgba(20, 184, 166, 0.3);
         }
 
-        .logo-text {
-            font-weight: 700;
-            font-size: 18px;
-            color: white;
-            white-space: nowrap;
-            transition: opacity 0.3s ease;
-        }
-
-        .sidebar.collapsed .logo-text {
-            opacity: 0;
-        }
+        .logo-text { font-weight: 700; font-size: 18px; color: white; white-space: nowrap; transition: opacity 0.3s ease; }
+        .sidebar.collapsed .logo-text { opacity: 0; }
 
         .collapse-btn {
-            width: 32px;
-            height: 32px;
-            min-width: 32px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: rgba(255, 255, 255, 0.5);
+            width: 32px; height: 32px; min-width: 32px;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; color: rgba(255, 255, 255, 0.5);
         }
+        .collapse-btn:hover { background: rgba(20, 184, 166, 0.1); border-color: rgba(20, 184, 166, 0.3); color: #14b8a6; }
 
-        .collapse-btn:hover {
-            background: rgba(20, 184, 166, 0.1);
-            border-color: rgba(20, 184, 166, 0.3);
-            color: #14b8a6;
-        }
-
-        .sidebar-menu {
-            padding: 20px 12px;
-        }
+        .sidebar-menu { padding: 20px 12px; }
 
         .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 16px;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 8px;
-            color: rgba(255, 255, 255, 0.6);
-            position: relative;
-            overflow: hidden;
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 16px; border-radius: 16px; cursor: pointer; transition: all 0.3s ease; margin-bottom: 8px; color: rgba(255, 255, 255, 0.6); position: relative; overflow: hidden;
         }
-
         .menu-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 0;
-            background: linear-gradient(90deg, rgba(20, 184, 166, 0.15), transparent);
-            transition: width 0.3s ease;
-            z-index: -1;
+            content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 0;
+            background: linear-gradient(90deg, rgba(20, 184, 166, 0.15), transparent); transition: width 0.3s ease; z-index: -1;
         }
+        .menu-item:hover { background: rgba(20, 184, 166, 0.05); color: white; }
+        .menu-item:hover::before { width: 100%; }
+        .menu-item.active { background: rgba(20, 184, 166, 0.1); color: #14b8a6; box-shadow: 0 0 20px rgba(20, 184, 166, 0.1); }
+        .menu-item.active::before { width: 4px; background: #14b8a6; }
 
-        .menu-item:hover {
-            background: rgba(20, 184, 166, 0.05);
-            color: white;
-        }
+        .menu-icon { width: 24px; height: 24px; min-width: 24px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .menu-text { font-size: 14px; font-weight: 500; white-space: nowrap; transition: opacity 0.3s ease; }
+        .sidebar.collapsed .menu-text { opacity: 0; pointer-events: none; }
 
-        .menu-item:hover::before {
-            width: 100%;
-        }
+        .menu-badge { margin-left: auto; background: rgba(239, 68, 68, 0.2); color: #ef4444; font-size: 10px; padding: 2px 6px; border-radius: 12px; font-weight: 600; white-space: nowrap; }
+        .sidebar.collapsed .menu-badge { opacity: 0; }
+        .menu-divider { height: 1px; background: rgba(255, 255, 255, 0.05); margin: 20px 16px; }
 
-        .menu-item.active {
-            background: rgba(20, 184, 166, 0.1);
-            color: #14b8a6;
-            box-shadow: 0 0 20px rgba(20, 184, 166, 0.1);
-        }
-
-        .menu-item.active::before {
-            width: 4px;
-            background: #14b8a6;
-        }
-
-        .menu-icon {
-            width: 24px;
-            height: 24px;
-            min-width: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .menu-text {
-            font-size: 14px;
-            font-weight: 500;
-            white-space: nowrap;
-            transition: opacity 0.3s ease;
-        }
-
-        .sidebar.collapsed .menu-text {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .menu-badge {
-            margin-left: auto;
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 12px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .sidebar.collapsed .menu-badge {
-            opacity: 0;
-        }
-
-        .menu-divider {
-            height: 1px;
-            background: rgba(255, 255, 255, 0.05);
-            margin: 20px 16px;
-        }
-
-        /* Main content area */
+        /* Main Content Wrapper */
         .main-wrapper {
-            margin-left: 280px;
-            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            height: 100vh;
-            overflow-y: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            position: relative;
+            margin-left: 280px; transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative; height: 100vh; overflow: hidden;
         }
+        .main-wrapper.sidebar-collapsed { margin-left: 80px; }
 
-        .main-wrapper::-webkit-scrollbar {
-            display: none;
+        .main-container {
+            height: 100vh; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth;
+            position: relative; z-index: 50; padding: 40px 40px; scrollbar-width: none;
         }
+        .main-container::-webkit-scrollbar { display: none; }
 
-        .main-wrapper.sidebar-collapsed {
-            margin-left: 80px;
-        }
-
-        /* Top navigation adjustment */
+        /* Top Nav Layout */
         .top-nav {
-            position: absolute;
-            top: 24px;
-            left: 30px;
-            right: 24px;
-            z-index: 90;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;
+        }
+        .header-content h1 { font-size: 32px; font-weight: 800; color: white; letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase; }
+        .header-content p { color: #14b8a6; font-size: 14px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+
+        .top-actions .btn-add {
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(15, 118, 110, 0.2));
+            border: 1px solid rgba(20, 184, 166, 0.4); border-radius: 40px; padding: 12px 24px;
+            color: #14b8a6; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 8px; box-shadow: 0 0 20px rgba(20,184,166,0.15);
+        }
+        .top-actions .btn-add:hover {
+            background: rgba(20, 184, 166, 0.3); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(20,184,166,0.25);
         }
 
-        /* Back button */
-        .back-button {
-            position: fixed;
-            top: 24px;
-            left: 310px;
-            z-index: 1000;
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: rgba(10, 20, 30, 0.6);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(20, 184, 166, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(20, 184, 166, 0.2);
-        }
-
-        .back-button:hover {
-            transform: scale(1.15);
-            border-color: rgba(20, 184, 166, 1);
-            box-shadow: 0 0 40px rgba(20, 184, 166, 0.5);
-        }
-
-        .back-button.sidebar-collapsed {
-            left: 110px;
-        }
-
-        /* Access Control Container */
-        .access-container {
-            padding: 100px 30px 30px 30px;
-            min-height: 100vh;
-        }
-
-        .access-header {
-            margin-bottom: 30px;
-        }
-
-        .access-title {
-            font-size: 28px;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 8px;
-        }
-
-        .access-subtitle {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 14px;
-        }
-
-        /* Admin Only Badge - turkuaz */
-        .admin-only-badge {
-            background: linear-gradient(135deg, rgba(20, 184, 166, 0.15), rgba(15, 118, 110, 0.15));
-            border: 1px solid rgba(20, 184, 166, 0.3);
-            border-radius: 40px;
-            padding: 8px 20px;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            backdrop-filter: blur(8px);
-            color: #14b8a6;
-        }
-
-        .admin-only-badge i {
-            color: #14b8a6;
-        }
-
-        /* Stats Cards - turkuaz tema */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 40px; }
         .stat-card {
-            background: rgba(8, 20, 30, 0.6);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(20, 184, 166, 0.15);
-            border-radius: 24px;
-            padding: 20px;
-            transition: all 0.3s ease;
+            background: rgba(10, 20, 35, 0.6); backdrop-filter: blur(16px);
+            border: 1px solid rgba(20, 184, 166, 0.15); border-radius: 24px; padding: 24px;
+            transition: all 0.3s ease; box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
         }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(20, 184, 166, 0.4);
-            box-shadow: 0 30px 50px -20px rgba(20, 184, 166, 0.2);
-        }
-
+        .stat-card:hover { border-color: rgba(20, 184, 166, 0.4); box-shadow: 0 30px 50px -20px rgba(20, 184, 166, 0.2); transform: translateY(-5px); }
         .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            background: rgba(20, 184, 166, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-            color: #14b8a6;
+            width: 48px; height: 48px; border-radius: 16px; background: rgba(20, 184, 166, 0.1);
+            display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
             font-size: 20px;
         }
+        .stat-icon.teal { color: #14b8a6; background: rgba(20, 184, 166, 0.15); }
+        .stat-icon.blue { color: #3b82f6; background: rgba(59, 130, 246, 0.15); }
+        .stat-icon.orange { color: #f97316; background: rgba(249, 115, 22, 0.15); }
+        .stat-icon.purple { color: #a855f7; background: rgba(168, 85, 247, 0.15); }
+        
+        .stat-value { font-size: 32px; font-weight: 800; color: white; margin-bottom: 4px; }
+        .stat-label { font-size: 13px; color: rgba(255, 255, 255, 0.5); text-transform: uppercase; letter-spacing: 0.5px; }
 
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 4px;
+        /* Tabs Panel */
+        .content-panel {
+            background: rgba(10, 20, 35, 0.6); backdrop-filter: blur(16px);
+            border: 1px solid rgba(20, 184, 166, 0.15); border-radius: 24px;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6); margin-bottom: 40px; overflow: hidden;
         }
-
-        .stat-label {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .tabs-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 24px; border-bottom: 1px solid rgba(20, 184, 166, 0.15);
         }
-
-        /* Search and Filter */
-        .search-section {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+        .tabs { display: flex; gap: 12px; }
+        .tab-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 20px; border-radius: 12px; color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;
         }
+        .tab-btn:hover { background: rgba(20, 184, 166, 0.1); color: white; }
+        .tab-btn.active { background: rgba(20, 184, 166, 0.15); color: #14b8a6; border-color: rgba(20, 184, 166, 0.3); box-shadow: 0 0 15px rgba(20, 184, 166, 0.2); }
+        .pending-badge { background: #ef4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; }
 
-        .search-box {
-            flex: 1;
-            min-width: 300px;
-            position: relative;
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: rgba(255, 255, 255, 0.3);
-        }
-
+        .search-wrap { position: relative; }
+        .search-wrap i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.4); }
         .search-input {
-            width: 100%;
-            padding: 14px 20px 14px 48px;
-            background: rgba(8, 20, 30, 0.6);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(20, 184, 166, 0.15);
-            border-radius: 40px;
-            color: white;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .search-input:focus {
-            border-color: #14b8a6;
-            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
-        }
-
-        .filter-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 12px 24px;
-            background: rgba(8, 20, 30, 0.6);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(20, 184, 166, 0.15);
-            border-radius: 40px;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .filter-btn:hover {
-            border-color: #14b8a6;
-            color: white;
-        }
-
-        .filter-btn.active {
-            background: rgba(20, 184, 166, 0.15);
-            color: #14b8a6;
-            border-color: #14b8a6;
-        }
-
-        /* Users Table */
-        .users-section {
-            background: rgba(8, 20, 30, 0.6);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(20, 184, 166, 0.15);
-            border-radius: 32px;
-            padding: 24px;
-            margin-bottom: 30px;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-title i {
-            color: #14b8a6;
-        }
-
-        .add-user-btn {
-            background: rgba(20, 184, 166, 0.1);
-            border: 1px solid rgba(20, 184, 166, 0.3);
-            border-radius: 40px;
-            padding: 10px 20px;
-            color: #14b8a6;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .add-user-btn:hover {
-            background: rgba(20, 184, 166, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .users-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .users-table th {
-            text-align: left;
-            padding: 16px 12px;
-            font-size: 12px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.5);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .users-table td {
-            padding: 16px 12px;
-            font-size: 14px;
-            color: white;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .users-table tr:hover td {
-            background: rgba(20, 184, 166, 0.02);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #14b8a6, #0f766e);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-        }
-
-        .user-name {
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .user-email {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        /* Rol badge'leri - turkuaz uyumlu */
-        .role-badge {
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .role-admin {
-            background: rgba(20, 184, 166, 0.15);
-            color: #14b8a6;
-            border: 1px solid rgba(20, 184, 166, 0.3);
-        }
-
-        .role-finance {
-            background: rgba(56, 189, 248, 0.15);
-            color: #38bdf8;
-            border: 1px solid rgba(56, 189, 248, 0.3);
-        }
-
-        .role-iot {
-            background: rgba(139, 92, 246, 0.15);
-            color: #8b5cf6;
-            border: 1px solid rgba(139, 92, 246, 0.3);
-        }
-
-        .role-it {
-            background: rgba(168, 85, 247, 0.15);
-            color: #a855f7;
-            border: 1px solid rgba(168, 85, 247, 0.3);
-        }
-
-        .role-hr {
-            background: rgba(236, 72, 153, 0.15);
-            color: #ec4899;
-            border: 1px solid rgba(236, 72, 153, 0.3);
-        }
-
-        .role-employee {
-            background: rgba(148, 163, 184, 0.15);
-            color: #94a3b8;
-            border: 1px solid rgba(148, 163, 184, 0.3);
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .action-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .action-btn:hover {
-            background: rgba(20, 184, 166, 0.1);
-            border-color: rgba(20, 184, 166, 0.3);
-            color: #14b8a6;
-        }
-
-        /* Permission Matrix */
-        .permission-matrix {
-            background: rgba(8, 20, 30, 0.6);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(20, 184, 166, 0.15);
-            border-radius: 32px;
-            padding: 24px;
-            margin-bottom: 30px;
-        }
-
-        .matrix-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .matrix-tabs {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .matrix-tab {
-            padding: 8px 16px;
-            border-radius: 40px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .matrix-tab:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .matrix-tab.active {
-            background: rgba(20, 184, 166, 0.1);
-            color: #14b8a6;
-            border: 1px solid rgba(20, 184, 166, 0.3);
-        }
-
-        .matrix-container {
-            width: 100%;
-            overflow-x: auto;
-            border-radius: 20px;
-            background: rgba(20, 184, 166, 0.02);
-            border: 1px solid rgba(20, 184, 166, 0.1);
-        }
-
-        .matrix-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            min-width: 800px;
-        }
-
-        .matrix-table th {
-            padding: 16px;
-            background: rgba(20, 184, 166, 0.05);
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-align: center;
-            border-bottom: 1px solid rgba(20, 184, 166, 0.15);
-        }
-
-        .matrix-table th:first-child {
-            text-align: left;
-            position: sticky;
-            left: 0;
-            z-index: 10;
-            background: rgba(8, 20, 30, 0.95);
-        }
-
-        .matrix-table td {
-            padding: 12px 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .matrix-table td:first-child {
-            text-align: left;
-            position: sticky;
-            left: 0;
-            z-index: 5;
-            background: rgba(8, 20, 30, 0.8);
-            backdrop-filter: blur(10px);
-        }
-
-        .matrix-table tr:hover td {
-            background: rgba(20, 184, 166, 0.05);
-        }
-
-        .permission-toggle {
-            width: 36px;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 0 auto;
-        }
-
-        .permission-toggle.allowed {
-            background: #14b8a6;
-            box-shadow: 0 0 10px rgba(20, 184, 166, 0.3);
-        }
-
-        .permission-toggle.denied {
-            background: rgba(211, 47, 47, 0.15);
-            border: 1px solid rgba(211, 47, 47, 0.2);
-        }
-
-        .permission-toggle::after {
-            content: '';
-            position: absolute;
-            width: 14px;
-            height: 14px;
-            background: white;
-            border-radius: 50%;
-            top: 3px;
-            transition: all 0.3s ease;
-        }
-
-        .permission-toggle.allowed::after {
-            right: 3px;
-        }
-
-        .permission-toggle.denied::after {
-            left: 3px;
-        }
-
-        .permission-checkbox {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .permission-checkbox.checked {
-            background: #14b8a6;
-            border-color: #14b8a6;
-        }
-
-        /* Role Templates */
-        .templates-section {
-            background: rgba(8, 20, 30, 0.6);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(20, 184, 166, 0.15);
-            border-radius: 32px;
-            padding: 24px;
-        }
-
-        .templates-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .template-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .template-card:hover {
-            transform: translateY(-5px);
-            border-color: #14b8a6;
-            background: rgba(20, 184, 166, 0.02);
-        }
-
-        .template-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            background: rgba(20, 184, 166, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-            color: #14b8a6;
-            font-size: 20px;
-        }
-
-        .template-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 8px;
-        }
-
-        .template-desc {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-            margin-bottom: 16px;
-        }
-
-        .template-badge {
-            font-size: 11px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            background: rgba(20, 184, 166, 0.1);
-            color: #14b8a6;
-            display: inline-block;
-        }
-
-        /* Quick actions */
-        .quick-actions {
-            position: fixed;
-            right: 24px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 90;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .quick-action-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: rgba(15, 30, 40, 0.4);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.5);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .quick-action-btn:hover {
-            background: rgba(20, 184, 166, 0.1);
-            border-color: rgba(20, 184, 166, 0.3);
-            color: #14b8a6;
-            transform: scale(1.1);
-        }
-
-        .badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #ef4444;
-            color: white;
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        /* Canvas for particles - daha az, daha küçük */
-        #particle-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0.3;
-        }
-
-        /* ── Active Sessions Panel ─────────────────────────────────────── */
-        .active-sessions-panel {
-            background: rgba(8, 20, 30, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(20, 184, 166, 0.25);
-            border-radius: 32px;
-            padding: 28px;
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .active-sessions-panel::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #14b8a6, transparent);
-            animation: scanLine 3s linear infinite;
-        }
-
-        @keyframes scanLine {
-            0%   { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        .active-session-card {
-            background: rgba(20, 184, 166, 0.04);
-            border: 1px solid rgba(20, 184, 166, 0.18);
-            border-radius: 20px;
-            padding: 18px 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .active-session-card:hover {
-            border-color: rgba(20, 184, 166, 0.45);
-            background: rgba(20, 184, 166, 0.08);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px -10px rgba(20, 184, 166, 0.2);
-        }
-
-        .session-avatar {
-            width: 46px;
-            height: 46px;
-            min-width: 46px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, rgba(20,184,166,0.3), rgba(15,118,110,0.3));
-            border: 1px solid rgba(20,184,166,0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 700;
-            color: #14b8a6;
-        }
-
-        .session-info { flex: 1; min-width: 0; }
-        .session-name { font-weight: 700; font-size: 14px; color: #fff; }
-        .session-sub  { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
-
-        .session-module-badge {
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            background: rgba(20,184,166,0.15);
-            color: #14b8a6;
-            border: 1px solid rgba(20,184,166,0.3);
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
-
-        /* Countdown ring */
-        .countdown-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            min-width: 70px;
-        }
-
-        .countdown-ring {
-            position: relative;
-            width: 56px;
-            height: 56px;
-        }
-
-        .countdown-ring svg {
-            transform: rotate(-90deg);
-        }
-
-        .countdown-ring .bg-circle {
-            fill: none;
-            stroke: rgba(255,255,255,0.06);
-            stroke-width: 4;
-        }
-
-        .countdown-ring .fg-circle {
-            fill: none;
-            stroke: #14b8a6;
-            stroke-width: 4;
-            stroke-linecap: round;
-            transition: stroke-dashoffset 1s linear, stroke 0.5s ease;
-        }
-
-        .countdown-ring .fg-circle.urgent {
-            stroke: #ef4444;
-            filter: drop-shadow(0 0 4px rgba(239,68,68,0.7));
-        }
-
-        .countdown-ring .fg-circle.warning {
-            stroke: #f59e0b;
-            filter: drop-shadow(0 0 4px rgba(245,158,11,0.5));
-        }
-
-        .countdown-time {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 11px;
-            font-weight: 700;
-            color: #fff;
-            white-space: nowrap;
-        }
-
-        .countdown-label {
-            font-size: 9px;
-            color: rgba(255,255,255,0.4);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .terminate-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
-            background: rgba(239, 68, 68, 0.08);
-            border: 1px solid rgba(239,68,68,0.3);
-            border-radius: 12px;
-            color: #ef4444;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            white-space: nowrap;
-        }
-
-        .terminate-btn:hover {
-            background: rgba(239,68,68,0.18);
-            border-color: rgba(239,68,68,0.6);
-            transform: scale(1.04);
-            box-shadow: 0 0 16px rgba(239,68,68,0.2);
-        }
-
-        .no-active-sessions {
-            text-align: center;
-            padding: 28px;
-            color: rgba(255,255,255,0.3);
-            font-size: 13px;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: rgba(8, 20, 30, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid #14b8a6;
-            border-radius: 32px;
-            padding: 30px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 30px 60px -20px rgba(20, 184, 166, 0.3);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: white;
-        }
-
-        .modal-close {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .modal-close:hover {
-            background: rgba(20, 184, 166, 0.1);
-            color: #14b8a6;
-        }
-
-        .modal-body {
-            margin-bottom: 20px;
-        }
-
-        .modal-footer {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
-        .modal-btn {
-            padding: 12px 24px;
-            border-radius: 40px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .modal-btn-primary {
-            background: #14b8a6;
-            color: #03050A;
-            border: none;
-        }
-
-        .modal-btn-primary:hover {
-            background: #0f766e;
-            transform: translateY(-2px);
-        }
-
-        .modal-btn-secondary {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        .modal-btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Permission indicators */
-        .permission-allowed {
-            color: #14b8a6;
-        }
-        #pageTitle {
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            background: linear-gradient(to bottom, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(20, 184, 166, 0.3));
-            margin: 0;
-            line-height: 1.2;
-        }
-
-        #pageSubtitle {
-            font-size: 10px;
-            letter-spacing: 0.5em;
-            text-transform: uppercase;
-            font-weight: 700;
-            margin-top: 4px;
-            opacity: 0.9;
-        }
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(20, 184, 166, 0.2); border-radius: 12px;
+            padding: 10px 16px 10px 40px; color: white; font-size: 14px; width: 280px; outline: none; transition: all 0.3s ease;
+        }
+        .search-input:focus { border-color: #14b8a6; box-shadow: 0 0 15px rgba(20,184,166,0.2); }
+
+        .tab-content { display: none; padding: 24px; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Tables & Lists */
+        table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        th { padding: 16px 20px; text-align: left; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        td { padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: middle; }
+        tr:hover td { background: rgba(20, 184, 166, 0.03); }
+
+        .user-cell { display: flex; align-items: center; gap: 16px; }
+        .u-avatar {
+            width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #14b8a6, #0f766e);
+            display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: white;
+            box-shadow: 0 4px 10px rgba(20,184,166,0.3);
+        }
+        .u-name { font-weight: 600; font-size: 15px; color: white; margin-bottom: 2px; }
+        .u-email { font-size: 12px; color: rgba(255,255,255,0.5); }
+
+        /* Role Badges */
+        .role-badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+        .bg-teal { background: rgba(20, 184, 166, 0.15); color: #14b8a6; border: 1px solid rgba(20, 184, 166, 0.3); }
+        .bg-blue { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .bg-purple { background: rgba(168, 85, 247, 0.15); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.3); }
+        .bg-orange { background: rgba(249, 115, 22, 0.15); color: #f97316; border: 1px solid rgba(249, 115, 22, 0.3); }
+        .bg-rose { background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); }
+        .bg-slate { background: rgba(148, 163, 184, 0.15); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.3); }
+
+        .pages-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+        .page-chip { padding: 4px 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; font-size: 11px; color: rgba(255,255,255,0.7); }
+
+        .action-wrap { display: flex; gap: 8px; }
+        .action-btn { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; color: rgba(255,255,255,0.6); transition: all 0.3s ease; }
+        .action-btn:hover { background: rgba(20, 184, 166, 0.15); border-color: rgba(20, 184, 166, 0.4); color: #14b8a6; }
+        .action-btn.danger:hover { background: rgba(2ef, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #ef4444; }
+
+        /* Request Lists */
+        .req-card { display: flex; align-items: center; gap: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; background: rgba(0,0,0,0.2); margin-bottom: 16px; transition: all 0.3s; }
+        .req-card:hover { background: rgba(20, 184, 166, 0.05); border-color: rgba(20, 184, 166, 0.2); transform: translateX(5px); }
+        .req-av { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #f97316, #ea580c); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: white; box-shadow: 0 4px 10px rgba(249,115,22,0.3); }
+        
+        .req-info { flex: 1; min-width: 0; }
+        .req-name { font-size: 16px; font-weight: 700; color: white; margin-bottom: 4px; }
+        .req-desc { font-size: 13px; color: rgba(255,255,255,0.6); }
+        .req-chip { background: rgba(20, 184, 166, 0.15); color: #14b8a6; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; display: inline-block; margin-right: 8px; }
+
+        .timer-btn { padding: 8px 16px; border-radius: 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; flex-shrink: 0; cursor: pointer; transition: all 0.3s; }
+        .btn-approve { background: rgba(20, 184, 166, 0.15); color: #14b8a6; border: 1px solid rgba(20, 184, 166, 0.3); }
+        .btn-approve:hover { background: rgba(20, 184, 166, 0.25); transform: translateY(-2px); }
+        .btn-reject { background: rgba(2ef, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .btn-reject:hover { background: rgba(239, 68, 68, 0.25); transform: translateY(-2px); }
+
+        .cd-box { display: flex; align-items: center; gap: 8px; background: rgba(249, 115, 22, 0.15); border: 1px solid rgba(249, 115, 22, 0.3); padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 700; color: #f97316; min-width: 130px; justify-content: center; }
+        .cd-box.urgent { background: rgba(2ef, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #ef4444; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.4); }
+        .empty-state i { font-size: 40px; margin-bottom: 16px; display: block; color: rgba(255,255,255,0.2); }
+        
+        /* Modals */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 1000; display: none; align-items: center; justify-content: center; }
+        .modal-overlay.open { display: flex; }
+        .modal-content { background: rgba(10, 15, 25, 0.95); border: 1px solid rgba(20, 184, 166, 0.3); border-radius: 24px; padding: 32px; width: 500px; max-width: 95vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 30px 60px rgba(0,0,0,0.8); animation: modalIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1); } }
+        .modal-header { font-size: 20px; font-weight: 700; color: white; display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+        .modal-header i { color: #14b8a6; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        .input-group label { display: block; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6); text-transform: uppercase; margin-bottom: 8px; }
+        .input-field { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(20, 184, 166, 0.2); border-radius: 12px; padding: 12px 16px; color: white; outline: none; transition: all 0.3s ease; }
+        .input-field:focus { border-color: #14b8a6; box-shadow: 0 0 15px rgba(20, 184, 166, 0.2); background: rgba(20, 184, 166, 0.05); }
+        .check-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
+        .check-item { display: flex; align-items: center; gap: 8px; cursor: pointer; color: rgba(255,255,255,0.7); font-size: 13px; }
+        .check-item input[type="checkbox"] { accent-color: #14b8a6; width: 16px; height: 16px; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px; }
+        .btn-modal { padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.3s; border: none; }
+        .btn-cancel { background: rgba(255,255,255,0.05); color: white; }
+        .btn-cancel:hover { background: rgba(255,255,255,0.1); }
+        .btn-save { background: linear-gradient(135deg, #14b8a6, #0f766e); color: white; box-shadow: 0 4px 15px rgba(20,184,166,0.3); }
+        .btn-save:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(20,184,166,0.4); }
+
+        /* Toast */
+        #toast { position: fixed; bottom: 30px; right: 30px; z-index: 2000; background: rgba(10, 20, 35, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(20, 184, 166, 0.4); border-radius: 16px; padding: 16px 24px; display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 500; transform: translateY(100px); opacity: 0; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        #toast.show { transform: translateY(0); opacity: 1; }
+        .toast-suc i { color: #14b8a6; font-size: 20px; }
+        .toast-err { border-color: rgba(239, 68, 68, 0.4) !important; }
+        .toast-err i { color: #ef4444; font-size: 20px; }
+        
     </style>
-
-    <!-- Auth -->
-    <script src="auth.js"></script>
 </head>
-
 <body>
 
-    <!-- Particle Canvas - daha az partikül, daha küçük -->
+    <!-- Particle Canvas -->
     <canvas id="particle-canvas"></canvas>
 
     <!-- Grid Overlay -->
@@ -1273,79 +341,43 @@
         </div>
 
         <div class="sidebar-menu">
-            <!-- Ana Menü -->
             <div class="menu-item" data-department="dashboard">
-                <div class="menu-icon">
-                    <i class="fas fa-home"></i>
-                </div>
+                <div class="menu-icon"><i class="fas fa-home"></i></div>
                 <span class="menu-text">Dashboard</span>
             </div>
-
             <div class="menu-divider"></div>
-
-            <!-- Departmanlar -->
             <div class="menu-item" data-department="it">
-                <div class="menu-icon">
-                    <i class="fas fa-microchip"></i>
-                </div>
+                <div class="menu-icon"><i class="fas fa-microchip"></i></div>
                 <span class="menu-text">IT Department</span>
-                <span class="menu-badge">3</span>
             </div>
-
             <div class="menu-item" data-department="iot">
-                <div class="menu-icon">
-                    <i class="fas fa-wifi"></i>
-                </div>
+                <div class="menu-icon"><i class="fas fa-wifi"></i></div>
                 <span class="menu-text">IoT Department</span>
-                <span class="menu-badge">!</span>
             </div>
-
             <div class="menu-item" data-department="finance">
-                <div class="menu-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
+                <div class="menu-icon"><i class="fas fa-chart-line"></i></div>
                 <span class="menu-text">Finans</span>
             </div>
-
             <div class="menu-item" data-department="logistics">
-                <div class="menu-icon">
-                    <i class="fas fa-truck"></i>
-                </div>
+                <div class="menu-icon"><i class="fas fa-truck"></i></div>
                 <span class="menu-text">Otonom Lojistik</span>
-                <span class="menu-badge">2</span>
             </div>
-
             <div class="menu-divider"></div>
-
-            <!-- Sistem Menüleri -->
             <div class="menu-item active" data-department="access">
-                <div class="menu-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <span class="menu-text">Erişim Belirleme</span>
+                <div class="menu-icon"><i class="fas fa-shield-alt"></i></div>
+                <span class="menu-text">Erişim Yönetimi</span>
             </div>
-
             <div class="menu-item" data-department="ai">
-                <div class="menu-icon">
-                    <i class="fas fa-brain"></i>
-                </div>
-                <span class="menu-text">Yapay Zeka Karar Sistemi</span>
+                <div class="menu-icon"><i class="fas fa-brain"></i></div>
+                <span class="menu-text">Yapay Zeka</span>
             </div>
-
             <div class="menu-divider"></div>
-
-            <!-- Alt Menü -->
             <div class="menu-item" data-department="settings">
-                <div class="menu-icon">
-                    <i class="fas fa-cog"></i>
-                </div>
+                <div class="menu-icon"><i class="fas fa-cog"></i></div>
                 <span class="menu-text">Ayarlar</span>
             </div>
-
             <div class="menu-item" data-department="profile">
-                <div class="menu-icon">
-                    <i class="fas fa-user"></i>
-                </div>
+                <div class="menu-icon"><i class="fas fa-user"></i></div>
                 <span class="menu-text">Profil</span>
             </div>
         </div>
@@ -1353,1153 +385,609 @@
         <!-- Sidebar Footer -->
         <div class="absolute bottom-0 left-0 right-0 p-5 border-t border-white/5">
             <div class="flex items-center gap-3">
-                <div
-                    class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center">
-                    <span class="text-xs font-bold">AD</span>
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center">
+                    <span class="text-xs font-bold text-white" id="sidebarInitials">AD</span>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-white truncate">Admin User</p>
-                    <p class="text-xs text-slate-400 truncate">admin@asgard.ai</p>
+                <div class="flex-1 min-w-0" id="sidebarUserInfo">
+                    <p class="text-sm font-medium text-white truncate" id="sidebarName">Admin User</p>
+                    <p class="text-xs text-teal-400 truncate" id="sidebarEmail">admin@asgard.ai</p>
                 </div>
-                <i class="fas fa-ellipsis-v text-slate-400 text-xs"></i>
+                <button onclick="logout()" title="Çıkış Yap"
+                    style="background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;transition:color 0.3s;"
+                    onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Main Content Wrapper -->
+    <!-- Main Wrapper -->
     <div class="main-wrapper" id="mainWrapper">
+        <div class="main-container">
 
-        <!-- Top Navigation -->
-        <div class="top-nav" id="topNav">
-            <div style="display: flex; flex-direction: column; justify-content: center; padding-left: 10px;">
-                <h1 id="pageTitle">ERİŞİM BELİRLEME</h1>
-                <p id="pageSubtitle" style="color: #14b8a6 !important;">YETKİ YÖNETİM PANELİ</p>
-            </div>
-
-            <div class="glass-premium px-6 py-3 flex items-center gap-6">
-                <div class="flex items-center gap-3">
-                    <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-                        <span class="text-xs font-medium text-slate-300">Live</span>
-                    </div>
-                    <div class="h-4 w-px bg-white/10"></div>
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-shield-alt text-[#14b8a6] text-xs"></i>
-                        <span class="text-xs font-medium text-slate-300">Admin Mode</span>
-                    </div>
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div class="header-content">
+                    <h1>ERIŞIM YÖNETİMİ</h1>
+                    <p>Yetkiler, Talepler ve Kullanıcı Yönetim Merkezi</p>
                 </div>
-                <div class="flex items-center gap-3">
-                    <div class="text-right">
-                        <span class="text-2xl font-bold text-white">100<span
-                                class="text-sm text-[#14b8a6] ml-1">%</span></span>
-                        <p class="text-[10px] text-slate-400">Authority</p>
-                    </div>
-                    <div class="w-10 h-10 rounded-full bg-teal-500/20 flex items-center justify-center">
-                        <div class="w-6 h-6 rounded-full bg-teal-400 animate-pulse"></div>
-                    </div>
+                <div class="top-actions">
+                    <button class="btn-add" onclick="openModal('newUserModal')">
+                        <i class="fas fa-user-plus"></i> Yeni Sistem Kullanıcısı
+                    </button>
                 </div>
-            </div>
-        </div>
-
-
-        <!-- Access Control Content -->
-        <div class="access-container">
-
-            <!-- Admin Only Badge -->
-            <div class="admin-only-badge">
-                <i class="fas fa-shield-alt"></i>
-                <span>Bu sayfa sadece yöneticiler tarafından görüntülenebilir ve yönetilebilir.</span>
             </div>
 
             <!-- Stats Grid -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="stat-value">24</div>
+                    <div class="stat-icon teal"><i class="fas fa-users"></i></div>
+                    <div class="stat-value" id="statUsers">–</div>
                     <div class="stat-label">Toplam Kullanıcı</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-user-tag"></i>
-                    </div>
-                    <div class="stat-value">8</div>
-                    <div class="stat-label">Farklı Rol</div>
+                    <div class="stat-icon blue"><i class="fas fa-id-badge"></i></div>
+                    <div class="stat-value" id="statRoles">–</div>
+                    <div class="stat-label">Aktif Roller</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="stat-value">156</div>
-                    <div class="stat-label">Aktif Yetki</div>
+                    <div class="stat-icon orange"><i class="fas fa-envelope-open-text"></i></div>
+                    <div class="stat-value" id="statPending">–</div>
+                    <div class="stat-label">Bekleyen Talep</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-value">24s</div>
-                    <div class="stat-label">Son Güncelleme</div>
+                    <div class="stat-icon purple"><i class="fas fa-key"></i></div>
+                    <div class="stat-value" id="statPerms">–</div>
+                    <div class="stat-label">Toplam İzin Sayısı</div>
                 </div>
             </div>
 
-            <!-- Search and Filter -->
-            <div class="search-section">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" class="search-input" placeholder="Kullanıcı ara...">
-                </div>
-                <div class="filter-buttons">
-                    <div class="filter-btn active" data-dept="all">
-                        <i class="fas fa-user"></i> Tümü
+            <!-- Content Panel -->
+            <div class="content-panel">
+                <div class="tabs-header">
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="switchTab('users', this)">
+                            <i class="fas fa-users"></i> Tüm Kullanıcılar
+                        </button>
+                        <button class="tab-btn" onclick="switchTab('requests', this)" id="requestsTabBtn">
+                            <i class="fas fa-bell"></i> Bekleyen Talepler
+                        </button>
+                        <button class="tab-btn" onclick="switchTab('active', this)" id="activeTabBtn">
+                            <i class="fas fa-clock"></i> Aktif Geçici İzinler
+                        </button>
                     </div>
-                    <div class="filter-btn" data-dept="management">
-                        <i class="fas fa-crown"></i> Yönetim
-                    </div>
-                    <div class="filter-btn" data-dept="finance">
-                        <i class="fas fa-chart-line"></i> Finans
-                    </div>
-                    <div class="filter-btn" data-dept="iot">
-                        <i class="fas fa-wifi"></i> IoT
-                    </div>
-                    <div class="filter-btn" data-dept="it">
-                        <i class="fas fa-microchip"></i> IT
-                    </div>
-                    <div class="filter-btn" data-dept="logistics">
-                        <i class="fas fa-truck"></i> Otonom Lojistik
-                    </div>
-                </div>
-            </div>
-
-            <!-- Active Temporary Sessions -->
-            <div id="activeSessionsSection" class="active-sessions-panel" style="display:none;">
-                <div class="flex items-center justify-between mb-5">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-teal-500/15 flex items-center justify-center text-teal-400 border border-teal-500/30">
-                            <i class="fas fa-user-clock text-base"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-base font-bold text-white">Aktif Geçici Yetkiler</h2>
-                            <p class="text-[10px] text-teal-500/70 uppercase tracking-widest font-bold">Onaylı Oturumlar · Canlı Süre Takibi</p>
-                        </div>
-                    </div>
-                    <div id="activeSessionsBadge" class="bg-teal-500/20 text-teal-400 border border-teal-500/30 text-xs font-black px-3 py-1 rounded-full">0 Aktif</div>
-                </div>
-                <div id="activeSessionsList" class="flex flex-col gap-3">
-                    <!-- JS ile dolacak -->
-                </div>
-            </div>
-
-            <!-- Emergency Access Requests -->
-            <div id="emergencyRequestsSection" style="display: none; margin-bottom: 30px;" class="glass-premium border-amber-500/30 bg-amber-500/5 p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500">
-                            <i class="fas fa-bolt text-lg"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-lg font-bold text-white">Bekleyen Acil Yetki Talepleri</h2>
-                            <p class="text-xs text-amber-500/70 uppercase tracking-wider font-bold">Kritik Müdahale Onayı Bekleniyor</p>
-                        </div>
-                    </div>
-                    <div id="reqBadgeCount" class="bg-amber-500 text-black text-xs font-black px-3 py-1 rounded-full">0</div>
-                </div>
-                <div id="requestsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- Talepler buraya yüklenecek -->
-                </div>
-            </div>
-
-            <!-- Users Table -->
-            <div class="users-section">
-                <div class="section-header">
-                    <div class="section-title">
-                        <i class="fas fa-users-cog"></i>
-                        Kullanıcılar ve Yetkiler
-                    </div>
-                    <div class="add-user-btn" id="addUserBtn">
-                        <i class="fas fa-plus-circle"></i>
-                        Yeni Kullanıcı
+                    <div class="search-wrap" id="searchWrap">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="search-input" id="userSearch" placeholder="Kullanıcı veya E-posta ara..." oninput="filterUsers()">
                     </div>
                 </div>
 
-                <table class="users-table">
-                    <thead>
-                        <tr>
-                            <th>Kullanıcı</th>
-                            <th>Rol</th>
-                            <th>Departman</th>
-                            <th>Finans</th>
-                            <th>IoT</th>
-                            <th>IT</th>
-                            <th>Otonom Lojistik</th>
-                            <th>AI</th>
-                            <th>Ayarlar</th>
-                            <th>İşlemler</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div class="user-info">
-                                    <div class="user-avatar">AY</div>
-                                    <div>
-                                        <div class="user-name">Ahmet Yılmaz</div>
-                                        <div class="user-email">ahmet.yilmaz@asgard.ai</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="role-badge role-admin"><i class="fas fa-crown"></i> Admin</span></td>
-                            <td>Yönetim</td>
-                            <td><i class="fas fa-check-circle permission-allowed"></i></td>
-                            <td><i class="fas fa-check-circle permission-allowed"></i></td>
-                            <td><i class="fas fa-check-circle permission-allowed"></i></td>
-                            <td><i class="fas fa-check-circle permission-allowed"></i></td>
-                            <td><i class="fas fa-check-circle permission-allowed"></i></td>
-                            <td><i class="fas fa-check-circle permission-allowed"></i></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <div class="action-btn"><i class="fas fa-edit"></i></div>
-                                    <div class="action-btn"><i class="fas fa-copy"></i></div>
-                                    <div class="action-btn"><i class="fas fa-ban"></i></div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="user-info">
-                                    <div class="user-avatar">AD</div>
-                                    <div>
-                                        <div class="user-name">Ayşe Demir</div>
-                                        <div class="user-email">ayse.demir@asgard.ai</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="role-badge role-finance"><i class="fas fa-chart-line"></i> Finans
-                                    Müdürü</span></td>
-                            <td>Finans</td>
-                            <td><i class="fas fa-check-circle permission-allowed"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <div class="action-btn"><i class="fas fa-edit"></i></div>
-                                    <div class="action-btn"><i class="fas fa-copy"></i></div>
-                                    <div class="action-btn"><i class="fas fa-ban"></i></div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="user-info">
-                                    <div class="user-avatar">MK</div>
-                                    <div>
-                                        <div class="user-name">Mehmet Kaya</div>
-                                        <div class="user-email">mehmet.kaya@asgard.ai</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="role-badge role-iot"><i class="fas fa-wifi"></i> IoT Müdürü</span></td>
-                            <td>IoT</td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td><i class="fas fa-check-circle permission-allowed"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <div class="action-btn"><i class="fas fa-edit"></i></div>
-                                    <div class="action-btn"><i class="fas fa-copy"></i></div>
-                                    <div class="action-btn"><i class="fas fa-ban"></i></div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="user-info">
-                                    <div class="user-avatar">ZY</div>
-                                    <div>
-                                        <div class="user-name">Zeynep Yıldız</div>
-                                        <div class="user-email">zeynep.yildiz@asgard.ai</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="role-badge role-it"><i class="fas fa-microchip"></i> IT Müdürü</span></td>
-                            <td>IT</td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td><i class="fas fa-check-circle permission-allowed"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <div class="action-btn"><i class="fas fa-edit"></i></div>
-                                    <div class="action-btn"><i class="fas fa-copy"></i></div>
-                                    <div class="action-btn"><i class="fas fa-ban"></i></div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="user-info">
-                                    <div class="user-avatar">CA</div>
-                                    <div>
-                                        <div class="user-name">Can Aksoy</div>
-                                        <div class="user-email">can.aksoy@asgard.ai</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="role-badge role-logistics"><i class="fas fa-truck"></i> Otonom Lojistik Müdürü</span></td>
-                            <td>Otonom Lojistik</td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td><i class="fas fa-check-circle permission-allowed"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td><i class="fas fa-times-circle permission-denied"></i></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <div class="action-btn"><i class="fas fa-edit"></i></div>
-                                    <div class="action-btn"><i class="fas fa-copy"></i></div>
-                                    <div class="action-btn"><i class="fas fa-ban"></i></div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Permission Matrix -->
-            <div class="permission-matrix">
-                <div class="matrix-header">
-                    <div class="section-title">
-                        <i class="fas fa-th"></i>
-                        Detaylı Yetki Matrisi
-                    </div>
-                    <div class="matrix-tabs">
-                        <div class="matrix-tab active">Tümü</div>
-                        <div class="matrix-tab">Okuma</div>
-                        <div class="matrix-tab">Yazma</div>
-                        <div class="matrix-tab">Silme</div>
-                        <div class="matrix-tab">Yönetici</div>
-                    </div>
-                </div>
-
-                <div class="matrix-container">
-                    <table class="matrix-table">
+                <!-- USERS TAB -->
+                <div class="tab-content active" id="tab-users">
+                    <table>
                         <thead>
                             <tr>
-                                <th>Kullanıcı / Modül</th>
-                                <th>Finans</th>
-                                <th>IoT</th>
-                                <th>IT</th>
-                                <th>Otonom Lojistik</th>
-                                <th>AI</th>
-                                <th>Erişim</th>
-                                <th>Sistem</th>
+                                <th>Kullanıcı Bilgileri</th>
+                                <th>Atanan Rol</th>
+                                <th>Departman</th>
+                                <th>Erişim Yetkisi</th>
+                                <th>İşlemler</th>
                             </tr>
                         </thead>
-                        <tbody id="matrixBody">
-                            <!-- JS ile dolacak -->
+                        <tbody id="usersTableBody">
+                            <tr><td colspan="5"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Sistem verileri yükleniyor...</p></div></td></tr>
                         </tbody>
                     </table>
                 </div>
+
+                <!-- PENDING REQUESTS TAB -->
+                <div class="tab-content" id="tab-requests">
+                    <div id="pendingRequestsList"></div>
+                </div>
+
+                <!-- ACTIVE PERMISSIONS TAB -->
+                <div class="tab-content" id="tab-active">
+                    <div id="activePermsList"></div>
+                </div>
+
             </div>
 
-            <!-- Role Templates -->
-            <div class="templates-section">
-                <div class="section-title">
-                    <i class="fas fa-copy"></i>
-                    Rol Şablonları
-                </div>
-                <div class="templates-grid">
-                    <div class="template-card" onclick="useTemplate('admin', 'management')">
-                        <div class="template-icon"><i class="fas fa-crown"></i></div>
-                        <div class="template-name">Admin</div>
-                        <div class="template-desc">Tam yetkili yönetici</div>
-                        <span class="template-badge">Tüm modüller</span>
-                    </div>
-                    <div class="template-card" onclick="useTemplate('finance', 'finance')">
-                        <div class="template-icon"><i class="fas fa-chart-line"></i></div>
-                        <div class="template-name">Finans Müdürü</div>
-                        <div class="template-desc">Finans modülüne tam erişim</div>
-                        <span class="template-badge">Finans</span>
-                    </div>
-                    <div class="template-card" onclick="useTemplate('iot', 'iot')">
-                        <div class="template-icon"><i class="fas fa-wifi"></i></div>
-                        <div class="template-name">IoT Müdürü</div>
-                        <div class="template-desc">IoT modülüne tam erişim</div>
-                        <span class="template-badge">IoT</span>
-                    </div>
-                    <div class="template-card" onclick="useTemplate('it', 'it')">
-                        <div class="template-icon"><i class="fas fa-microchip"></i></div>
-                        <div class="template-name">IT Müdürü</div>
-                        <div class="template-desc">IT modülüne tam erişim</div>
-                        <span class="template-badge">IT</span>
-                    </div>
-                    <div class="template-card" onclick="useTemplate('logistics', 'logistics')">
-                        <div class="template-icon"><i class="fas fa-truck"></i></div>
-                        <div class="template-name">Otonom Lojistik Müdürü</div>
-                        <div class="template-desc">Lojistik modülüne tam erişim</div>
-                        <span class="template-badge">Otonom Lojistik</span>
-                    </div>
-                    <div class="template-card" onclick="useTemplate('employee', 'it')">
-                        <div class="template-icon"><i class="fas fa-user-tie"></i></div>
-                        <div class="template-name">Departman Çalışanı</div>
-                        <div class="template-desc">Sadece okuma yetkisi</div>
-                        <span class="template-badge">Kısıtlı</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Last updated info -->
-            <div class="flex justify-between items-center mt-8 text-xs text-slate-500">
-                <span>Son güncelleme: 15:24:07 UTC</span>
-                <span class="flex items-center gap-2">
-                    <i class="fas fa-circle text-[#14b8a6] text-[6px]"></i>
-                    Yönetici oturumu aktif
-                </span>
-            </div>
         </div>
     </div>
 
-    <!-- Quick Actions (Right Sidebar) -->
-    <div class="quick-actions">
-        <div class="quick-action-btn" title="Arama" onclick="document.querySelector('.search-input').focus()">
-            <i class="fas fa-search"></i>
-        </div>
-        <div class="quick-action-btn" title="Bildirimler">
-            <i class="fas fa-bell"></i>
-            <span class="badge">3</span>
-        </div>
-        <div class="quick-action-btn" title="Ayarlar" onclick="window.location.href='ayarlar.html'">
-            <i class="fas fa-cog"></i>
-        </div>
-        <div class="quick-action-btn" title="Analiz" onclick="window.location.href='yapayZekaV2.html'">
-            <i class="fas fa-chart-line"></i>
-        </div>
-    </div>
-
-    <!-- Add User Modal -->
-    <div class="modal" id="addUserModal">
+    <!-- Yeni Kullanıcı Modalı -->
+    <div class="modal-overlay" id="newUserModal">
         <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">Yeni Kullanıcı Ekle</div>
-                <div class="modal-close" id="closeModal">
-                    <i class="fas fa-times"></i>
+            <div class="modal-header"><i class="fas fa-user-plus"></i> Yeni Kullanıcı Tanımla</div>
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Kullanıcı Adı</label>
+                    <input type="text" class="input-field" id="newUsername" placeholder="kullanici_adi">
                 </div>
-            </div>
-            <div class="modal-body">
-                <div style="margin-bottom: 15px;">
-                    <label style="color: white; font-size: 14px; margin-bottom: 5px; display: block;">Ad Soyad</label>
-                    <input type="text" class="search-input" style="border-radius: 12px;" placeholder="Örn: Ali Veli">
+                <div class="input-group">
+                    <label>Ad Soyad</label>
+                    <input type="text" class="input-field" id="newName" placeholder="John Doe">
                 </div>
-                <div style="margin-bottom: 15px;">
-                    <label style="color: white; font-size: 14px; margin-bottom: 5px; display: block;">E-posta</label>
-                    <input type="email" class="search-input" style="border-radius: 12px;" placeholder="ornek@asgard.ai">
+                <div class="input-group">
+                    <label>E-posta</label>
+                    <input type="email" class="input-field" id="newEmail" placeholder="mail@asgard.ai">
                 </div>
-                <div style="margin-bottom: 15px;">
-                    <label style="color: white; font-size: 14px; margin-bottom: 5px; display: block;">Rol</label>
-                    <select class="search-input" style="border-radius: 12px;">
-                        <option value="admin">Admin</option>
-                        <option value="finance">Finans Müdürü</option>
-                        <option value="iot">IoT Müdürü</option>
+                <div class="input-group">
+                    <label>Şifre</label>
+                    <input type="password" class="input-field" id="newPassword" placeholder="••••••••">
+                </div>
+                <div class="input-group">
+                    <label>Sistem Rolü</label>
+                    <select class="input-field" id="newRole" style="background-color:rgba(10,15,25,0.9)">
+                        <option value="admin">Sistem Yöneticisi (Admin)</option>
                         <option value="it">IT Müdürü</option>
-                        <option value="logistics">Otonom Lojistik Müdürü</option>
-                        <option value="employee">Departman Çalışanı</option>
+                        <option value="iot">IoT Müdürü</option>
+                        <option value="finance">Finans Müdürü</option>
+                        <option value="logistics">Lojistik Müdürü</option>
+                        <option value="it_staff">IT Teknik Personel</option>
+                        <option value="finance_head">Finans Analisti</option>
                     </select>
                 </div>
-                <div style="margin-bottom: 15px;">
-                    <label style="color: white; font-size: 14px; margin-bottom: 5px; display: block;">Departman</label>
-                    <select class="search-input" style="border-radius: 12px;">
-                        <option value="finance">Finans</option>
-                        <option value="iot">IoT</option>
-                        <option value="it">IT</option>
-                        <option value="logistics">Otonom Lojistik</option>
-                        <option value="management">Yönetim</option>
-                    </select>
+                <div class="input-group">
+                    <label>Departman</label>
+                    <input type="text" class="input-field" id="newDepartment" placeholder="Örn: Otonom Lojistik">
                 </div>
             </div>
-            <div class="modal-footer">
-                <div class="modal-btn modal-btn-secondary" id="cancelModal">İptal</div>
-                <div class="modal-btn modal-btn-primary">Kullanıcıyı Ekle</div>
+            <div class="input-group" style="margin-top:24px;">
+                <label>Sayfa Erişim Yetkileri</label>
+                <div class="check-grid" id="newPagesGrid">
+                    <label class="check-item"><input type="checkbox" value="dashboard" checked> Dashboard</label>
+                    <label class="check-item"><input type="checkbox" value="it"> IT</label>
+                    <label class="check-item"><input type="checkbox" value="iot"> IoT</label>
+                    <label class="check-item"><input type="checkbox" value="finance"> Finans</label>
+                    <label class="check-item"><input type="checkbox" value="logistics"> Lojistik</label>
+                    <label class="check-item"><input type="checkbox" value="access"> Erişim</label>
+                    <label class="check-item"><input type="checkbox" value="ai"> Yapay Zeka</label>
+                    <label class="check-item"><input type="checkbox" value="settings"> Ayarlar</label>
+                    <label class="check-item"><input type="checkbox" value="profile" checked> Profil</label>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeModal('newUserModal')">İptal Et</button>
+                <button class="btn-modal btn-save" onclick="submitNewUser()">Kullanıcıyı Kaydet</button>
             </div>
         </div>
     </div>
 
+    <!-- Düzenle Modalı -->
+    <div class="modal-overlay" id="editUserModal">
+        <div class="modal-content">
+            <div class="modal-header"><i class="fas fa-user-edit"></i> Sistem Yetkilerini Düzenle</div>
+            <input type="hidden" id="editUsername">
+            
+            <div class="form-grid">
+                <div class="input-group" style="grid-column: span 2;">
+                    <label>Sistem Rolü</label>
+                    <select class="input-field" id="editRole" style="background-color:rgba(10,15,25,0.9)">
+                        <option value="admin">Sistem Yöneticisi (Admin)</option>
+                        <option value="it">IT Müdürü</option>
+                        <option value="iot">IoT Müdürü</option>
+                        <option value="finance">Finans Müdürü</option>
+                        <option value="logistics">Lojistik Müdürü</option>
+                        <option value="it_staff">IT Teknik Personel</option>
+                        <option value="it_head">IT Başkanı</option>
+                        <option value="finance_head">Finans Başkanı</option>
+                        <option value="logistics_head">Lojistik Başkanı</option>
+                    </select>
+                </div>
+                <div class="input-group" style="grid-column: span 2;">
+                    <label>Departman Ataması</label>
+                    <input type="text" class="input-field" id="editDepartment">
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-top:20px;">
+                <label>Sayfa Erişim Yetkileri</label>
+                <div class="check-grid" id="editPagesGrid">
+                    <label class="check-item"><input type="checkbox" value="dashboard"> Dashboard</label>
+                    <label class="check-item"><input type="checkbox" value="it"> IT</label>
+                    <label class="check-item"><input type="checkbox" value="iot"> IoT</label>
+                    <label class="check-item"><input type="checkbox" value="finance"> Finans</label>
+                    <label class="check-item"><input type="checkbox" value="logistics"> Lojistik</label>
+                    <label class="check-item"><input type="checkbox" value="access"> Erişim</label>
+                    <label class="check-item"><input type="checkbox" value="ai"> Yapay Zeka</label>
+                    <label class="check-item"><input type="checkbox" value="settings"> Ayarlar</label>
+                    <label class="check-item"><input type="checkbox" value="profile"> Profil</label>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeModal('editUserModal')">İptal</button>
+                <button class="btn-modal btn-save" onclick="submitEditUser()">Yetkileri Güncelle</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast">
+        <div id="toastIconBlock"></div>
+        <div id="toastMsg" class="text-white"></div>
+    </div>
+
+    <!-- Scripts -->
     <script type="module">
         import * as THREE from 'three';
 
-        // ─── THREE.JS PARTICLE SYSTEM ─────────────────────────────────────────
-        try {
-            const canvas = document.getElementById('particle-canvas');
-            if (canvas) {
-                const scene = new THREE.Scene();
-                const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-                const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        // Particle System setup matching Asgard aesthetics
+        const canvas = document.getElementById('particle-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
 
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-                const particlesGeometry = new THREE.BufferGeometry();
-                const particlesCount = 500;
-                const posArray = new Float32Array(particlesCount * 3);
-                const colorArray = new Float32Array(particlesCount * 3);
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 2000;
+        const posArray = new Float32Array(particlesCount * 3);
 
-                for (let i = 0; i < particlesCount * 3; i += 3) {
-                    const radius = 15 + Math.random() * 8;
-                    const theta = Math.random() * Math.PI * 2;
-                    const phi = Math.acos((Math.random() * 2) - 1);
-                    posArray[i] = radius * Math.sin(phi) * Math.cos(theta);
-                    posArray[i + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.3;
-                    posArray[i + 2] = radius * Math.cos(phi);
-                    colorArray[i] = 0.0;
-                    colorArray[i + 1] = 0.7 + Math.random() * 0.3;
-                    colorArray[i + 2] = 0.6 + Math.random() * 0.2;
-                }
-
-                particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-                particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
-
-                const particlesMaterial = new THREE.PointsMaterial({
-                    size: 0.06, vertexColors: true, transparent: true, opacity: 0.2, blending: THREE.AdditiveBlending
-                });
-
-                const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-                scene.add(particlesMesh);
-                camera.position.z = 20; camera.position.y = 2; camera.lookAt(0, 0, 0);
-
-                let mouseX = 0, mouseY = 0;
-                document.addEventListener('mousemove', (e) => {
-                    mouseX = (e.clientX / window.innerWidth - 0.5) * 1.5;
-                    mouseY = (e.clientY / window.innerHeight - 0.5) * 1.5;
-                });
-
-                function animate() {
-                    requestAnimationFrame(animate);
-                    particlesMesh.rotation.y += 0.0002 + (mouseX * 0.0002);
-                    particlesMesh.rotation.x += 0.00005 + (mouseY * 0.0001);
-                    renderer.render(scene, camera);
-                }
-                animate();
-
-                window.addEventListener('resize', () => {
-                    camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                });
-            }
-        } catch (threeErr) {
-            console.error("Three.js initialization failed, but continuing with logic:", threeErr);
+        for(let i = 0; i < particlesCount * 3; i+=3) {
+            const radius = 30 + Math.random() * 20;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos((Math.random() * 2) - 1);
+            posArray[i] = radius * Math.sin(phi) * Math.cos(theta);
+            posArray[i+1] = radius * Math.sin(phi) * Math.sin(theta) * 0.4;
+            posArray[i+2] = radius * Math.cos(phi);
         }
 
-        // ─── USER MANAGEMENT LOGIC ──────────────────────────────────────────
-        let allUsers = [];
-        let stats = {};
-        const MODULES = ["finance", "iot", "it", "logistics", "ai", "access", "settings"];
-        const MODULE_LABELS = {
-            "finance": "Finans", "iot": "IoT", "it": "IT", 
-            "logistics": "Otonom Lojistik", "ai": "AI", "access": "Erişim", "settings": "Ayarlar"
-        };
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
 
-        async function checkAdmin() {
-            console.log("[Auth] Checking admin status...");
-            const user = await initAuth();
-            if (user) {
-                console.log("[Auth] User logged in:", user.username, "Role:", user.role);
-                if (user.role !== 'admin') {
-                    showToast('Bu sayfaya erişim yetkiniz yok!', 'error');
-                    setTimeout(() => window.location.href = 'dashboard.html', 1500);
-                }
-            } else {
-                console.warn("[Auth] No active user session found.");
-            }
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.15,
+            color: '#14b8a6', // Teal hue for Access specific
+            transparent: true,
+            opacity: 0.3,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 32; camera.position.y = 5; camera.lookAt(0,0,0);
+
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth - 0.5) * 2;
+            mouseY = (event.clientY / window.innerHeight - 0.5) * 2;
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            particlesMesh.rotation.y += 0.0004;
+            particlesMesh.rotation.x += 0.00015;
+            particlesMesh.rotation.y += mouseX * 0.0004;
+            particlesMesh.rotation.x += mouseY * 0.0003;
+            renderer.render(scene, camera);
         }
+        animate();
 
-        async function fetchAllData() {
-            const token = getToken();
-            console.log("[API] Fetching all user data... Token exists:", !!token);
-            const headers = { 'Authorization': `Bearer ${token}` };
-            try {
-                const resUsers = await fetch('/api/users', { headers });
-                console.log("[API] /api/users response status:", resUsers.status);
-                if (resUsers.ok) {
-                    allUsers = await resUsers.json();
-                    console.log("[API] Loaded users count:", allUsers.length);
-                } else {
-                    const err = await resUsers.text();
-                    console.error("[API] Failed to fetch users:", err);
-                }
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
 
-                const resStats = await fetch('/api/stats/access', { headers });
-                console.log("[API] /api/stats/access response status:", resStats.status);
-                if (resStats.ok) {
-                    stats = await resStats.json();
-                }
-
-                renderAll();
-            } catch (e) {
-                console.error("[API] Critical fetch error:", e);
-                showToast('Veriler yüklenirken bağlantı hatası oluştu', 'error');
-            }
-        }
-
-        // ─── FILTER LOGIC ────────────────────────────────────────────────
-        let currentDept = 'all';
-        let currentTerm = '';
-
-        function renderAll() {
-            let filtered = allUsers;
-            if (currentDept !== 'all') filtered = filtered.filter(u => u.department === currentDept || (currentDept === 'management' && u.role === 'Admin'));
-            if (currentTerm) filtered = filtered.filter(u => u.name.toLowerCase().includes(currentTerm) || u.username.toLowerCase().includes(currentTerm));
-
-            renderStats();
-            renderUserTable(filtered);
-            renderMatrix(filtered);
-            console.log(`[UI] Rendered ${filtered.length} users with Dept: ${currentDept}, Term: ${currentTerm}`);
-        }
-
-        function renderStats() {
-            const containers = document.querySelectorAll('.stat-value');
-            if (containers.length >= 4) {
-                containers[0].textContent = allUsers.length;
-                containers[1].textContent = [...new Set(allUsers.map(u => u.role))].length;
-                containers[2].textContent = allUsers.reduce((acc, u) => acc + u.pages.length, 0);
-                containers[3].textContent = stats.last_update ? new Date(stats.last_update).toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}) : '—';
-            }
-        }
-
-        function renderUserTable(users) {
-            const tbody = document.querySelector('.users-table tbody');
-            if (!tbody) return;
-            tbody.innerHTML = users.map(user => `
-                <tr data-username="${user.username}">
-                    <td>
-                        <div class="user-info">
-                            <div class="user-avatar">${user.initials}</div>
-                            <div><div class="user-name">${user.name}</div><div class="user-email">${user.email}</div></div>
-                        </div>
-                    </td>
-                    <td><span class="role-badge role-${user.role.toLowerCase()}"><i class="fas fa-user-tag"></i> ${user.role}</span></td>
-                    <td>${user.department}</td>
-                    ${MODULES.slice(0, 5).map(m => `<td><i class="fas fa-${user.pages.includes(m) ? 'check-circle permission-allowed' : 'times-circle text-slate-700'}"></i></td>`).join('')}
-                    <td><i class="fas fa-${user.pages.includes('settings') ? 'check-circle permission-allowed' : 'times-circle text-slate-700'}"></i></td>
-                    <td>
-                        <div class="action-buttons">
-                            <div class="action-btn" title="Düzenle" onclick="openEditModal('${user.username}')"><i class="fas fa-edit"></i></div>
-                            <div class="action-btn" title="Sil" onclick="deleteUser('${user.username}')"><i class="fas fa-trash-alt"></i></div>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function renderMatrix(users) {
-            const tbody = document.getElementById('matrixBody');
-            if (!tbody) return;
-            const table = tbody.closest('.matrix-table');
-            const thead = table.querySelector('thead tr');
-            
-            // Header'ı modül etiketlerine göre güncelle
-            thead.innerHTML = `<th>Kullanıcı / Modül</th>` + MODULES.map(m => `<th>${MODULE_LABELS[m]}</th>`).join('');
-            
-            tbody.innerHTML = users.map(user => `
-                <tr>
-                    <td>
-                        <div class="flex items-center gap-3">
-                            <div class="user-avatar" style="width: 28px; height: 28px; font-size: 10px;">${user.initials}</div>
-                            <span class="font-semibold text-sm">${user.name.split(' ')[0]} ${user.name.split(' ')[1] || ''}</span>
-                        </div>
-                    </td>
-                    ${MODULES.map(m => `
-                        <td>
-                            <div class="permission-toggle ${user.pages.includes(m) ? 'allowed' : 'denied'}" 
-                                 onclick="togglePermission('${user.username}', '${m}', ${!user.pages.includes(m)})"
-                                 title="${MODULE_LABELS[m]} yetkisini değiştir">
-                            </div>
-                        </td>
-                    `).join('')}
-                </tr>
-            `).join('');
-        }
-
-        window.togglePermission = async (username, module, allow) => {
-            const user = allUsers.find(u => u.username === username); if (!user) return;
-            let newPages = allow ? [...new Set([...user.pages, module])] : user.pages.filter(p => p !== module);
-            try {
-                const res = await fetch(`/api/users/update/${username}`, {
-                    method: 'PUT', headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ pages: newPages })
-                });
-                if (res.ok) { user.pages = newPages; renderAll(); showToast(`${username} için yetki güncellendi`, 'success'); }
-            } catch (e) { showToast('Yetki güncellenemedi', 'error'); }
-        };
-
-        window.deleteUser = async (username) => {
-            if (username === 'admin') return showToast('Admin silinemez', 'error');
-            if (!confirm(`${username} kullanıcısını silmek istediğinize emin misiniz?`)) return;
-            try {
-                const res = await fetch(`/api/users/delete/${username}`, {
-                    method: 'DELETE', headers: { 'Authorization': `Bearer ${getToken()}` }
-                });
-                if (res.ok) { allUsers = allUsers.filter(u => u.username !== username); renderAll(); showToast('Kullanıcı silindi', 'success'); }
-            } catch (e) { showToast('Silme işlemi başarısız', 'error'); }
-        };
-
-        let editMode = false;
-        let targetUser = null;
-
-        window.openEditModal = (username) => {
-            const user = allUsers.find(u => u.username === username);
-            if (!user) return;
-            editMode = true;
-            targetUser = username;
-            
-            const modal = document.getElementById('addUserModal');
-            const title = modal.querySelector('.modal-title');
-            const submitBtn = modal.querySelector('.modal-btn-primary');
-            const inputs = modal.querySelectorAll('input, select');
-            
-            title.textContent = 'Kullanıcıyı Güncelle';
-            submitBtn.textContent = 'Değişiklikleri Kaydet';
-            
-            inputs[0].value = user.name;
-            inputs[1].value = user.email;
-            inputs[1].disabled = true; // Email (username) değiştirilemez
-            inputs[2].value = user.role.toLowerCase();
-            inputs[3].value = user.department.toLowerCase();
-            
-            modal.classList.add('active');
-        };
-
-        window.useTemplate = (role, dept) => {
-            editMode = false;
-            targetUser = null;
-            const modal = document.getElementById('addUserModal');
-            const inputs = modal.querySelectorAll('input, select');
-            const title = modal.querySelector('.modal-title');
-            const submitBtn = modal.querySelector('.modal-btn-primary');
-
-            title.textContent = 'Yeni Kullanıcı Ekle';
-            submitBtn.textContent = 'Kullanıcıyı Ekle';
-            inputs[1].disabled = false;
-            inputs[0].value = "";
-            inputs[1].value = "@asgard.ai";
-            inputs[2].value = role;
-            inputs[3].value = dept;
-            
-            modal.classList.add('active');
-        };
-
-        async function handleUserSubmit() {
-            const modal = document.getElementById('addUserModal');
-            const inputs = modal.querySelectorAll('input, select');
-            const name = inputs[0].value;
-            const email = inputs[1].value;
-            const role = inputs[2].value;
-            const dept = inputs[3].value;
-
-            if (!name || !email) return showToast('Lütfen zorunlu alanları doldurun', 'error');
-
-            if (editMode && targetUser) {
-                // UPDATE logic
-                try {
-                    const res = await fetch(`/api/users/update/${targetUser}`, {
-                        method: 'PUT', headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name, role, department: dept })
-                    });
-                    if (res.ok) { 
-                        showToast('Kullanıcı güncellendi', 'success'); 
-                        modal.classList.remove('active'); 
-                        fetchAllData(); 
-                    }
-                } catch (e) { showToast('Güncelleme hatası', 'error'); }
-            } else {
-                // CREATE logic
-                const data = {
-                    username: email.split('@')[0], name, email,
-                    password: 'Asgard@' + Math.floor(Math.random()*900+100), role, department: dept, pages: ["dashboard", "profile"]
-                };
-                try {
-                    const res = await fetch('/api/users/add', {
-                        method: 'POST', headers: { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify(data)
-                    });
-                    if (res.ok) { 
-                        showToast('Kullanıcı eklendi. Şifre: ' + data.password, 'success'); 
-                        modal.classList.remove('active'); 
-                        fetchAllData(); 
-                    }
-                } catch (e) { showToast('Ekleme hatası', 'error'); }
-            }
-        }
-
-        // ─── EMERGENCY REQUEST LOGIC ───────────────────────────────────────
-        async function fetchPendingRequests() {
-            const token = getToken();
-            const headers = { 'Authorization': `Bearer ${token}` };
-            try {
-                const res = await fetch('/api/admin/requests/pending', { headers });
-                if (res.ok) {
-                    const requests = await res.json();
-                    renderRequests(requests);
-                }
-            } catch (e) { console.error("Error fetching requests:", e); }
-        }
-
-        function renderRequests(requests) {
-            const section = document.getElementById('emergencyRequestsSection');
-            const list = document.getElementById('requestsList');
-            const badge = document.getElementById('reqBadgeCount');
-            
-            if (requests.length === 0) {
-                section.style.display = 'none';
-                return;
-            }
-            
-            section.style.display = 'block';
-            badge.textContent = requests.length;
-            
-            list.innerHTML = requests.map(req => `
-                <div class="glass-premium-light p-4 border-amber-500/20 hover:border-amber-500/50 transition-all">
-                    <div class="flex justify-between items-start mb-3">
-                        <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-500 text-xs font-bold">
-                                ${req.username.substring(0,2).toUpperCase()}
-                            </div>
-                            <div>
-                                <div class="text-sm font-bold text-white">${req.user_display_name}</div>
-                                <div class="text-[10px] text-slate-400">@${req.username}</div>
-                            </div>
-                        </div>
-                        <div class="bg-amber-500/10 text-amber-500 text-[10px] font-bold px-2 py-0.5 rounded border border-amber-500/20">
-                            ${req.requested_page.toUpperCase()} Access
-                        </div>
-                    </div>
-                    <div class="text-xs text-slate-300 italic mb-3 bg-black/20 p-2 rounded border border-white/5">
-                        "${req.reason}"
-                    </div>
-                    ${req.duration_hours ? `<div class="text-[10px] text-teal-400/80 mb-3 flex items-center gap-1"><i class="fas fa-clock"></i> Talep edilen süre: <strong>${req.duration_hours} saat</strong></div>` : ''}
-                    <div class="flex gap-2">
-                        <button onclick="handleResolve(${req.id}, 'approved')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-black text-[10px] font-bold py-2 rounded-lg transition-all">
-                            <i class="fas fa-check mr-1"></i> ONAYLA
-                        </button>
-                        <button onclick="handleResolve(${req.id}, 'rejected')" class="flex-1 bg-red-500/20 hover:bg-red-500/40 text-red-500 text-[10px] font-bold py-2 rounded-lg transition-all border border-red-500/30">
-                            <i class="fas fa-times mr-1"></i> REDDET
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        window.handleResolve = async (id, status) => {
-            const token = getToken();
-            try {
-                const res = await fetch('/api/admin/requests/resolve', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                    body: JSON.stringify({ request_id: id, status: status })
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    showToast(data.message, 'success');
-                    fetchPendingRequests();
-                    fetchActiveSessions(); // Refresh active sessions after approval
-                    fetchAllData();
-                } else {
-                    showToast(data.detail || 'İşlem başarısız', 'error');
-                }
-            } catch (e) { showToast('Bağlantı hatası', 'error'); }
-        };
-
-        // ─── ACTIVE SESSIONS LOGIC ─────────────────────────────────────────
-        let sessionTimers = {}; // { sessionId: intervalId }
-        let activeSessions = [];
-
-        async function fetchActiveSessions() {
-            const token = getToken();
-            try {
-                const res = await fetch('/api/admin/requests/active', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (res.ok) {
-                    activeSessions = await res.json();
-                } else {
-                    // Fallback: show approved requests that have duration_hours as active sessions
-                    const res2 = await fetch('/api/admin/requests/approved', {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    if (res2.ok) activeSessions = await res2.json();
-                    else activeSessions = [];
-                }
-            } catch (e) {
-                console.warn('[Sessions] Active sessions endpoint not available, using fallback mock.');
-                // Demo fallback with mock data so admins can see the UI
-                activeSessions = _demoSessions;
-            }
-            renderActiveSessions();
-        }
-
-        // Demo sessions – shown when API is unavailable for preview purposes
-        const _demoSessions = [
-            {
-                id: 'demo-1',
-                username: 'zeynep.yildiz',
-                user_display_name: 'Zeynep Yıldız',
-                requested_page: 'finance',
-                approved_at: new Date(Date.now() - 25 * 60 * 1000).toISOString(), // 25 min ago
-                duration_hours: 2,
-                reason: 'Acil dönem sonu raporlama için geçici erişim'
-            },
-            {
-                id: 'demo-2',
-                username: 'can.aksoy',
-                user_display_name: 'Can Aksoy',
-                requested_page: 'it',
-                approved_at: new Date(Date.now() - 110 * 60 * 1000).toISOString(), // 110 min ago
-                duration_hours: 2,
-                reason: 'Sunucu bakımı sonrası sistem kontrol'
-            }
-        ];
-
-        function renderActiveSessions() {
-            const section  = document.getElementById('activeSessionsSection');
-            const list     = document.getElementById('activeSessionsList');
-            const countBadge = document.getElementById('activeSessionsBadge');
-
-            // Clear existing timers
-            Object.values(sessionTimers).forEach(t => clearInterval(t));
-            sessionTimers = {};
-
-            // Filter only sessions that still have time remaining
-            const now = Date.now();
-            const stillActive = activeSessions.filter(s => {
-                if (!s.duration_hours || !s.approved_at) return true; // no expiry info → keep
-                const expiresAt = new Date(s.approved_at).getTime() + s.duration_hours * 3600 * 1000;
-                return expiresAt > now;
-            });
-
-            if (stillActive.length === 0) {
-                section.style.display = 'none';
-                return;
-            }
-
-            section.style.display = 'block';
-            countBadge.textContent = `${stillActive.length} Aktif`;
-
-            const MODULE_ICONS = {
-                finance: 'fa-chart-line', iot: 'fa-wifi', it: 'fa-microchip',
-                hr: 'fa-users', ai: 'fa-brain', access: 'fa-shield-alt', settings: 'fa-cog'
-            };
-
-            list.innerHTML = stillActive.map(s => {
-                const initials = s.user_display_name
-                    ? s.user_display_name.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase()
-                    : s.username.substring(0,2).toUpperCase();
-                const modIcon = MODULE_ICONS[s.requested_page] || 'fa-key';
-                const hasDuration = s.duration_hours && s.approved_at;
-                const CIRC = 2 * Math.PI * 22; // circumference r=22
-
-                return `
-                <div class="active-session-card" id="session-card-${s.id}">
-                    <div class="session-avatar">${initials}</div>
-                    <div class="session-info">
-                        <div class="session-name">${s.user_display_name || s.username}</div>
-                        <div class="session-sub">
-                            <i class="fas ${modIcon} mr-1"></i>${s.requested_page.toUpperCase()} erişimi
-                            · @${s.username}
-                        </div>
-                        ${s.reason ? `<div class="text-[10px] text-slate-500 mt-1 italic truncate max-w-xs">"${s.reason}"</div>` : ''}
-                    </div>
-
-                    ${ hasDuration ? `
-                    <div class="countdown-wrap" id="countdown-wrap-${s.id}">
-                        <div class="countdown-ring">
-                            <svg width="56" height="56" viewBox="0 0 56 56">
-                                <circle class="bg-circle" cx="28" cy="28" r="22"/>
-                                <circle class="fg-circle" id="fg-${s.id}" cx="28" cy="28" r="22"
-                                    stroke-dasharray="${CIRC}"
-                                    stroke-dashoffset="0"/>
-                            </svg>
-                            <div class="countdown-time" id="ctime-${s.id}">--:--</div>
-                        </div>
-                        <div class="countdown-label">Kalan Süre</div>
-                    </div>` : `
-                    <div class="session-module-badge"><i class="fas fa-infinity mr-1"></i>Süresiz</div>
-                    `}
-
-                    <button class="terminate-btn" onclick="terminateSession('${s.id}', '${s.username}', '${s.requested_page}')">
-                        <i class="fas fa-stop-circle"></i> Göreve Son Ver
-                    </button>
-                </div>`;
-            }).join('');
-
-            // Start countdown timers
-            stillActive.forEach(s => {
-                if (!s.duration_hours || !s.approved_at) return;
-                const approvedAt = new Date(s.approved_at).getTime();
-                const totalMs = s.duration_hours * 3600 * 1000;
-                const CIRC = 2 * Math.PI * 22;
-
-                function tick() {
-                    const remaining = (approvedAt + totalMs) - Date.now();
-                    const ctimeEl = document.getElementById(`ctime-${s.id}`);
-                    const fgEl    = document.getElementById(`fg-${s.id}`);
-                    const card    = document.getElementById(`session-card-${s.id}`);
-
-                    if (!ctimeEl || !fgEl) { clearInterval(sessionTimers[s.id]); return; }
-
-                    if (remaining <= 0) {
-                        clearInterval(sessionTimers[s.id]);
-                        card && card.remove();
-                        // re-check if section should hide
-                        if (document.getElementById('activeSessionsList').children.length === 0) {
-                            document.getElementById('activeSessionsSection').style.display = 'none';
-                        }
-                        return;
-                    }
-
-                    const totalSec = Math.ceil(remaining / 1000);
-                    const h = Math.floor(totalSec / 3600);
-                    const m = Math.floor((totalSec % 3600) / 60);
-                    const sc = totalSec % 60;
-                    ctimeEl.textContent = h > 0
-                        ? `${h}s ${String(m).padStart(2,'0')}d`
-                        : `${String(m).padStart(2,'0')}:${String(sc).padStart(2,'0')}`;
-
-                    // Progress arc
-                    const fraction = Math.max(0, remaining / totalMs);
-                    fgEl.style.strokeDashoffset = CIRC * (1 - fraction);
-
-                    // Color urgency
-                    fgEl.classList.remove('urgent','warning');
-                    if (fraction < 0.15)      fgEl.classList.add('urgent');
-                    else if (fraction < 0.35) fgEl.classList.add('warning');
-                }
-
-                tick();
-                sessionTimers[s.id] = setInterval(tick, 1000);
-            });
-        }
-
-        window.terminateSession = async (sessionId, username, page) => {
-            if (!confirm(`"${username}" kullanıcısının "${page.toUpperCase()}" erişimini şimdi sonlandırmak istiyor musunuz?`)) return;
-            const token = getToken();
-            try {
-                // Try dedicated terminate endpoint first
-                const res = await fetch('/api/admin/requests/terminate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                    body: JSON.stringify({ session_id: sessionId, username, page })
-                });
-                if (res.ok) {
-                    showToast(`${username} kullanıcısının geçici erişimi sonlandırıldı.`, 'success');
-                } else {
-                    // Fallback: revoke the page permission directly
-                    const user = allUsers.find(u => u.username === username);
-                    if (user) {
-                        const newPages = user.pages.filter(p => p !== page);
-                        await fetch(`/api/users/update/${username}`, {
-                            method: 'PUT',
-                            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ pages: newPages })
-                        });
-                        user.pages = newPages;
-                        showToast(`${username} kullanıcısının ${page.toUpperCase()} erişimi iptal edildi.`, 'success');
-                    }
-                }
-            } catch (e) {
-                showToast('Bağlantı hatası oluştu.', 'error');
-            }
-
-            // Remove from local list and refresh UI
-            activeSessions = activeSessions.filter(s => String(s.id) !== String(sessionId));
-            // Remove demo session as well
-            _demoSessions.splice(_demoSessions.findIndex(s => String(s.id) === String(sessionId)), 1);
-            renderActiveSessions();
-            fetchAllData();
-        };
-
-        // ─── UI INTERACTION ────────────────────────────────────────────────
+        // Sidebar interactions
         const sidebar = document.getElementById('sidebar');
         const mainWrapper = document.getElementById('mainWrapper');
         const collapseBtn = document.getElementById('collapseBtn');
         const collapseIcon = document.getElementById('collapseIcon');
-        const topNav = document.getElementById('topNav');
-        const backBtn = document.getElementById('backBtn');
 
         collapseBtn.addEventListener('click', () => {
-            if (sidebar) sidebar.classList.toggle('collapsed');
-            if (mainWrapper) mainWrapper.classList.toggle('sidebar-collapsed');
-            if (topNav) topNav.classList.toggle('sidebar-collapsed');
-            if (backBtn) backBtn.classList.toggle('sidebar-collapsed');
-            collapseIcon.className = sidebar.classList.contains('collapsed') ? 'fas fa-chevron-right' : 'fas fa-chevron-left';
-        });
-
-        const addUserBtn = document.getElementById('addUserBtn');
-        const addUserModal = document.getElementById('addUserModal');
-        const closeModal = document.getElementById('closeModal');
-        const cancelModal = document.getElementById('cancelModal');
-
-        addUserBtn.addEventListener('click', () => {
-            editMode = false;
-            targetUser = null;
-            document.querySelector('.modal-title').textContent = 'Yeni Kullanıcı Ekle';
-            document.querySelector('.modal-btn-primary').textContent = 'Kullanıcıyı Ekle';
-            const inputs = addUserModal.querySelectorAll('input, select');
-            inputs[1].disabled = false;
-            inputs[0].value = "";
-            inputs[1].value = "";
-            addUserModal.classList.add('active');
-        });
-        
-        [closeModal, cancelModal].forEach(b => b.addEventListener('click', () => addUserModal.classList.remove('active')));
-        window.addEventListener('click', (e) => { if (e.target === addUserModal) addUserModal.classList.remove('active'); });
-
-        const searchInput = document.querySelector('.search-input');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                currentTerm = e.target.value.toLowerCase();
-                renderAll();
-            });
-        }
-
-        // Departman Filtreleri
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentDept = btn.dataset.dept;
-                renderAll();
-            });
-        });
-
-        function showToast(msg, type='success') {
-            const t = document.getElementById('toast-el') || document.createElement('div');
-            t.id = 'toast-el'; t.className = `toast ${type} show`; t.innerHTML = msg;
-            if (!document.body.contains(t)) {
-                Object.assign(t.style, { position:'fixed', bottom:'20px', right:'20px', padding:'10px 20px', background:'#14b8a6', borderRadius:'8px', zIndex:'9999', color:'white' });
-                document.body.appendChild(t);
+            sidebar.classList.toggle('collapsed');
+            mainWrapper.classList.toggle('sidebar-collapsed');
+            if(sidebar.classList.contains('collapsed')) {
+                collapseIcon.className = 'fas fa-chevron-right';
+                document.getElementById('sidebarUserInfo').style.opacity = '0';
+            } else {
+                collapseIcon.className = 'fas fa-chevron-left';
+                document.getElementById('sidebarUserInfo').style.opacity = '1';
             }
-            setTimeout(() => { if(t) t.classList.remove('show'); }, 3000);
+        });
+    </script>
+
+    <script>
+        // Data & Logic Integration
+        const API = 'http://127.0.0.1:5003';
+        let allUsers = [];
+        let countdownInterval = null;
+
+        function token() { return localStorage.getItem('asgard_token'); }
+        function headers() { return { 'Authorization': `Bearer ${token()}`, 'Content-Type': 'application/json' }; }
+
+        // Core UI helpers
+        window.openModal = function(id) { document.getElementById(id).classList.add('open'); }
+        window.closeModal = function(id) { document.getElementById(id).classList.remove('open'); }
+        
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(overlay.id); });
+        });
+
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            const iconBlk = document.getElementById('toastIconBlock');
+            t.className = type === 'success' ? 'show toast-suc' : 'show toast-err';
+            iconBlk.innerHTML = type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-triangle"></i>';
+            document.getElementById('toastMsg').textContent = msg;
+            setTimeout(() => { t.className = ''; }, 3500);
         }
 
-        // ─── INIT ──────────────────────────────────────────────────────────
-        (async () => {
-            await checkAdmin();
-            await fetchAllData();
-            await fetchPendingRequests();
-            await fetchActiveSessions();
-            document.querySelector('.modal-btn-primary').onclick = handleUserSubmit;
+        window.switchTab = function(name, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
+            btn.classList.add('active');
+
+            const searchWrap = document.getElementById('searchWrap');
+            if(name === 'users') { searchWrap.style.display = 'block'; }
+            else { searchWrap.style.display = 'none'; }
+
+            if(name === 'requests') loadRequests();
+            if(name === 'active') loadApproved();
+            if(name !== 'active' && countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+        }
+
+        // Roles & Labels mapped to tailwind classes
+        const pageLabels = { dashboard:'Dashboard', it:'IT', iot:'IoT', finance:'Finans', logistics:'Lojistik', access:'Erişim', ai:'Yapay Zeka', settings:'Ayarlar', profile:'Profil' };
+        
+        function roleBadge(role) {
+            const m = {
+                admin: ['bg-teal', 'fa-crown', 'Sistem Yöneticisi'],
+                it: ['bg-blue', 'fa-microchip', 'IT Müdürü'],
+                iot: ['bg-purple', 'fa-wifi', 'IoT Müdürü'],
+                finance: ['bg-orange', 'fa-chart-line', 'Finans Müdürü'],
+                logistics: ['bg-teal', 'fa-truck', 'Lojistik Müdürü'],
+                it_staff: ['bg-slate', 'fa-laptop-code', 'IT Personel'],
+                it_head: ['bg-blue', 'fa-server', 'IT Başkanı'],
+                finance_head: ['bg-orange', 'fa-coins', 'Finans Başkanı'],
+                logistics_head: ['bg-teal', 'fa-shipping-fast', 'Loj. Başkanı']
+            };
+            const [cls, ic, name] = m[role] || ['bg-slate', 'fa-user', role];
+            return `<div class="role-badge ${cls}"><i class="fas ${ic}"></i> ${name}</div>`;
+        }
+
+        // USERS Logic
+        function renderUsers(users) {
+            const body = document.getElementById('usersTableBody');
+            if(!users.length) {
+                body.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-users-slash"></i><p>Kayıtlı sistem kullanıcısı bulunamadı.</p></div></td></tr>`; return;
+            }
+            body.innerHTML = users.map(u => {
+                const init = u.initials || u.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+                const pages = (u.pages || []).map(p => `<div class="page-chip">${pageLabels[p]||p}</div>`).join('');
+                return `<tr>
+                    <td>
+                        <div class="user-cell">
+                            <div class="u-avatar">${init}</div>
+                            <div>
+                                <div class="u-name">${u.name}</div>
+                                <div class="u-email">${u.email}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${roleBadge(u.role)}</td>
+                    <td style="color:rgba(255,255,255,0.6);font-size:13px">${u.department || 'Belirtilmemiş'}</td>
+                    <td><div class="pages-wrap">${pages}</div></td>
+                    <td>
+                        <div class="action-wrap">
+                            <button class="action-btn" onclick="openEditModal('${u.username}')" title="Yetkileri Düzenle"><i class="fas fa-pen"></i></button>
+                            <button class="action-btn danger" onclick="deleteUser('${u.username}','${u.name}')" title="Sistemden Sil"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        window.filterUsers = function() {
+            const v = document.getElementById('userSearch').value.toLowerCase();
+            renderUsers(allUsers.filter(u => (u.name+u.email+u.username+u.department).toLowerCase().includes(v)));
+        }
+
+        async function loadUsers() {
+            try {
+                const res = await fetch(`${API}/api/users`, {headers: headers()});
+                allUsers = await res.json();
+                renderUsers(allUsers);
+                document.getElementById('statUsers').innerText = allUsers.length;
+                document.getElementById('statRoles').innerText = new Set(allUsers.map(x=>x.role)).size;
+            } catch(e) {
+                document.getElementById('usersTableBody').innerHTML = `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Veritabanı bağlantı hatası</p></div></td></tr>`;
+            }
+        }
+
+        // REQUESTS Logic
+        async function loadRequests() {
+            const list = document.getElementById('pendingRequestsList');
+            list.innerHTML = `<div class="empty-state"><i class="fas fa-circle-notch fa-spin"></i><p>Senkronize ediliyor...</p></div>`;
+            try {
+                const res = await fetch(`${API}/api/admin/requests/pending`, {headers: headers()});
+                const reqs = await res.json();
+                document.getElementById('statPending').innerText = reqs.length;
+                
+                const btn = document.getElementById('requestsTabBtn');
+                btn.innerHTML = reqs.length > 0 
+                    ? `<i class="fas fa-bell"></i> Bekleyen Talepler <span class="pending-badge">${reqs.length}</span>` 
+                    : `<i class="fas fa-bell"></i> Bekleyen Talepler`;
+
+                if(!reqs.length) {
+                    list.innerHTML = `<div class="empty-state"><i class="fas fa-check-circle" style="color:#14b8a6"></i><p>Sistemde bekleyen herhangi bir izin talebi yok.</p></div>`; return;
+                }
+
+                list.innerHTML = reqs.map(r => {
+                    const init = (r.user_display_name||r.username).split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+                    const lvl = {temporary:'Geçici', elevated:'Yükseltilmiş', critical:'Kritik Risk'}[r.level] || r.level;
+                    return `<div class="req-card">
+                        <div class="req-av">${init}</div>
+                        <div class="req-info">
+                            <div class="req-name">${r.user_display_name}</div>
+                            <div class="req-desc">
+                                <span class="req-chip">${pageLabels[r.requested_page] || r.requested_page} Modülü</span>
+                                <span>${lvl} Seviye Talep · Neden: <strong>${r.reason}</strong></span>
+                            </div>
+                        </div>
+                        <button class="timer-btn btn-approve" onclick="resolveReq(${r.id}, 'approved')"><i class="fas fa-check"></i> Onayla</button>
+                        <button class="timer-btn btn-reject" onclick="resolveReq(${r.id}, 'rejected')"><i class="fas fa-times"></i> Reddet</button>
+                    </div>`;
+                }).join('');
+            } catch { list.innerHTML = `<div class="empty-state"><i class="fas fa-triangle-exclamation"></i><p>Talepler getirilemedi.</p></div>`; }
+        }
+
+        window.resolveReq = async function(id, st) {
+            try {
+                const res = await fetch(`${API}/api/admin/requests/resolve`, {
+                    method:'POST', headers:headers(), body:JSON.stringify({request_id:id, status:st})
+                });
+                if(!res.ok) throw new Error();
+                showToast(st === 'approved' ? 'Geçici erişim yetkisi tanımlandı.' : 'Talep reddedildi.', 'success');
+                loadRequests(); loadUsers();
+            } catch { showToast('Ağ isteğinde sorun oluştu.', 'error'); }
+        }
+
+        // COUNTDOWN & ACTIVE PERMISSIONS
+        function getCD(exp) {
+            const now = Date.now(), end = new Date(exp.replace(' ','T')+'Z').getTime();
+            const d = (isNaN(end) ? new Date(exp).getTime() : end) - now;
+            if(d <= 0) return null;
+            const h = Math.floor(d/3600000), m = Math.floor((d%3600000)/60000), s = Math.floor((d%60000)/1000);
+            return { t: h>0 ? `${h}s ${m}d ${s}sn` : `${m}d ${s}sn`, urg: d < 600000 };
+        }
+
+        function ticker() {
+            document.querySelectorAll('.cd-box').forEach(el => {
+                const res = getCD(el.dataset.exp);
+                if(!res) { el.innerHTML = 'Süre Bitti'; el.classList.add('urgent'); }
+                else {
+                    el.innerHTML = `<i class="fas fa-hourglass-half"></i> Kalan Süre: ${res.t}`;
+                    el.classList.toggle('urgent', res.urg);
+                }
+            });
+        }
+
+        async function loadApproved() {
+            const list = document.getElementById('activePermsList');
+            list.innerHTML = `<div class="empty-state"><i class="fas fa-circle-notch fa-spin"></i><p>Veriler işleniyor...</p></div>`;
+            if(countdownInterval) { clearInterval(countdownInterval); countdownInterval=null; }
             
-            // Poll for new requests and active sessions
-            setInterval(fetchPendingRequests, 30000);
-            setInterval(fetchActiveSessions, 10000);
+            try {
+                const res = await fetch(`${API}/api/admin/requests/approved`, {headers: headers()});
+                const items = await res.json();
+                
+                const btn = document.getElementById('activeTabBtn');
+                btn.innerHTML = `<i class="fas fa-clock"></i> Aktif Geçici İzinler ${items.length ? `<span class="pending-badge" style="background:#f97316">${items.length}</span>` : ''}`;
+
+                if(!items.length) {
+                    list.innerHTML = `<div class="empty-state"><i class="fas fa-shield-check" style="color:#14b8a6;font-size:48px;"></i><p>Sistemde zaman ayarlı aktif bir geçici erişim yok.</p></div>`; return;
+                }
+
+                list.innerHTML = items.map(r => {
+                    const init = (r.user_display_name||r.username).split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+                    const cd = getCD(r.expires_at);
+                    const urgStr = cd && cd.urg ? 'urgent' : '';
+                    const txt = cd ? `<i class="fas fa-hourglass-half"></i> Kalan Süre: ${cd.t}` : 'Süre Bitti';
+                    
+                    return `<div class="req-card" style="background:rgba(20, 184, 166, 0.05); border-color: rgba(20, 184, 166, 0.2)">
+                        <div class="req-av" style="background:linear-gradient(135deg, #14b8a6, #0f766e);box-shadow:0 0 15px rgba(20,184,166,0.3)">${init}</div>
+                        <div class="req-info">
+                            <div class="req-name">${r.user_display_name} <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.4)">(@${r.username})</span></div>
+                            <div class="req-desc">
+                                <span class="req-chip" style="background:rgba(255,255,255,0.1);color:white">${pageLabels[r.requested_page] || r.requested_page} Modülü</span>
+                                Veriliş Nedeni: ${r.reason}
+                            </div>
+                        </div>
+                        <div class="cd-box ${urgStr}" data-exp="${r.expires_at}">${txt}</div>
+                        <button class="timer-btn btn-reject" onclick="revokeAccess(${r.id})"><i class="fas fa-ban"></i> İptal</button>
+                    </div>`;
+                }).join('');
+
+                countdownInterval = setInterval(ticker, 1000);
+            } catch { list.innerHTML = `<div class="empty-state"><p>Bağlantı hatası</p></div>`; }
+        }
+
+        window.revokeAccess = async function(id) {
+            if(!confirm('Bu kullanıcının geçici erişimini anında iptal etmek istiyor musunuz?')) return;
+            try {
+                await fetch(`${API}/api/admin/requests/revoke/${id}`, {method:'DELETE', headers:headers()});
+                showToast('Erişim terminaline iptal emri gönderildi.'); loadApproved();
+            } catch { showToast('Hata oluştu', 'error'); }
+        }
+
+        // Stats Global
+        async function loadStats() {
+            try {
+                const res = await fetch(`${API}/api/stats/access`, { headers: headers() });
+                document.getElementById('statPerms').innerText = (await res.json()).total_permissions || '–';
+            } catch{}
+        }
+
+        // Modal Action logic
+        window.openEditModal = function(username) {
+            const u = allUsers.find(x => x.username === username); if(!u) return;
+            document.getElementById('editUsername').value = username;
+            document.getElementById('editRole').value = u.role;
+            document.getElementById('editDepartment').value = u.department || '';
+            document.querySelectorAll('#editPagesGrid input').forEach(c => c.checked = (u.pages||[]).includes(c.value));
+            openModal('editUserModal');
+        }
+
+        window.submitEditUser = async function() {
+            const username = document.getElementById('editUsername').value;
+            const payload = {
+                role: document.getElementById('editRole').value,
+                department: document.getElementById('editDepartment').value,
+                pages: [...document.querySelectorAll('#editPagesGrid input:checked')].map(c=>c.value)
+            };
+            try {
+                const res = await fetch(`${API}/api/users/update/${username}`, {method:'PUT', headers:headers(), body:JSON.stringify(payload)});
+                if(!res.ok) throw new Error();
+                showToast('Rol ve sayfa yetkileri güncellendi.'); closeModal('editUserModal'); loadUsers();
+            } catch { showToast('Güncelleme işlenemedi.', 'error'); }
+        }
+
+        window.submitNewUser = async function() {
+            const payload = {
+                name: document.getElementById('newName').value,
+                username: document.getElementById('newUsername').value,
+                email: document.getElementById('newEmail').value,
+                password: document.getElementById('newPassword').value,
+                role: document.getElementById('newRole').value,
+                department: document.getElementById('newDepartment').value,
+                pages: [...document.querySelectorAll('#newPagesGrid input:checked')].map(c=>c.value)
+            };
+            if(!payload.name || !payload.username || !payload.password) { showToast('Zorunlu alanları doldurun', 'error'); return; }
+            try {
+                const r = await fetch(`${API}/api/users`, {method:'POST', headers:headers(), body:JSON.stringify(payload)});
+                if(!r.ok) { const d = await r.json(); throw new Error(d.detail); }
+                showToast('Yeni sistem kimliği oluşturuldu.'); closeModal('newUserModal'); loadUsers();
+            } catch(e) { showToast(e.message||'Sisteme kayıt yapılamadı', 'error'); }
+        }
+
+        window.deleteUser = async function(user, name) {
+            if(!confirm(`${name} kimliğini tamamen silmek istiyor musunuz? Geri alınamaz.`)) return;
+            try {
+                await fetch(`${API}/api/users/delete/${user}`, {method:'DELETE', headers:headers()});
+                showToast('Kullanıcı sistemden tamamen temizlendi.'); loadUsers();
+            } catch { showToast('Bir hata meydana geldi.', 'error'); }
+        }
+
+        // Initialize Call
+        ;(async () => {
+            const user = await initAuth();
+            if(!user) return;
+            document.getElementById('sidebarName').textContent = user.name;
+            document.getElementById('sidebarEmail').textContent = user.email;
+            document.getElementById('sidebarInitials').textContent = user.initials || 'AD';
+            
+            await loadStats();
+            await loadUsers();
+            await loadRequests();
+            await loadApproved();
         })();
+
     </script>
 </body>
-
 </html>
