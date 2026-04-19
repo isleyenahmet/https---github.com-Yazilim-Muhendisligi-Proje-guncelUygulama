@@ -1285,7 +1285,7 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="text-right">
-                        <span class="text-2xl font-bold text-white">95<span class="text-sm text-[#8b5cf6] ml-1">%</span></span>
+                        <span class="text-2xl font-bold text-white" id="ai-accuracy-score">95<span class="text-sm text-[#8b5cf6] ml-1">%</span></span>
                         <p class="text-[10px] text-slate-400">Accuracy</p>
                     </div>
                     <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
@@ -1315,20 +1315,20 @@
                     <div class="status-icon">
                         <i class="fas fa-exclamation-triangle"></i>
                     </div>
-                    <div class="status-value">3</div>
+                    <div class="status-value" id="stat-active-anomalies">0</div>
                     <div class="status-label">Aktif Anomali</div>
-                    <div class="status-trend trend-up">
-                        <i class="fas fa-arrow-up"></i> +1
+                    <div class="status-trend trend-up" id="stat-active-anomalies-trend">
+                        <i class="fas fa-check"></i> Stabil
                     </div>
                 </div>
                 <div class="status-card">
                     <div class="status-icon">
                         <i class="fas fa-clock"></i>
                     </div>
-                    <div class="status-value">92%</div>
+                    <div class="status-value" id="stat-prediction-confidence">95%</div>
                     <div class="status-label">Tahmin Güveni</div>
                     <div class="status-trend trend-up">
-                        <i class="fas fa-arrow-up"></i> +2%
+                        <i class="fas fa-shield-alt"></i> Güçlü
                     </div>
                 </div>
                 <div class="status-card">
@@ -1401,8 +1401,8 @@
                         </div>
                         <div class="forecast-indicator">
                             <i class="fas fa-clock"></i>
-                            <span>+2h: 94%</span>
-                            <i class="fas fa-arrow-up text-red-400"></i>
+                            <span class="forecast-text">+2h: --</span>
+                            <i class="fas fa-arrow-right forecast-icon text-slate-400"></i>
                         </div>
                     </div>
                 </div>
@@ -2362,50 +2362,65 @@
                     // --- Helper object for realistic mapping ---
                     const depts = {
                         it: {
-                            score: risk.IT,
+                            score: risk.IT || 0,
                             badgeSel: '.anomaly-card[data-dept="it"] .anomaly-badge',
                             currSel: '.anomaly-card[data-dept="it"] .anomaly-current',
+                            forecastTextSel: '.anomaly-card[data-dept="it"] .forecast-text',
+                            forecastIconSel: '.anomaly-card[data-dept="it"] .forecast-icon',
                             chart: chartIT_instance,
                             val: d.net_dur ? parseInt(d.net_dur * 100) : Math.min(100, Math.max(0, parseInt((chartIT_instance.data.datasets[0].data.filter(x => x !== null).slice(-1)[0] || 85) + (Math.random() - 0.5) * 3))),
                             suffix: '%'
                         },
                         iot: {
-                            score: risk.IoT,
+                            score: risk.IoT || 0,
                             badgeSel: '.anomaly-card[data-dept="iot"] .anomaly-badge',
                             currSel: '.anomaly-card[data-dept="iot"] .anomaly-current',
+                            forecastTextSel: '.anomaly-card[data-dept="iot"] .forecast-text',
+                            forecastIconSel: '.anomaly-card[data-dept="iot"] .forecast-icon',
                             chart: chartIoT_instance,
                             val: d.iot_temp ? ((d.iot_temp) * 15 + 2).toFixed(1) : ((chartIoT_instance.data.datasets[0].data.filter(x => x !== null).slice(-1)[0] || 4475) + (Math.random() - 0.5) * 5).toFixed(1),
                             suffix: ' RPM'
                         },
                         finance: {
-                            score: risk.Finans,
+                            score: risk.Finans || 0,
                             badgeSel: '.anomaly-card[data-dept="finance"] .anomaly-badge',
                             currSel: '.anomaly-card[data-dept="finance"] .anomaly-current',
+                            forecastTextSel: '.anomaly-card[data-dept="finance"] .forecast-text',
+                            forecastIconSel: '.anomaly-card[data-dept="finance"] .forecast-icon',
                             chart: chartFinance_instance,
                             val: d.fin_amount ? ((d.fin_amount) * 5).toFixed(1) : Math.max(0, ((chartFinance_instance.data.datasets[0].data.filter(x => x !== null).slice(-1)[0] || 3.0) + (Math.random() - 0.5) * 0.4)).toFixed(1),
                             suffix: '%'
                         },
                         logistics: {
-                            score: risk.Logistics || risk.HR,
+                            score: risk.Logistics || risk.HR || 0,
                             badgeSel: '.anomaly-card[data-dept="logistics"] .anomaly-badge',
                             currSel: '.anomaly-card[data-dept="logistics"] .anomaly-current',
+                            forecastTextSel: '.anomaly-card[data-dept="logistics"] .forecast-text',
+                            forecastIconSel: '.anomaly-card[data-dept="logistics"] .forecast-icon',
                             chart: chartLogistics_instance,
                             val: (d.log_satisfaction || d.log_age) ? parseInt((1 - (d.log_satisfaction || 0)) * 150 + (d.log_age || 0) * 50) : parseInt((chartLogistics_instance.data.datasets[0].data.filter(x => x !== null).slice(-1)[0] || 150) + (Math.random() - 0.5) * 2),
                             suffix: ''
                         }
                     };
 
+                    let totalActiveAnomalies = 0;
                     for (const [key, info] of Object.entries(depts)) {
-                        // Color Badges
+                        const score = info.score;
+                        if (score > 40) totalActiveAnomalies++;
+
+                        // Color & Content Badges
                         const badge = document.querySelector(info.badgeSel);
                         if (badge) {
                             badge.className = 'anomaly-badge flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium border ';
-                            if (info.score > 80) { // Removed global override for realistic view
+                            if (score > 80) {
                                 badge.classList.add('bg-red-500/20', 'text-red-400', 'border-red-500/30', 'animate-pulse');
-                            } else if (info.score > 40) {
+                                badge.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> Kritik Anomali';
+                            } else if (score > 40) {
                                 badge.classList.add('bg-yellow-500/20', 'text-yellow-400', 'border-yellow-500/30');
+                                badge.innerHTML = '<i class="fas fa-exclamation-circle mr-1"></i> Yüksek Risk';
                             } else {
                                 badge.classList.add('bg-green-500/20', 'text-green-400', 'border-green-500/30');
+                                badge.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Stabil';
                             }
                         }
 
@@ -2413,6 +2428,24 @@
                         const currSpan = document.querySelector(info.currSel);
                         if (currSpan) {
                             currSpan.textContent = `${info.val}${info.suffix}`;
+                        }
+
+                        // Update Forecast Indicators (+2h)
+                        const fText = document.querySelector(info.forecastTextSel);
+                        const fIcon = document.querySelector(info.forecastIconSel);
+                        if (fText && fIcon) {
+                            let trend = 0.1;
+                            if (score > 80) trend = 0.5;
+                            else if (score > 40) trend = 0.2;
+                            
+                            const lastVal = Number(info.val);
+                            const predicted = (lastVal + (trend * 120)).toFixed(1); // Rough 2h forecast logic
+                            fText.textContent = `+2h: ${predicted}${info.suffix}`;
+                            
+                            fIcon.className = 'fas forecast-icon ml-1 ';
+                            if (trend > 0.3) fIcon.classList.add('fa-arrow-up', 'text-red-400');
+                            else if (trend > 0.15) fIcon.classList.add('fa-arrow-up', 'text-yellow-400');
+                            else fIcon.classList.add('fa-arrow-right', 'text-slate-400');
                         }
 
                         // Check for Notifications & Prescriptive AI
@@ -2455,11 +2488,11 @@
                             // Forecast Data (Dashed) - Ensure it connects to the last real data point
                             if (dsForecast) {
                                 let trend = 0.1;
-                                if (info.score > 80) trend = 0.5;
-                                else if (info.score > 40) trend = 0.2;
+                                if (score > 80) trend = 0.5;
+                                else if (score > 40) trend = 0.2;
                                 else if (key === 'finance') trend = 0.05;
                                 else if (key === 'iot') trend = 0.1;
-                                else if (key === 'hr') trend = 0.6;
+                                else if (key === 'logistics' || key === 'hr') trend = 0.6;
                                 else trend = 0.15;
                                 
                                 const newForecast = generateForecastData(dataArr[dataArr.length - 1], trend, 30);
@@ -2468,21 +2501,47 @@
                             }
 
                             // Color lines based on specific risk
-                            if (info.score > 80) {
+                            if (score > 80) {
                                 dsHistoric.borderColor = '#ef4444';
                                 dsHistoric.backgroundColor = 'rgba(239, 68, 68, 0.1)';
-                            } else if (info.score > 40) {
+                            } else if (score > 40) {
                                 dsHistoric.borderColor = '#facc15';
                                 dsHistoric.backgroundColor = 'rgba(250, 204, 21, 0.1)';
                             } else {
                                 if (key==='it') { dsHistoric.borderColor = '#3b82f6'; dsHistoric.backgroundColor = 'rgba(59, 130, 246, 0.1)'; }
                                 else if (key==='iot') { dsHistoric.borderColor = '#ef4444'; dsHistoric.backgroundColor = 'rgba(239, 68, 68, 0.1)'; }
                                 else if (key==='finance') { dsHistoric.borderColor = '#22c55e'; dsHistoric.backgroundColor = 'rgba(34, 197, 94, 0.1)'; }
-                                else if (key==='hr') { dsHistoric.borderColor = '#a855f7'; dsHistoric.backgroundColor = 'rgba(168, 85, 247, 0.1)'; }
+                                else if (key==='logistics' || key==='hr') { dsHistoric.borderColor = '#a855f7'; dsHistoric.backgroundColor = 'rgba(168, 85, 247, 0.1)'; }
                             }
                             
                             info.chart.update('none');
                         }
+                    } // End of depts loop
+
+                    // --- Global Stats Update --- (Outside Loop)
+                    const statAnom = document.getElementById('stat-active-anomalies');
+                    const statAnomTrend = document.getElementById('stat-active-anomalies-trend');
+                    if (statAnom) statAnom.textContent = totalActiveAnomalies;
+                    if (statAnomTrend) {
+                        if (totalActiveAnomalies > 0) {
+                            statAnomTrend.className = 'status-trend trend-down';
+                            statAnomTrend.innerHTML = `<i class="fas fa-arrow-up"></i> +${totalActiveAnomalies}`;
+                        } else {
+                            statAnomTrend.className = 'status-trend trend-up';
+                            statAnomTrend.innerHTML = `<i class="fas fa-check"></i> Stabil`;
+                        }
+                    }
+
+                    const accuracyEl = document.getElementById('ai-accuracy-score');
+                    if (accuracyEl) {
+                        const acc = (94 + Math.random() * 2).toFixed(1);
+                        accuracyEl.innerHTML = `${acc}<span class="text-sm text-[#8b5cf6] ml-1">%</span>`;
+                    }
+
+                    const confidenceEl = document.getElementById('stat-prediction-confidence');
+                    if (confidenceEl) {
+                        const conf = (91 + Math.random() * 4).toFixed(1);
+                        confidenceEl.textContent = `${conf}%`;
                     }
 
                     // --- Dynamic XAI Update ---
@@ -2543,9 +2602,56 @@
         })();
 
         // ── Auth ──────────────────────────────────────────────────────────
+        /* ── Department Based Filtering for Managers ────────────────── */
+        function applyDepartmentRestrictions(user) {
+            if (user.role === 'admin') return;
+
+            // Map role to department key
+            const roleMapping = {
+                'it': 'it', 'it_staff': 'it', 'it_head': 'it',
+                'finance': 'finance', 'finance_head': 'finance',
+                'iot': 'iot',
+                'logistics': 'logistics', 'logistics_head': 'logistics'
+            };
+
+            const userDept = roleMapping[user.role];
+            if (!userDept) return; // Unknown role
+
+            // 1. Filter the main dashboard buttons
+            document.querySelectorAll('.dept-btn').forEach(btn => {
+                const d = btn.dataset.dept;
+                if (d === 'all' || d !== userDept) {
+                    btn.style.display = 'none';
+                } else {
+                    btn.classList.add('active');
+                }
+            });
+
+            // 2. Filter the anomaly cards
+            document.querySelectorAll('.anomaly-card').forEach(card => {
+                if (card.dataset.dept !== userDept) {
+                    card.style.display = 'none';
+                }
+            });
+
+            // 3. Filter the PDF modal department selectors
+            document.querySelectorAll('#deptSelectors .chart-selector-item').forEach(sel => {
+                if (sel.dataset.dept !== userDept) {
+                    sel.style.display = 'none';
+                    sel.classList.remove('active');
+                } else {
+                    sel.classList.add('active');
+                    sel.style.pointerEvents = 'none'; // Lock it
+                    const check = sel.querySelector('.checkbox-custom i');
+                    if(check) check.style.opacity = '1'; 
+                }
+            });
+        }
+
         (async () => {
             const user = await initAuth();
             if (!user) return;
+            applyDepartmentRestrictions(user);
             const nm = document.getElementById('user-name');
             const em = document.getElementById('user-email');
             if (nm) nm.textContent = user.name || 'Admin User';

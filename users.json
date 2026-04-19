@@ -80,8 +80,9 @@
       "role": "it",
       "pages": [
         "dashboard",
-        "it",
-        "profile"
+        "ai",
+        "profile",
+        "it"
       ]
     },
     {

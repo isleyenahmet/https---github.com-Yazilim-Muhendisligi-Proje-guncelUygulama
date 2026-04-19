@@ -536,15 +536,15 @@
             <div class="input-group" style="margin-top:24px;">
                 <label>Sayfa Erişim Yetkileri</label>
                 <div class="check-grid" id="newPagesGrid">
-                    <label class="check-item"><input type="checkbox" value="dashboard" checked> Dashboard</label>
+                    <label class="check-item"><input type="checkbox" value="dashboard" checked disabled> Dashboard</label>
                     <label class="check-item"><input type="checkbox" value="it"> IT</label>
                     <label class="check-item"><input type="checkbox" value="iot"> IoT</label>
                     <label class="check-item"><input type="checkbox" value="finance"> Finans</label>
                     <label class="check-item"><input type="checkbox" value="logistics"> Lojistik</label>
                     <label class="check-item"><input type="checkbox" value="access"> Erişim</label>
-                    <label class="check-item"><input type="checkbox" value="ai"> Yapay Zeka</label>
+                    <label class="check-item"><input type="checkbox" value="ai" checked disabled> Yapay Zeka</label>
                     <label class="check-item"><input type="checkbox" value="settings"> Ayarlar</label>
-                    <label class="check-item"><input type="checkbox" value="profile" checked> Profil</label>
+                    <label class="check-item"><input type="checkbox" value="profile" checked disabled> Profil</label>
                 </div>
             </div>
             <div class="modal-actions">
@@ -584,15 +584,15 @@
             <div class="input-group" style="margin-top:20px;">
                 <label>Sayfa Erişim Yetkileri</label>
                 <div class="check-grid" id="editPagesGrid">
-                    <label class="check-item"><input type="checkbox" value="dashboard"> Dashboard</label>
+                    <label class="check-item"><input type="checkbox" value="dashboard" checked disabled> Dashboard</label>
                     <label class="check-item"><input type="checkbox" value="it"> IT</label>
                     <label class="check-item"><input type="checkbox" value="iot"> IoT</label>
                     <label class="check-item"><input type="checkbox" value="finance"> Finans</label>
                     <label class="check-item"><input type="checkbox" value="logistics"> Lojistik</label>
                     <label class="check-item"><input type="checkbox" value="access"> Erişim</label>
-                    <label class="check-item"><input type="checkbox" value="ai"> Yapay Zeka</label>
+                    <label class="check-item"><input type="checkbox" value="ai" checked disabled> Yapay Zeka</label>
                     <label class="check-item"><input type="checkbox" value="settings"> Ayarlar</label>
-                    <label class="check-item"><input type="checkbox" value="profile"> Profil</label>
+                    <label class="check-item"><input type="checkbox" value="profile" checked disabled> Profil</label>
                 </div>
             </div>
 
@@ -949,21 +949,60 @@
         }
 
         // Modal Action logic
+        // Dynamic Permission Locking logic
+        function getMandatoryPages(role) {
+            const core = ['dashboard', 'ai', 'profile'];
+            const mapping = {
+                'admin': ['access', 'settings'],
+                'it': ['it'], 'it_staff': ['it'], 'it_head': ['it'],
+                'iot': ['iot'],
+                'finance': ['finance'], 'finance_head': ['finance'],
+                'logistics': ['logistics'], 'logistics_head': ['logistics']
+            };
+            return [...new Set([...core, ...(mapping[role] || [])])];
+        }
+
+        window.syncCheckboxes = function(gridId, role) {
+            const mandatory = getMandatoryPages(role);
+            document.querySelectorAll(`#${gridId} input`).forEach(c => {
+                if (mandatory.includes(c.value)) {
+                    c.checked = true;
+                    c.disabled = true;
+                } else {
+                    c.disabled = false;
+                }
+            });
+        }
+
+        // Bind events to role dropdowns
+        document.getElementById('newRole').addEventListener('change', (e) => syncCheckboxes('newPagesGrid', e.target.value));
+        document.getElementById('editRole').addEventListener('change', (e) => syncCheckboxes('editPagesGrid', e.target.value));
+
+        // Modal Action logic
         window.openEditModal = function(username) {
             const u = allUsers.find(x => x.username === username); if(!u) return;
             document.getElementById('editUsername').value = username;
             document.getElementById('editRole').value = u.role;
             document.getElementById('editDepartment').value = u.department || '';
-            document.querySelectorAll('#editPagesGrid input').forEach(c => c.checked = (u.pages||[]).includes(c.value));
+            
+            // Set values for non-mandatory ones
+            document.querySelectorAll('#editPagesGrid input').forEach(c => {
+                c.checked = (u.pages||[]).includes(c.value);
+            });
+            
+            // Apply mandatory locks based on role
+            syncCheckboxes('editPagesGrid', u.role);
+            
             openModal('editUserModal');
         }
 
         window.submitEditUser = async function() {
             const username = document.getElementById('editUsername').value;
+            const role = document.getElementById('editRole').value;
             const payload = {
-                role: document.getElementById('editRole').value,
+                role: role,
                 department: document.getElementById('editDepartment').value,
-                pages: [...document.querySelectorAll('#editPagesGrid input:checked')].map(c=>c.value)
+                pages: [...new Set([...getMandatoryPages(role), ...([...document.querySelectorAll('#editPagesGrid input:checked')].map(c=>c.value))])]
             };
             try {
                 const res = await fetch(`${API}/api/users/update/${username}`, {method:'PUT', headers:headers(), body:JSON.stringify(payload)});
@@ -973,14 +1012,15 @@
         }
 
         window.submitNewUser = async function() {
+            const role = document.getElementById('newRole').value;
             const payload = {
                 name: document.getElementById('newName').value,
                 username: document.getElementById('newUsername').value,
                 email: document.getElementById('newEmail').value,
                 password: document.getElementById('newPassword').value,
-                role: document.getElementById('newRole').value,
+                role: role,
                 department: document.getElementById('newDepartment').value,
-                pages: [...document.querySelectorAll('#newPagesGrid input:checked')].map(c=>c.value)
+                pages: [...new Set([...getMandatoryPages(role), ...([...document.querySelectorAll('#newPagesGrid input:checked')].map(c=>c.value))])]
             };
             if(!payload.name || !payload.username || !payload.password) { showToast('Zorunlu alanları doldurun', 'error'); return; }
             try {
