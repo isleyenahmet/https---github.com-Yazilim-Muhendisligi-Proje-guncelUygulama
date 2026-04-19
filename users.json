@@ -65,9 +65,9 @@
       "role": "iot",
       "pages": [
         "dashboard",
-        "iot",
+        "ai",
         "profile",
-        "it"
+        "iot"
       ]
     },
     {
@@ -82,7 +82,8 @@
         "dashboard",
         "ai",
         "profile",
-        "it"
+        "it",
+        "iot"
       ]
     },
     {
@@ -129,6 +130,7 @@
       "role": "it_head",
       "pages": [
         "dashboard",
+        "ai",
         "profile",
         "it",
         "access",
@@ -159,6 +161,7 @@
       "role": "logistics_head",
       "pages": [
         "dashboard",
+        "ai",
         "profile",
         "logistics"
       ]

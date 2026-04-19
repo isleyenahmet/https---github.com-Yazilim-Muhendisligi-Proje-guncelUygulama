@@ -3071,13 +3071,36 @@
             const cfg     = DEPT_CONFIG[dept];
             const badge   = card?.querySelector('.anomaly-badge')?.textContent || 'Normal';
             const val     = card?.querySelector('.anomaly-current')?.textContent || '—';
-            const canvasEl= card?.querySelector('canvas');
+            const canvasEl = card?.querySelector('canvas');
+            
             const isCrit  = badge.includes('Kritik') || badge.includes('Risk');
             const isWarn  = badge.includes('Uyar') || badge.includes('Yüksek');
             const score   = isCrit ? (72 + Math.random()*20) : isWarn ? (42 + Math.random()*22) : (8 + Math.random()*28);
             const rm      = riskMeta(score);
             const insight = buildAIInsightBlock(dept, score, val, selectedInterval);
-            const chartImg = canvasEl ? canvasEl.toDataURL() : '';
+            
+            let chartImg = '';
+            if (canvasEl) {
+                // If canvas has 0 dimensions (hidden card), temporarily show it to capture dataURL
+                if (canvasEl.width === 0 || canvasEl.height === 0) {
+                    const originalStyle = card.style.display;
+                    const originalVisibility = card.style.visibility;
+                    const originalPosition = card.style.position;
+                    
+                    card.style.display = 'block';
+                    card.style.visibility = 'hidden';
+                    card.style.position = 'fixed';
+                    card.style.top = '-9999px';
+                    
+                    chartImg = canvasEl.toDataURL('image/png');
+                    
+                    card.style.display = originalStyle;
+                    card.style.visibility = originalVisibility;
+                    card.style.position = originalPosition;
+                } else {
+                    chartImg = canvasEl.toDataURL('image/png');
+                }
+            }
 
             // Simulated sub-metrics
             const subMetrics = (cfg?.metrics || ['Metrik A','Metrik B','Metrik C','Metrik D'])
