@@ -1962,10 +1962,10 @@
 
                     // Update Indicators dynamically
                     const indIt = document.getElementById('ind-it');
-                    if (indIt) indIt.textContent = `${(d.net_thr * 100).toFixed(0)}% Util · ${(d.net_lat * 1).toFixed(1)}ms`;
+                    if (indIt) indIt.textContent = `${(d.net_thr * 1).toFixed(0)}% Util · ${(d.net_lat * 1).toFixed(1)}ms`;
 
                     const indHr = document.getElementById('ind-hr');
-                    if (indHr) indHr.textContent = `${(d.log_soc * 10).toFixed(1)}/10 Sat · ${d.row_id % 100}% Load`;
+                    if (indHr) indHr.textContent = `${(d.log_soc / 10).toFixed(1)}/10 Sat · ${(d.log_task * 1).toFixed(0)}% Load`;
 
                     const indIot = document.getElementById('ind-iot');
                     if (indIot) {

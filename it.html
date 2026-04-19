@@ -1724,10 +1724,10 @@
             // 1. Initial Load from global buffer
             const buffer = JSON.parse(sessionStorage.getItem('asgard_global_stream_buffer') || '[]');
             buffer.forEach((d) => {
-                const lat = (d.net_lat || 0) * 100;
-                const thr = (d.net_thr || 0) * 1000;
-                const loss = (d.net_p_loss || 0) * 5;
-                const sec = (d.net_sec || 0) * 100;
+                const lat = (d.net_lat || 0);
+                const thr = (d.net_thr || 0);
+                const loss = (d.net_p_loss || 0) * 100;
+                const sec = (d.net_sec || 0);
                 latencyData.push({ time: tick, value: lat });
                 throughputData.push({ time: tick, value: thr });
                 packetLossData.push({ time: tick, value: loss });
@@ -1786,10 +1786,10 @@
                 try {
                     if (!isInitialRender) {
                         tick++;
-                        const lat = (d.net_lat || 0) * 100;
-                        const thr = (d.net_thr || 0) * 1000;
-                        const loss = (d.net_p_loss || 0) * 5;
-                        const sec = (d.net_sec || 0) * 100;
+                        const lat = (d.net_lat || 0);
+                        const thr = (d.net_thr || 0);
+                        const loss = (d.net_p_loss || 0) * 100;
+                        const sec = (d.net_sec || 0);
 
                         pushValue(latencyData, lat);
                         pushValue(throughputData, thr);

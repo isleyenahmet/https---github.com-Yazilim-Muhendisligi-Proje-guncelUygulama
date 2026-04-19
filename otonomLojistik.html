@@ -1568,10 +1568,10 @@
             // 1. Initial Load from global buffer
             const buffer = JSON.parse(sessionStorage.getItem('asgard_global_stream_buffer') || '[]');
             buffer.forEach((d) => {
-                const path = (d.log_path || 0) * 100;
-                const coll = (d.log_path || 0) > 0 ? (1 / ((d.log_path || 0) * 10 + 0.001)) * 100 : 0;
-                const soc = (d.log_soc || 0) * 10;
-                const task = (d.log_task || 0) * 100;
+                const path = (d.log_path || 0) * 1000;
+                const coll = (d.log_coll || 0);
+                const soc = (d.log_soc || 0);
+                const task = (d.log_task || 0);
                 
                 pathData.push({ time: tick, value: path });
                 collData.push({ time: tick, value: coll });
@@ -1641,10 +1641,10 @@
                 try {
                     if (!isInitialRender) {
                         tick++;
-                        const path = (d.log_path || 0) * 100;
-                        const coll = (d.log_path || 0) > 0 ? (1 / ((d.log_path || 0) * 10 + 0.001)) * 100 : 0;
-                        const soc = (d.log_soc || 0) * 10;
-                        const task = (d.log_task || 0) * 100;
+                        const path = (d.log_path || 0) * 1000;
+                        const coll = (d.log_coll || 0);
+                        const soc = (d.log_soc || 0);
+                        const task = (d.log_task || 0);
 
                         pushValue(pathData, path);
                         pushValue(collData, coll);
