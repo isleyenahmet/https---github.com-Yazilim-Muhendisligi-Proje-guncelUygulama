@@ -1016,29 +1016,29 @@
                         <div class="stat-tile">
                             <div class="stat-value" id="active-nodes-val">4</div>
                             <div class="stat-label">AKTİF NODE</div>
-                            <div class="stat-change positive mt-2 text-[11px] flex gap-1 items-center">
+                            <div class="stat-change positive mt-2 text-[11px] flex gap-1 items-center" id="nodes-trend">
                                 <i class="fas fa-check text-green-500"></i> <span class="text-green-500">Stable</span>
                             </div>
                         </div>
                         <div class="stat-tile">
                             <div class="stat-value" id="dash-alarms">2</div>
                             <div class="stat-label">AKTİF ALARM</div>
-                            <div class="stat-change negative mt-2 text-[11px] flex gap-1 items-center">
-                                <i class="fas fa-arrow-up text-red-500"></i> <span class="text-red-500">+1</span>
+                            <div class="stat-change negative mt-2 text-[11px] flex gap-1 items-center" id="alarms-trend">
+                                <i class="fas fa-arrow-up text-red-500"></i> <span class="text-red-500">+0</span>
                             </div>
                         </div>
                         <div class="stat-tile">
-                            <div class="stat-value">99.9%</div>
+                            <div class="stat-value" id="uptime-val">99.9%</div>
                             <div class="stat-label">UPTIME</div>
-                            <div class="stat-change positive mt-2 text-[11px] flex gap-1 items-center">
-                                <i class="fas fa-arrow-up text-green-500"></i> <span class="text-green-500">+0.1%</span>
+                            <div class="stat-change positive mt-2 text-[11px] flex gap-1 items-center" id="uptime-trend">
+                                <i class="fas fa-arrow-up text-green-500"></i> <span class="text-green-500">+0.0%</span>
                             </div>
                         </div>
                         <div class="stat-tile">
                             <div class="stat-value" id="avg-latency">2.4ms</div>
                             <div class="stat-label">ORT. LATENCY</div>
-                            <div class="stat-change positive mt-2 text-[11px] flex gap-1 items-center">
-                                <i class="fas fa-arrow-down text-green-500"></i> <span class="text-green-500">-0.2ms</span>
+                            <div class="stat-change positive mt-2 text-[11px] flex gap-1 items-center" id="latency-trend">
+                                <i class="fas fa-arrow-down text-green-500"></i> <span class="text-green-500">-0.0ms</span>
                             </div>
                         </div>
                     </div>
@@ -1849,6 +1849,8 @@
         // LIVE DATA STREAM — Dashboard
         // ═══════════════════════════════════════════════════════════════════
         (function startDashboardLiveStream() {
+            let lastData = null;
+
             function processDataUpdate(d) {
                 try {
                     // Update System Health
@@ -1858,14 +1860,59 @@
                         sysHealth.textContent = health;
                     }
 
-                    // Update Active Alarms
-                    const dashAlarms = document.getElementById('dash-alarms');
-                    if (dashAlarms) {
-                        dashAlarms.textContent = d.anomaly ? "4" : "1";
+                    // 1. Update Active Nodes
+                    const activeNodes = document.getElementById('active-nodes-val');
+                    const risk = d.risk_scores || {};
+                    if (activeNodes) {
+                        const highRiskCount = Object.values(risk).filter(s => s > 80).length;
+                        activeNodes.textContent = 4 - highRiskCount;
                     }
 
+                    // 2. Update Active Alarms
+                    const dashAlarms = document.getElementById('dash-alarms');
+                    if (dashAlarms) {
+                        const alarmCount = Object.values(risk).filter(s => s > 45).length + (d.anomaly ? 1 : 0);
+                        dashAlarms.textContent = alarmCount;
+                    }
+
+                    // 3. Update Uptime
+                    const uptimeVal = document.getElementById('uptime-val');
+                    if (uptimeVal) {
+                        const baseUptime = 99.9;
+                        const penalty = (d.anomaly_score * 1.5);
+                        uptimeVal.textContent = (baseUptime - penalty).toFixed(1) + '%';
+                    }
+
+                    // 4. Update Latency
+                    const avgLatency = document.getElementById('avg-latency');
+                    if (avgLatency) {
+                        const latency = (d.net_lat * 20 + 2).toFixed(1);
+                        avgLatency.textContent = latency + 'ms';
+                    }
+
+                    // Trends Calculation
+                    if (lastData) {
+                        // Uptime trend
+                        const uptTrend = document.getElementById('uptime-trend');
+                        if (uptTrend) {
+                            const diff = (d.anomaly_score - lastData.anomaly_score);
+                            const isPos = diff <= 0;
+                            uptTrend.className = `stat-change ${isPos ? 'positive' : 'negative'} mt-2 text-[11px] flex gap-1 items-center`;
+                            uptTrend.innerHTML = `<i class="fas fa-arrow-${isPos ? 'up' : 'down'} ${isPos ? 'text-green-500' : 'text-red-500'}"></i> <span class="${isPos ? 'text-green-500' : 'text-red-500'}">${isPos ? '+' : ''}${(Math.abs(diff)*0.1).toFixed(2)}%</span>`;
+                        }
+
+                        // Latency trend
+                        const latTrend = document.getElementById('latency-trend');
+                        if (latTrend) {
+                            const diff = (d.net_lat - lastData.net_lat);
+                            const isGood = diff <= 0;
+                            latTrend.className = `stat-change ${isGood ? 'positive' : 'negative'} mt-2 text-[11px] flex gap-1 items-center`;
+                            latTrend.innerHTML = `<i class="fas fa-arrow-${isGood ? 'down' : 'up'} ${isGood ? 'text-green-500' : 'text-red-500'}"></i> <span class="${isGood ? 'text-green-500' : 'text-red-500'}">${isGood ? '-' : '+'}${Math.abs(diff*5).toFixed(1)}ms</span>`;
+                        }
+                    }
+                    lastData = d;
+
                     // Update Nodes Colors based on risk scores
-                    const risk = d.risk_scores || {};
                     const isGlobalAnomaly = d.anomaly === 1;
 
                     // Link Live API directly to Twin Animation Speed Config
