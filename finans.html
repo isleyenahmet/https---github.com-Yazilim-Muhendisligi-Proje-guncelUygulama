@@ -1675,7 +1675,7 @@
                     if (!isInitialRender) {
                         tick++;
                         const cost = (d.fin_cost || 0) * 1000;
-                        const fraud = d.fin_fraud > 0 ? d.fin_fraud * 100 : (d.anomaly_score || 0) * 100;
+                        const fraud = (d.fin_fraud || 0) * 100;
                         const risk = (d.fin_risk || 0) * 100;
                         const inv = (d.fin_inv || 0) * 500;
 
