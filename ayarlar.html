@@ -1101,6 +1101,67 @@
                 </div>
             </div>
 
+            <!-- Sunum Ayarları (Presentation Mode) -->
+            <div class="settings-section">
+                <div class="section-title">
+                    <i class="fas fa-play-circle" style="color: #8b5cf6;"></i>
+                    Sunum Alıştırması
+                </div>
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <div class="settings-card-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+                                <i class="fas fa-magic"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="settings-card-title">İnteraktif Sunum Modu</div>
+                                <div class="settings-card-desc">Sistemi 10 dakikalığına kontrollü bir anomali senaryosuna sokar. (IT & IoT Krizi)</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mt-6">
+                            <div id="demo-status-ui" class="flex items-center gap-2">
+                                <span class="text-xs text-slate-500 italic" id="demo-timer-text">Eğitim ve sunum amaçlı anlık tetikleme.</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button id="start-demo-btn" onclick="asgardStartDemo()" class="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-purple-500/30 flex items-center gap-2">
+                                    <i class="fas fa-rocket"></i> Senaryoyu Başlat
+                                </button>
+                                <button id="stop-demo-btn" onclick="asgardStopDemo()" class="px-6 py-2.5 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white text-xs font-bold rounded-xl transition-all border border-red-600/30 flex items-center gap-2 hidden">
+                                    <i class="fas fa-stop-circle"></i> Senaryoyu Durdur
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                // Demo status polling
+                window.checkDemoStatus = async function() {
+                    try {
+                        const response = await fetch('http://127.0.0.1:5003/api/demo/status');
+                        const data = await response.json();
+                        
+                        const startBtn = document.getElementById('start-demo-btn');
+                        const stopBtn = document.getElementById('stop-demo-btn');
+                        const timerText = document.getElementById('demo-timer-text');
+                        
+                        if (data.active) {
+                            startBtn.classList.add('hidden');
+                            stopBtn.classList.remove('hidden');
+                            timerText.innerHTML = `<span class="text-purple-400 font-bold animate-pulse"><i class="fas fa-clock mr-1"></i> Sunum Modu Aktif: ${data.remaining}s kaldı</span>`;
+                        } else {
+                            startBtn.classList.remove('hidden');
+                            stopBtn.classList.add('hidden');
+                            timerText.textContent = "Eğitim ve sunum amaçlı anlık tetikleme.";
+                        }
+                    } catch (e) { console.error("Status check fail", e); }
+                };
+                
+                setInterval(window.checkDemoStatus, 2000);
+                window.checkDemoStatus();
+            </script>
+
             <!-- Veri Yönetimi -->
             <div class="settings-section">
                 <div class="section-title">
@@ -1486,6 +1547,8 @@
             loadSettings(); // Auth'dan sonra kayıtlı ayarları yükle
         })();
     </script>
+    <!-- Presentation script -->
+    <script src="presentation_trigger.js"></script>
 </body>
 
 </html>

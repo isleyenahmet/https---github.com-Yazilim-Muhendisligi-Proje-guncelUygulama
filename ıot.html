@@ -1840,10 +1840,11 @@
                     const globalAnomaly = d.anomaly === 1;
 
                     // Per-metric anomaly: check each metric individually
-                    const tempAnomaly  = globalAnomaly && isMetricAnomaly(tempData);
-                    const vibAnomaly   = globalAnomaly && isMetricAnomaly(vibData);
-                    const cycleAnomaly = globalAnomaly && isMetricAnomaly(cycleData);
-                    const torqAnomaly  = globalAnomaly && isMetricAnomaly(torqData);
+                    // Integrated with Demo Mode to force stability or crisis based on scenario
+                    const tempAnomaly  = (globalAnomaly && isMetricAnomaly(tempData))  || (d.is_demo && d.risk_scores.IoT > 80);
+                    const vibAnomaly   = (globalAnomaly && isMetricAnomaly(vibData))   || (d.is_demo && d.risk_scores.IoT > 80);
+                    const cycleAnomaly = (globalAnomaly && isMetricAnomaly(cycleData)) || (d.is_demo && d.risk_scores.IoT > 80 && d.iot_cycle > 0.85);
+                    const torqAnomaly  = (globalAnomaly && isMetricAnomaly(torqData))  || (d.is_demo && d.risk_scores.IoT > 80 && d.iot_torq > 0.85);
 
                     // Redraw specific charts - each with its own anomaly colour
                     drawLineChart('chart-temp',  tempData,  tempAnomaly  ? '#ef4444' : '#38bdf8', true, ' °C');
@@ -1863,9 +1864,11 @@
                     updateUIState('cycle', cycleVal, cycleAnomaly, 'card-cycle', 'label-cycle', '%');
                     updateUIState('torq',  torqVal,  torqAnomaly,  'card-torq',  'label-torq',  'Nm');
 
-                    // Overall Anomaly logic for the primary node - stays global
+                    // Overall Anomaly logic for the primary node — turns red only when this department is at risk
                     const iotNode = document.getElementById('iot-primary');
-                    if (globalAnomaly) {
+                    const iotRiskScore = (d.risk_scores && d.risk_scores.IoT) || 0;
+                    
+                    if (iotRiskScore > 80) {
                         if (iotNode) {
                             iotNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
                             iotNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';

@@ -1708,9 +1708,11 @@
                     updateUIState('soc',  socVal,  socAnomaly,  'card-soc',  'label-soc',  '');
                     updateUIState('task', taskVal, taskAnomaly, 'card-task', 'label-task', '%');
 
-                    // Overall Anomaly logic for the primary node — stays global
+                    // Overall Anomaly logic for the primary node — turns red only when this department is at risk
                     const hrNode = document.getElementById('log-primary');
-                    if (globalAnomaly) {
+                    const logRiskScore = (d.risk_scores && (d.risk_scores.Logistics || d.risk_scores.HR)) || 0;
+
+                    if (logRiskScore > 80) {
                         if (hrNode) {
                             hrNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
                             hrNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';

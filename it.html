@@ -1820,10 +1820,11 @@
                     const globalAnomaly = d.anomaly === 1;
 
                     // Per-metric anomaly: check each metric individually
-                    const latAnomaly  = globalAnomaly && isMetricAnomaly(latencyData);
-                    const thrAnomaly  = globalAnomaly && isMetricAnomaly(throughputData);
-                    const lossAnomaly = globalAnomaly && isMetricAnomaly(packetLossData);
-                    const secAnomaly  = globalAnomaly && isMetricAnomaly(securityData);
+                    // Integrated with Demo Mode to force stability or crisis based on scenario
+                    const latAnomaly  = (globalAnomaly && isMetricAnomaly(latencyData))  || (d.is_demo && d.risk_scores.IT > 80);
+                    const thrAnomaly  = (globalAnomaly && isMetricAnomaly(throughputData)) || (d.is_demo && d.risk_scores.IT > 80 && d.net_thr > 0.8);
+                    const lossAnomaly = (globalAnomaly && isMetricAnomaly(packetLossData)) || (d.is_demo && d.risk_scores.IT > 80 && d.net_p_loss > 0.1);
+                    const secAnomaly  = (globalAnomaly && isMetricAnomaly(securityData))   || (d.is_demo && d.risk_scores.IT > 80 && d.net_sec > 0.8);
 
                     // Redraw specific charts — each with its own anomaly colour
                     drawLineChart('chart-latency',    latencyData,    latAnomaly  ? '#ef4444' : '#60a5fa', true);
@@ -1847,9 +1848,11 @@
                     const lastUpdate = document.getElementById('lastUpdate');
                     if (lastUpdate && !isInitialRender) lastUpdate.textContent = new Date().toLocaleTimeString();
 
-                    // Overall Anomaly logic — primary node turns red only when global anomaly
+                    // Overall Anomaly logic — primary node turns red only when this department is at risk
                     const itNode = document.getElementById('it-primary');
-                    if (globalAnomaly) {
+                    const itRiskScore = (d.risk_scores && d.risk_scores.IT) || 0;
+                    
+                    if (itRiskScore > 80) {
                         if (itNode) {
                             itNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
                             itNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';

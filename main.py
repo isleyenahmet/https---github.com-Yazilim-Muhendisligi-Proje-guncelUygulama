@@ -200,6 +200,8 @@ def build_edge_index(num_nodes: int = 4) -> torch.Tensor:
 EDGE_INDEX = build_edge_index(4)
 state: dict = {}
 
+PRESENTATION_STATE = {"active": False, "start_time": 0}
+
 # ─── Lifespan ─────────────────────────────────────────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -780,6 +782,31 @@ async def revoke_access(request_id: int, current_user=Depends(admin_required)):
         conn.close()
 
 
+@app.post("/api/demo/presentation-start")
+async def start_presentation():
+    PRESENTATION_STATE["active"] = True
+    PRESENTATION_STATE["start_time"] = time.time()
+    return {"status": "success", "message": "10 dakikalık sunum modu aktif edildi. IT ve IoT anomalileri simüle ediliyor."}
+
+@app.post("/api/demo/presentation-stop")
+async def stop_presentation():
+    PRESENTATION_STATE["active"] = False
+    PRESENTATION_STATE["start_time"] = 0
+    return {"status": "success", "message": "Sunum modu kapatıldı. Sistem gerçek zamanlı verilere döndü."}
+
+@app.get("/api/demo/status")
+async def demo_status():
+    if not PRESENTATION_STATE["active"]:
+        return {"active": False}
+    
+    elapsed = time.time() - PRESENTATION_STATE["start_time"]
+    remaining = max(0, 600 - elapsed)
+    if remaining <= 0:
+        PRESENTATION_STATE["active"] = False
+        return {"active": False}
+    
+    return {"active": True, "remaining": int(remaining)}
+
 # ─── System Health ────────────────────────────────────────────────────────────
 @app.get("/api/health")
 async def health():
@@ -824,10 +851,66 @@ async def stream():
 
     row_dict = dict(zip(COLS, row))
 
+    # --- Presentation Mode Override ---
+    if PRESENTATION_STATE["active"]:
+        elapsed = time.time() - PRESENTATION_STATE["start_time"]
+        if elapsed > 600:
+            PRESENTATION_STATE["active"] = False
+        else:
+            # Force Anomaly State
+            anomaly = 1
+            anomaly_score = 0.9421
+            
+            # Simulated Risk Scores
+            # IT and IoT are high, Finans and Logistics are strictly stable
+            risk_scores = {
+                "IT": 92.8,
+                "IoT": 89.2,
+                "Finans": 5.4,
+                "Logistics": 6.8
+            }
+            
+            # Injection of "Bad" values for IT and IoT
+            # IT Metrics
+            row_dict["net_lat"] = 0.85 + np.random.rand() * 0.1 # High Latency
+            row_dict["net_p_loss"] = 0.12 + np.random.rand() * 0.05 # High Packet Loss
+            
+            # IoT Metrics
+            row_dict["iot_temp"] = 0.92 + np.random.rand() * 0.05 # High Temp
+            row_dict["iot_vib"] = 0.88 + np.random.rand() * 0.08 # High Vibration
+            
+            # Finans & Logistics (Strictly Stable)
+            row_dict["fin_risk"] = 0.02 + np.random.rand() * 0.02
+            row_dict["fin_fraud"] = 0.005 + np.random.rand() * 0.01
+            row_dict["log_coll"] = 0.01 + np.random.rand() * 0.02
+            row_dict["log_task"] = 0.05 + np.random.rand() * 0.05
+            
+            # Build fake attention weights
+            node_attn = [0.95, 0.90, 0.05, 0.06]
+            
+            return JSONResponse({
+                "row_id": row_id,
+                "anomaly": anomaly,
+                "anomaly_score": round(anomaly_score, 4),
+                "is_demo": True,
+                "remaining_seconds": int(600 - elapsed),
+                "net_lat": round(row_dict["net_lat"], 4), "net_thr": round(row_dict["net_thr"], 4),
+                "net_p_loss": round(row_dict["net_p_loss"], 4), "net_sec": round(row_dict["net_sec"], 4),
+                "iot_vib": round(row_dict["iot_vib"], 4), "iot_temp": round(row_dict["iot_temp"], 4),
+                "iot_torq": round(row_dict["iot_torq"], 4), "iot_cycle": round(row_dict["iot_cycle"], 4),
+                "fin_cost": round(row_dict["fin_cost"], 4), "fin_fraud": round(row_dict["fin_fraud"], 4),
+                "fin_risk": round(row_dict["fin_risk"], 4), "fin_inv": round(row_dict["fin_inv"], 4),
+                "log_path": round(row_dict["log_path"], 4), "log_coll": round(row_dict["log_coll"], 4),
+                "log_soc": round(row_dict["log_soc"], 4), "log_task": round(row_dict["log_task"], 4),
+                "attention_weights": [round(float(v), 4) for v in node_attn],
+                "risk_scores": risk_scores,
+            })
+
     return JSONResponse({
         "row_id": row_id,
         "anomaly": anomaly,
         "anomaly_score": round(anomaly_score, 4),
+        "is_demo": False,
         "net_lat": round(row_dict["net_lat"], 4), "net_thr": round(row_dict["net_thr"], 4),
         "net_p_loss": round(row_dict["net_p_loss"], 4), "net_sec": round(row_dict["net_sec"], 4),
         "iot_vib": round(row_dict["iot_vib"], 4), "iot_temp": round(row_dict["iot_temp"], 4),

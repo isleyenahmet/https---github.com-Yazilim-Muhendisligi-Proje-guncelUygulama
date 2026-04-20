@@ -1712,9 +1712,11 @@
                     updateUIState('inv',   invVal,   invAnomaly,   'card-inv',   'label-inv',   '');
 
 
-                    // Overall Anomaly logic for the primary node — stays global
+                    // Overall Anomaly logic for the primary node — turns red only when this department is at risk
                     const finNode = document.getElementById('node-main-vault') || document.getElementById('finance-primary');
-                    if (globalAnomaly) {
+                    const finRiskScore = (d.risk_scores && d.risk_scores.Finans) || 0;
+                    
+                    if (finRiskScore > 80) {
                         if (finNode) {
                             finNode.style.background = 'radial-gradient(circle at 30%, #ff0000, #8b0000)';
                             finNode.style.boxShadow = '0 0 80px #ff0000, 0 0 150px rgba(255,0,0,0.5)';
