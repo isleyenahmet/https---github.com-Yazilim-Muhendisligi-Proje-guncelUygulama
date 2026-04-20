@@ -714,7 +714,8 @@ async def resolve_request(req: AccessRequestResolve, current_user=Depends(admin_
             if request["level"] == 'elevated': hours = 6
             elif request["level"] == 'critical': hours = 24
             
-            expires_at = (datetime.now() + timedelta(hours=hours)).strftime('%Y-%m-%d %H:%M:%S')
+            # SQLite CURRENT_TIMESTAMP is UTC, so we should stay in UTC
+            expires_at = (datetime.utcnow() + timedelta(hours=hours)).strftime('%Y-%m-%d %H:%M:%S')
             
             cur.execute("""
                 UPDATE access_requests 
@@ -731,6 +732,23 @@ async def resolve_request(req: AccessRequestResolve, current_user=Depends(admin_
             """, (req.request_id,))
             conn.commit()
             return {"message": "Talep reddedildi."}
+    finally:
+        conn.close()
+
+@app.get("/api/my-requests")
+async def get_my_requests(current_user=Depends(get_current_user)):
+    """Kullanıcının kendi bekleyen veya aktif onaylanmış taleplerini döndürür."""
+    conn = get_db_connection()
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, requested_page, reason, level, status, created_at, expires_at
+            FROM access_requests 
+            WHERE username = ? 
+            AND (status = 'pending' OR (status = 'approved' AND expires_at > CURRENT_TIMESTAMP))
+        """, (current_user["username"],))
+        rows = cur.fetchall()
+        return [dict(r) for r in rows]
     finally:
         conn.close()
 

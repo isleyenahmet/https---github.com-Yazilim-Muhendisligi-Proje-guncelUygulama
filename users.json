@@ -10,7 +10,9 @@
       "role": "",
       "pages": [
         "dashboard",
-        "profile"
+        "ai",
+        "profile",
+        "settings"
       ]
     },
     {
@@ -23,8 +25,10 @@
       "role": "logistics",
       "pages": [
         "dashboard",
+        "ai",
+        "profile",
         "logistics",
-        "profile"
+        "settings"
       ]
     },
     {
@@ -37,9 +41,10 @@
       "role": "finance",
       "pages": [
         "dashboard",
-        "finance",
         "ai",
-        "profile"
+        "profile",
+        "finance",
+        "settings"
       ]
     },
     {
@@ -67,7 +72,8 @@
         "dashboard",
         "ai",
         "profile",
-        "iot"
+        "iot",
+        "settings"
       ]
     },
     {
@@ -83,7 +89,8 @@
         "ai",
         "profile",
         "it",
-        "iot"
+        "iot",
+        "settings"
       ]
     },
     {
@@ -147,8 +154,10 @@
       "role": "finance_head",
       "pages": [
         "dashboard",
+        "ai",
         "profile",
-        "finance"
+        "finance",
+        "settings"
       ]
     },
     {
@@ -163,7 +172,8 @@
         "dashboard",
         "ai",
         "profile",
-        "logistics"
+        "logistics",
+        "settings"
       ]
     }
   ]

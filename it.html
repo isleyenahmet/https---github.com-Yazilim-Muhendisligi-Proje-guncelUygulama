@@ -1161,8 +1161,8 @@
                 <!-- IT Primary Node -->
                 <div class="node-it-primary" id="it-primary">
                     <div class="text-center">
-                        <div class="text-sm font-extrabold text-white tracking-wider mb-1">IT NETWORK</div>
-                        <div class="text-xs font-medium text-white/70">PRIMARY HUB</div>
+                        <div class="text-sm font-extrabold text-white tracking-wider mb-1">BT AĞI</div>
+                        <div class="text-xs font-medium text-white/70">ANA MERKEZ</div>
                     </div>
                 </div>
 
@@ -1170,28 +1170,28 @@
                 <div class="metric-node normal" id="metric-latency"
                     style="left: calc(50% - 60px - 141px); top: calc(50% - 60px - 141px);">
                     <i class="fas fa-clock text-2xl text-blue-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">LATENCY</span>
+                    <span class="text-sm font-bold text-white">GECİKME</span>
                     <span class="text-xs text-blue-400" id="val-net_lat">-- ms</span>
                 </div>
 
                 <div class="metric-node normal" id="metric-throughput"
                     style="left: calc(50% - 60px + 141px); top: calc(50% - 60px - 141px);">
                     <i class="fas fa-chart-line text-2xl text-green-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">THRPT</span>
+                    <span class="text-sm font-bold text-white">BANT GENİŞLİĞİ</span>
                     <span class="text-xs text-green-400" id="val-net_thr">-- Mbps</span>
                 </div>
 
                 <div class="metric-node normal" id="metric-packetloss"
                     style="left: calc(50% - 60px - 141px); top: calc(50% - 60px + 141px);">
                     <i class="fas fa-times-circle text-2xl text-red-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">LOSS</span>
+                    <span class="text-sm font-bold text-white">VERİ KAYBI</span>
                     <span class="text-xs text-red-400" id="val-net_p_loss">-- %</span>
                 </div>
 
                 <div class="metric-node normal" id="metric-security"
                     style="left: calc(50% - 60px + 141px); top: calc(50% - 60px + 141px);">
                     <i class="fas fa-shield-alt text-2xl text-purple-400 mb-1"></i>
-                    <span class="text-sm font-bold text-white">SECURITY</span>
+                    <span class="text-sm font-bold text-white">GÜVENLİK</span>
                     <span class="text-xs text-purple-400" id="val-net_sec">--</span>
                 </div>
 
@@ -1213,13 +1213,13 @@
                 <div class="flex items-center gap-4 mb-8">
                     <div class="w-1 h-12 bg-brand rounded-full"></div>
                     <div>
-                        <h1 class="text-3xl font-bold text-white">Network Analytics Dashboard</h1>
-                        <p class="text-sm text-slate-400 mt-1">Real-time performance metrics · Last 24 hours</p>
+                        <h1 class="text-3xl font-bold text-white">BT Ağ Analitiği Paneli</h1>
+                        <p class="text-sm text-slate-400 mt-1">Gerçek zamanlı performans metrikleri · Son 24 saat</p>
                     </div>
                     <div class="flex-1"></div>
                     <div class="glass-premium-light px-4 py-2 flex items-center gap-2">
                         <i class="fas fa-sync-alt text-brand text-sm"></i>
-                        <span class="text-sm text-white">Live</span>
+                        <span class="text-sm text-white">Canlı</span>
                         <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse ml-2"></div>
                     </div>
                 </div>
@@ -1230,10 +1230,10 @@
                     <div class="chart-card" id="card-latency">
                         <div class="chart-title">
                             <i class="fas fa-clock text-blue-400"></i>
-                            Network Latency (RTT)
-                            <span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full ml-auto" id="status-latency">Stable</span>
+                            Ağ Gecikmesi (RTT)
+                            <span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full ml-auto" id="status-latency">Stabil</span>
                         </div>
-                        <div class="chart-subtitle">Real-time round trip time monitoring (ms)</div>
+                        <div class="chart-subtitle">Gerçek zamanlı gidiş-dönüş süresi izleme (ms)</div>
                         <div id="chart-latency" style="width: 100%; height: 220px;"></div>
                     </div>
 
@@ -1241,10 +1241,10 @@
                     <div class="chart-card" id="card-throughput">
                         <div class="chart-title">
                             <i class="fas fa-chart-line text-green-400"></i>
-                            Network Throughput
+                            Ağ Bant Genişliği
                             <span class="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full ml-auto" id="status-throughput">Optimal</span>
                         </div>
-                        <div class="chart-subtitle">Direct bandwidth utilization (Mbps)</div>
+                        <div class="chart-subtitle">Anlık bant genişliği kullanımı (Mbps)</div>
                         <div id="chart-throughput" style="width: 100%; height: 220px;"></div>
                     </div>
                 </div>
@@ -1255,10 +1255,10 @@
                     <div class="chart-card" id="card-packetloss">
                         <div class="chart-title">
                             <i class="fas fa-times-circle text-red-400"></i>
-                            Packet Loss Rate
+                            Paket Kaybı Oranı
                             <span class="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full ml-auto" id="status-packetloss">Normal</span>
                         </div>
-                        <div class="chart-subtitle">Packet transmission failure rate (%)</div>
+                        <div class="chart-subtitle">Paket iletim hatası oranı (%)</div>
                         <div id="chart-packetloss" style="width: 100%; height: 220px;"></div>
                     </div>
 
@@ -1266,20 +1266,20 @@
                     <div class="chart-card" id="card-security">
                         <div class="chart-title">
                             <i class="fas fa-shield-alt text-purple-400"></i>
-                            Network Security State
-                            <span class="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full ml-auto" id="status-security">Secure</span>
+                            Ağ Güvenlik Durumu
+                            <span class="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full ml-auto" id="status-security">Güvenli</span>
                         </div>
-                        <div class="chart-subtitle">Real-time security threat assessment</div>
+                        <div class="chart-subtitle">Gerçek zamanlı güvenlik tehdit değerlendirmesi</div>
                         <div id="chart-security" style="width: 100%; height: 220px;"></div>
                     </div>
                 </div>
 
                 <!-- Last updated info -->
                 <div class="flex justify-between items-center mt-8 text-xs text-slate-500">
-                    <span>Last updated: <span id="lastUpdate">--:--:--</span> · Auto-refresh active</span>
+                    <span>Son güncelleme: <span id="lastUpdate">--:--:--</span> · Otomatik yenileme aktif</span>
                     <span class="flex items-center gap-2">
                         <i class="fas fa-circle text-green-400 text-[6px]" id="dataStatusIcon"></i>
-                        <span id="dataStatusText">Data stream active</span>
+                        <span id="dataStatusText">Veri akışı aktif</span>
                     </span>
                 </div>
             </div>
@@ -1768,7 +1768,7 @@
                         card.style.boxShadow = '0 0 30px rgba(239, 68, 68, 0.4)';
                     }
                     if (status) {
-                        status.textContent = 'Critical';
+                        status.textContent = 'Kritik';
                         status.className = 'text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full ml-auto';
                     }
                     if (circleNode) {
@@ -1781,7 +1781,7 @@
                         card.style.boxShadow = '';
                     }
                     if (status) {
-                        status.textContent = metricName === 'net_lat' ? 'Stable' : (metricName === 'net_thr' ? 'Optimal' : (metricName === 'net_p_loss' ? 'Normal' : 'Secure'));
+                        status.textContent = metricName === 'net_lat' ? 'Stabil' : (metricName === 'net_thr' ? 'Optimal' : (metricName === 'net_p_loss' ? 'Normal' : 'Güvenli'));
                         const colorClass = metricName === 'net_lat' ? 'blue' : (metricName === 'net_thr' ? 'green' : (metricName === 'net_p_loss' ? 'green' : 'purple'));
                         status.className = `text-xs bg-${colorClass}-500/20 text-${colorClass}-300 px-2 py-1 rounded-full ml-auto`;
                     }

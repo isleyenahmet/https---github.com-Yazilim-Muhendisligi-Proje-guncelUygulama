@@ -15,3 +15,4 @@
 [2026-04-19 16:09:38] ACCESS REQUEST: User=it_mudur, Page=iot, Level=temporary
 [2026-04-19 16:12:54] ACCESS REQUEST: User=it_mudur, Page=iot, Level=temporary
 [2026-04-19 16:57:38] ACCESS REQUEST: User=iot_mudur, Page=it, Level=temporary
+[2026-04-21 01:34:50] ACCESS REQUEST: User=finans_mudur, Page=logistics, Level=temporary

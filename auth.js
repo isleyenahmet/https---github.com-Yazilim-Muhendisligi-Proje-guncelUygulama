@@ -123,9 +123,19 @@ function updateSidebarUser(user) {
     const nameEl = document.querySelector('.sidebar .text-sm.font-medium');
     const emailEl = document.querySelector('.sidebar .text-xs.text-slate-400');
     const initialsEl = document.querySelector('.sidebar .text-xs.font-bold');
+    const avatarContainer = document.querySelector('.sidebar .logo-icon') || document.querySelector('.sidebar .w-8.h-8.rounded-lg');
+    
     if (nameEl) nameEl.textContent = user.name;
     if (emailEl) emailEl.textContent = user.email;
-    if (initialsEl) initialsEl.textContent = user.initials;
+    
+    const savedImg = localStorage.getItem('asgard_profile_img');
+    if (savedImg && avatarContainer) {
+        avatarContainer.innerHTML = `<img src="${savedImg}" class="w-full h-full object-cover rounded-lg" style="min-width: 100%; min-height: 100%;">`;
+        if (initialsEl) initialsEl.style.display = 'none';
+    } else if (initialsEl) {
+        initialsEl.textContent = user.initials;
+        initialsEl.style.display = '';
+    }
 }
 
 /* ── bindNavigation: Global URL Router for Sidebar Menu ─────────── */
