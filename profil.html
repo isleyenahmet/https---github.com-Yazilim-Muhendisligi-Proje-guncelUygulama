@@ -3405,7 +3405,7 @@
 
         function startCountdown(elementId, expiresAt) {
             const el = document.getElementById(elementId);
-            const expiry = new Date(expiresAt + ' UTC').getTime(); // Database is UTC
+            const expiry = new Date(expiresAt.replace(' ', 'T') + 'Z').getTime(); // Database is UTC
 
             const timer = setInterval(() => {
                 const now = new Date().getTime();

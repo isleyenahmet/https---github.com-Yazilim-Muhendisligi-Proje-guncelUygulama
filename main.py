@@ -715,7 +715,7 @@ async def resolve_request(req: AccessRequestResolve, current_user=Depends(admin_
             elif request["level"] == 'critical': hours = 24
             
             # SQLite CURRENT_TIMESTAMP is UTC, so we should stay in UTC
-            expires_at = (datetime.utcnow() + timedelta(hours=hours)).strftime('%Y-%m-%d %H:%M:%S')
+            expires_at = (datetime.now(timezone.utc) + timedelta(hours=hours)).strftime('%Y-%m-%d %H:%M:%S')
             
             cur.execute("""
                 UPDATE access_requests 

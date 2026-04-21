@@ -864,9 +864,12 @@
 
         // COUNTDOWN & ACTIVE PERMISSIONS
         function getCD(exp) {
-            const now = Date.now(), end = new Date(exp.replace(' ','T')).getTime();
-            const d = (isNaN(end) ? new Date(exp).getTime() : end) - now;
-            if(d <= 0) return null;
+            if (!exp) return null;
+            const now = Date.now();
+            const dateStr = exp.replace(' ', 'T') + 'Z';
+            const end = new Date(dateStr).getTime();
+            const d = end - now;
+            if (isNaN(d) || d <= 0) return null;
             const h = Math.floor(d/3600000), m = Math.floor((d%3600000)/60000), s = Math.floor((d%60000)/1000);
             return { t: h>0 ? `${h}s ${m}d ${s}sn` : `${m}d ${s}sn`, urg: d < 600000 };
         }
